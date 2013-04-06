@@ -1,5 +1,6 @@
 package agent.test;
 // Just write a comment
+// COMMENT BY MINH
 
 import static org.junit.Assert.*;
 
