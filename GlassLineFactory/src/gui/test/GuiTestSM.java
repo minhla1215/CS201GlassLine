@@ -33,7 +33,7 @@ public class GuiTestSM implements TReceiver
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args)
 	{
-		/*
+		
 		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED)
 		{
 			Integer[] newArgs = new Integer[1];
@@ -122,6 +122,5 @@ public class GuiTestSM implements TReceiver
 		else if(channel==TChannel.TRUCK && event == TEvent.TRUCK_GUI_LOAD_FINISHED){//added by monroe
 			t.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_EMPTY, null);
 		}
-		*/
 	}
 }
