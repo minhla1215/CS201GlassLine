@@ -1,4 +1,3 @@
-
 package gui.test;
 
 import transducer.TChannel;
@@ -6,13 +5,12 @@ import transducer.TEvent;
 import transducer.TReceiver;
 import transducer.Transducer;
 
-public class GuiTestSM implements TReceiver
-{
+public class SkyGuiTestSM implements TReceiver{
 	Transducer t;
 
 	boolean offlineDone = false;
 
-	public GuiTestSM(Transducer t)
+	public SkyGuiTestSM(Transducer t)
 	{
 		this.t = t;
 		t.register(this, TChannel.CUTTER);
@@ -28,12 +26,14 @@ public class GuiTestSM implements TReceiver
 		t.register(this, TChannel.TRUCK);//added by monroe
 
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		Integer[] newArgs = new Integer[1];
+		newArgs[0] = 0;
+		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START,newArgs);
 	}
 
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args)
 	{
-		
 		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED)
 		{
 			Integer[] newArgs = new Integer[1];

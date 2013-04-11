@@ -19,7 +19,7 @@ public class SensorAgentTest extends TestCase {
 	MockAnimation animation = new MockAnimation("Mock Animation", transducer);
 	
 	public void testInitialCondition() {
-		SkySensorAgent sensor = new SkySensorAgent(conveyor, Position.First, 5);
+		SkySensorAgent sensor = new SkySensorAgent(conveyor, Position.First, 5, "Sensor5", transducer);
 		
 		assertTrue("Sensor should originally not inform any one until gets a gui message", sensor.getInformed());
 		assertEquals("conveyor should originally have log size of 0", 0, conveyor.log.size());
@@ -32,7 +32,7 @@ public class SensorAgentTest extends TestCase {
 	}
 	
 	public void testMsgGlassDetectedForFirstSensor() {
-		SkySensorAgent sensor = new SkySensorAgent(conveyor, Position.First, 5);
+		SkySensorAgent sensor = new SkySensorAgent(conveyor, Position.First, 5, "Sensor5", transducer);
 		sensor.msgGlassDetected();
 		sensor.pickAndExecuteAnAction();
 		
@@ -43,7 +43,7 @@ public class SensorAgentTest extends TestCase {
 	}
 	
 	public void testMsgGlassDetectedForSecondSensor() {
-		SkySensorAgent sensor = new SkySensorAgent(conveyor, Position.Second, 5);
+		SkySensorAgent sensor = new SkySensorAgent(conveyor, Position.First, 5, "Sensor5", transducer);
 		sensor.msgGlassDetected();
 		sensor.pickAndExecuteAnAction();
 		
@@ -53,7 +53,7 @@ public class SensorAgentTest extends TestCase {
 	}
 	
 	public void testConsecutiveGlassesDetected() {
-		SkySensorAgent sensor = new SkySensorAgent(conveyor, Position.First, 5);
+		SkySensorAgent sensor = new SkySensorAgent(conveyor, Position.First, 5, "Sensor5", transducer);
 
 		assertEquals("conveyor should originally have log size of 0", 0, conveyor.log.size());
 		

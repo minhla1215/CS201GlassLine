@@ -5,6 +5,7 @@ import engine.interfaces.SkyConveyor;
 import engine.interfaces.ConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
+import transducer.Transducer;
 
 public class SkySensorAgent extends Agent {
 	
@@ -16,8 +17,16 @@ public class SkySensorAgent extends Agent {
 	private boolean informed;
 	public enum Position {First, Second};
 	
-	public SkySensorAgent(SkyConveyor c, Position p, int guiIndex) {
+	public SkySensorAgent(SkyConveyor c, Position p, int guiIndex, String name, Transducer tr) {
+		super(name,tr);
 		myConveyor = c;
+		pos = p;
+		myGuiIndex = guiIndex;
+		informed = true;
+	}
+	
+	public SkySensorAgent(Position p, int guiIndex, String name, Transducer tr) {
+		super(name,tr);
 		pos = p;
 		myGuiIndex = guiIndex;
 		informed = true;
@@ -54,6 +63,10 @@ public class SkySensorAgent extends Agent {
 	/** Utilities **/
 	public boolean getInformed() {
 		return informed;
+	}
+	
+	public void connectAgents(SkyConveyor cf) {
+		myConveyor = cf;
 	}
 
 	@Override
