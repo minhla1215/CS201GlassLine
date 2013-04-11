@@ -9,6 +9,8 @@ import engine.sky.agent.SkyPopUpAgent;
 import engine.sky.agent.SkySensorAgent;
 import engine.sky.agent.SkySensorAgent.Position;
 import engine.agent.BinAgent;
+import engine.alex.agent.AlexConveyorAgent;
+import engine.alex.agent.MachineAgent;
 import gui.drivers.FactoryFrame;
 
 import javax.swing.BoxLayout;
@@ -93,16 +95,45 @@ public class FactoryPanel extends JPanel
 		// TODO initialize and start Agent threads here
 		// ===========================================================================
 		
+		///following are Alex's conveyors and machines 
 		
-		//Initializing Sky's Conveyors 6 - 8
+		
+		//Initializing Alex's agents
+		AlexConveyorAgent conveyor0=new AlexConveyorAgent("Conveyor0",transducer,0);
+		AlexConveyorAgent conveyor1=new AlexConveyorAgent("Conveyor1",transducer,1);
+		AlexConveyorAgent conveyor2=new AlexConveyorAgent("Conveyor2",transducer,2);
+		AlexConveyorAgent conveyor3=new AlexConveyorAgent("Conveyor3",transducer,3);
+		AlexConveyorAgent conveyor4=new AlexConveyorAgent("Conveyor4",transducer,4);
+		MachineAgent cutterAgent=new MachineAgent("Cutter",transducer,0);
+		MachineAgent breakoutAgent=new MachineAgent("Breakout",transducer,0);
+		MachineAgent manualBreakoutAgent=new MachineAgent("ManualBreakout",transducer,0);
+	
+		//Link Between Alex's agents
+		
+		
+		//Start the threads
+		conveyor0.startThread();
+		conveyor1.startThread();
+		conveyor2.startThread();
+		conveyor3.startThread();
+		conveyor4.startThread();
+		cutterAgent.startThread();
+		breakoutAgent.startThread();
+		manualBreakoutAgent.startThread();
+		
+		////All above are Alex's agents
+		
+		
+		
+		//Initializing Sky's Conveyors 5 - 7
+		SkyConveyorAgent conveyor5 = new SkyConveyorAgent(5, "Conveyor5", transducer);
 		SkyConveyorAgent conveyor6 = new SkyConveyorAgent(6, "Conveyor6", transducer);
 		SkyConveyorAgent conveyor7 = new SkyConveyorAgent(7, "Conveyor7", transducer);
-		SkyConveyorAgent conveyor8 = new SkyConveyorAgent(8, "Conveyor8", transducer);
 		
 		//Start the conveyor agents threads
+		conveyor5.startThread();
 		conveyor6.startThread();
 		conveyor7.startThread();
-		conveyor8.startThread();
 		
 		//Initializing Sky's PopUps 0 - 2
 		SkyPopUpAgent popUp0 = new SkyPopUpAgent(0, "PopUp0", transducer);
