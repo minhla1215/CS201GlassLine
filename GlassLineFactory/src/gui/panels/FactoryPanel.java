@@ -82,6 +82,7 @@ public class FactoryPanel extends JPanel
 		// TODO initialize and start Agent threads here
 		// ===========================================================================
 		System.out.println("Back end initialization finished.");
+		
 	}
 
 	/**
