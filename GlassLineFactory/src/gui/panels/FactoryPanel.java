@@ -2,6 +2,7 @@
 package gui.panels;
 
 import engine.agent.BinAgent;
+import engine.alex.agent.AlexConveyorAgent;
 import gui.drivers.FactoryFrame;
 
 import javax.swing.BoxLayout;
@@ -32,7 +33,7 @@ public class FactoryPanel extends JPanel
 	
 	// A reference of Bin Agent for the Control Panel
 	BinAgent bin;
-
+	
 	/**
 	 * Constructor links this panel to its frame
 	 */
@@ -85,7 +86,7 @@ public class FactoryPanel extends JPanel
 		// ===========================================================================
 		// TODO initialize and start Agent threads here
 		// ===========================================================================
-		bin = new BinAgent(transducer);
+		
 		
 		System.out.println("Back end initialization finished.");
 	}

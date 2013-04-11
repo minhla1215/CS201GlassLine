@@ -35,6 +35,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		bin = null;
 		parent = cp;
 		produceButton = new JButton("Produce");
+		this.add(produceButton);
 		produceButton.addActionListener(this);
 	}
 
@@ -46,17 +47,19 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 	{
 		return parent;
 	}
-	
+
 	public void actionPerformed(ActionEvent ae)
 	{
 		if(ae.getSource() == produceButton){
-			
-			ArrayList <Config> testConfig = new ArrayList<Config>();
-			testConfig.add(new Config(true,true,true, "Dragon"));
-			bin.hereIsConfig(testConfig);
+			if(bin!=null){
+				System.out.println("product created");
+				ArrayList <Config> testConfig = new ArrayList<Config>();
+				testConfig.add(new Config(true,true,true, "Dragon"));
+				bin.hereIsConfig(testConfig);
+			}
 		}
 	}
-	
+
 	public void setBinAgent(BinAgent b){
 		this.bin = b;
 	}

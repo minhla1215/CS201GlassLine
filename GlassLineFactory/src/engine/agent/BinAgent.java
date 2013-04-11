@@ -31,10 +31,10 @@ public class BinAgent extends Agent implements ConveyorFamily {
 	
 	NextComponent nextComponent;
 	List <GlassType> glasses = new ArrayList<GlassType>();
-	Transducer transducer;
+	String name;
 	
-	public BinAgent(Transducer t){
-		this.transducer = t;
+	public BinAgent(Transducer t, String name){
+		super(name, t);
 		nextComponent = null;
 	}
 	
@@ -72,7 +72,11 @@ public class BinAgent extends Agent implements ConveyorFamily {
 	// the GUI Glass
 	public void sendingGlass(){
 		nextComponent.nextComponent.msgPassingGlass(glasses.get(0));
-		transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		if(transducer != null)
+			transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+		else{
+			System.out.println("transducer is null");
+		}
 		glasses.remove(0);
 		nextComponent.state = ConveyorState.NOTHING;
 		stateChanged();
@@ -84,6 +88,8 @@ public class BinAgent extends Agent implements ConveyorFamily {
 			glasses.add(new GlassType(configs.get(0).getConfig(0),configs.get(0).getConfig(1),
 					configs.get(0).getConfig(2), configs.get(0).getConfigID()));
 		}
+		System.out.println("hereIsConfig" + glasses.size() + nextComponent.state);
+		stateChanged();
 	}
 
 	public void setNextComponent(ConveyorFamily nextC){
