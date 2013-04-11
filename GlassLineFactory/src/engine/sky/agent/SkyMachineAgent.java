@@ -5,6 +5,7 @@ import engine.interfaces.SkyMachine;
 import engine.util.GlassType;
 import transducer.TChannel;
 import transducer.TEvent;
+import transducer.Transducer;
 
 public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine {
 
@@ -12,14 +13,19 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 	 * @see engine.agent.Machine#msgPassingGlass(engine.agent.GlassType)
 	 */
 	
-	private String name;
-	private int index;
+	private int myGuiIndex;
 	private ConveyorFamily pairedPopUp;
-	public SkyMachineAgent (ConveyorFamily popUp, int in, String n) {
+	public SkyMachineAgent (ConveyorFamily popUp, int in, String n, Transducer tr) {
+		super(n,tr);
 		pairedPopUp = popUp;
-		index = in;
-		name = n;
+		myGuiIndex = in;
 	}
+	
+	public SkyMachineAgent (int index, String n, Transducer tr) {
+		super(n,tr);
+		myGuiIndex = index;
+	}
+	
 	@Override
 	
 	public void msgPassingGlass(GlassType gt) {
@@ -51,9 +57,8 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		return false;
 	}
 	
-	@Override
-	public String getName() {
-		return name;
+	public void connectAgents(ConveyorFamily cf) {
+		pairedPopUp = cf;
 	}
 
 	@Override

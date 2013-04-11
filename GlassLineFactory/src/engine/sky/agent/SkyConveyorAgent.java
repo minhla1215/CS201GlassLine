@@ -22,7 +22,6 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily {
 	private boolean informed;
 	private boolean PopUpAvailable;
 	private ArrayList<GlassType> myGlasses;
-	private String name;
 	
 	public SkyConveyorAgent(ConveyorFamily post, ConveyorFamily pre, int guiIndex, String n, Transducer tr) {
 		super(n,tr);
@@ -36,6 +35,16 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily {
 		myGlasses = new ArrayList<GlassType>();
 		myGuiIndex = guiIndex;
 		
+	}
+	
+	public SkyConveyorAgent(int guiIndex, String n, Transducer tr) {
+		super (n,tr);
+		name = n;
+		myState = ConveyorState.Idle;
+		informed = false;
+		PopUpAvailable = false;
+		myGlasses = new ArrayList<GlassType>();
+		myGuiIndex = guiIndex;
 	}
 	
 	/** Messages */
@@ -109,7 +118,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily {
 
 	private void stopConveyor() {
 		myState = ConveyorState.Waiting;
-				Object[] args = new Object[1];
+		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
 		stateChanged();
@@ -134,11 +143,6 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily {
 	
 	/** Utilities **/
 	
-	@Override
-	public String getName() {
-		return name;
-	}
-	
 	public ArrayList<GlassType> getGlasses() {
 		return myGlasses;
 	}
@@ -149,6 +153,12 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily {
 	
 	public boolean isPopUpAvailable() {
 		return PopUpAvailable;
+	}
+	
+	
+	public void connectAgents(ConveyorFamily pre, ConveyorFamily post) {
+		preCF = pre;
+		postCF = post;
 	}
 
 	@Override

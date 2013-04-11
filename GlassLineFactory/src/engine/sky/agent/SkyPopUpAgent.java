@@ -23,7 +23,6 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	private int myGuiIndex;
 	private Semaphore waitAnimation = new Semaphore(0,true);
 	private boolean informed;
-	private String name;
 	
 	public enum GlassState { OnBoard, Processing, Processed};
 	public enum MachineState {Idle, Processing, Done, Called};
@@ -61,17 +60,25 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	
 	/** Constructor **/
 	public SkyPopUpAgent(ConveyorFamily pre, ConveyorFamily post, SkyMachine first, SkyMachine second, int guiIndex, String n, Transducer tr) {
+		
+		super(n,tr);
 		preConveyor = new MyConveyor(pre, ConveyorState.UnAvailable);
 		postConveyor = new MyConveyor(post, ConveyorState.UnAvailable);
 		firstMachine = new MyMachine (first, MachineState.Idle);
 		secondMachine = new MyMachine (second, MachineState.Idle);
 		myGuiIndex = guiIndex;
-		name = n;
-		transducer = tr;
 		
 		transducer.register(this, TChannel.POPUP);
 		informed = false;
 	}
+	
+	public SkyPopUpAgent(int guiIndex, String n, Transducer tr) {
+		super(n,tr);
+		myGuiIndex = guiIndex;
+		
+		transducer.register(this, TChannel.POPUP);
+		informed = false;
+}
 	
 	/** Messages **/
 
@@ -197,10 +204,6 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	
 	/** Utilities **/
 
-	@Override
-	public String getName() {
-		return name;
-	}
 	
 	public GlassType getGlass() {
 		return currentGlass.gt;
@@ -224,6 +227,13 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	
 	public ConveyorState getPostConveyorState() {
 		return postConveyor.state;
+	}
+	
+	public void connectAgents(ConveyorFamily pre, ConveyorFamily post, SkyMachine first, SkyMachine second) {
+		preConveyor = new MyConveyor(pre, ConveyorState.UnAvailable);
+		postConveyor = new MyConveyor(post, ConveyorState.UnAvailable);
+		firstMachine = new MyMachine (first, MachineState.Idle);
+		secondMachine = new MyMachine (second, MachineState.Idle);
 	}
 
 	@Override

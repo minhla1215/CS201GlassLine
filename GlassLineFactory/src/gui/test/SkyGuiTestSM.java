@@ -1,4 +1,3 @@
-
 package gui.test;
 
 import transducer.TChannel;
@@ -6,13 +5,12 @@ import transducer.TEvent;
 import transducer.TReceiver;
 import transducer.Transducer;
 
-public class GuiTestSM implements TReceiver
-{
+public class SkyGuiTestSM implements TReceiver{
 	Transducer t;
 
 	boolean offlineDone = false;
 
-	public GuiTestSM(Transducer t)
+	public SkyGuiTestSM(Transducer t)
 	{
 		this.t = t;
 		t.register(this, TChannel.CUTTER);
