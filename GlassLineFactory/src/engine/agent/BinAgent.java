@@ -28,17 +28,17 @@ public class BinAgent extends Agent implements ConveyorFamily {
 			this.state = s;
 		}
 	}
-	
+
 	NextComponent nextComponent;
 	List <GlassType> glasses = new ArrayList<GlassType>();
 	String name;
-	
+
 	public BinAgent(Transducer t, String name){
 		super(name, t);
 		nextComponent = null;
 	}
-	
-	
+
+
 
 	@Override
 	public void msgPassingGlass(GlassType gt) {
@@ -81,7 +81,7 @@ public class BinAgent extends Agent implements ConveyorFamily {
 		nextComponent.state = ConveyorState.NOTHING;
 		stateChanged();
 	}
-	
+
 	//Create GlassType out of Configs
 	public void hereIsConfig(ArrayList<Config> configs){
 		for(int i = 0; i < configs.size();i++){

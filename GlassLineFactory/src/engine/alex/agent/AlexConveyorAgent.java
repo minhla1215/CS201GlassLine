@@ -15,186 +15,133 @@ import engine.util.GlassType;
 
 public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 
-//Data
-Integer[] conveyorNumber = new Integer[1];
-//int conveyorNumber;
-enum SensorStates {pressed,doingNothing,released};//,waitToPass};
-SensorStates startSensorStates=SensorStates.released;
-SensorStates endSensorStates=SensorStates.released;
+	//Data
+	Integer[] conveyorNumber = new Integer[1];
+	enum SensorStates {pressed,doingNothing,released};//,waitToPass};
+	SensorStates startSensorStates=SensorStates.released;
+	SensorStates endSensorStates=SensorStates.released;
 
-boolean allowPass;
-boolean conveyorOn;
-
-
-ConveyorFamily preAgent,nextAgent;
-//BinAgent binAgent;
-//BreakoutAgent breakoutAgent;
-//SkyConveyorAgent conveyor5Agent;
-//AlexConveyorAgent conveyor1Agent,conveyor2Agent;//,conveyor4Agent;//,conveyor5Agent,conveyor9Agent,conveyor10Agent,conveyor12Agent,conveyor13Agent;
-//MachineAgent preAgent,nextAgent;
-//ManualBreakoutAgent manualBreakoutAgent;
-//OvenAgent ovenAgent;
-//PainterAgent painterAgent;
-//PopUpAgent drillAgent,crossSeamerAgent,grinderAgent;
-//TruckAgent truckAgent;
-//UvLampAgent uvLampAgent;
-//WasherAgent washerAgent;
-
-private List<GlassType> glasses=Collections.synchronizedList(new ArrayList<GlassType>());
-//int gtCount;
-
-//Transducer t = transducer;
-
-		
-/*
-public void setPreAgent(MockPreCF preAgent) {
-	this.preAgent = preAgent;
-}
-
-public void setNextAgent(MockPopUpAgent nextAgent) {
-	this.nextAgent = nextAgent;
-}
-*/
-public AlexConveyorAgent(String name,Transducer t,int i){
-	super(name,t);
-	//t=transducer;
-	t.register(this, TChannel.SENSOR);
-	//t.register(this, TChannel.CONVEYOR);
-	conveyorNumber[0]=i;
-	//this.name=name;
-	//gtCount=0;
-	allowPass=false;
-	conveyorOn=false;
-	stateChanged();//to run the scheduler for the first time so it can send message to preCF
-}
-
-//message
+	boolean allowPass;
+	boolean conveyorOn;
 
 
-public void msgStartSensorPressed() { //step 3 startSensor is pressed so we can turn on the conveyor
-	startSensorStates=SensorStates.pressed;
-	System.out.println("start sensor pressed");
-	stateChanged();
-}
+	ConveyorFamily preAgent,nextAgent;
 
-public void msgStartSensorReleased() { 
-	startSensorStates=SensorStates.released;
-	System.out.println("start sensor released");
-	stateChanged();
-	
-}
 
-public void msgEndSensorPressed(){//step 4 the endSensor is pressed so we can turn off the conveyor
-	endSensorStates=SensorStates.pressed;
-	System.out.println("end sensor pressed");
-	stateChanged();
-}
+	private List<GlassType> glasses=Collections.synchronizedList(new ArrayList<GlassType>());
 
-public void msgEndSensorReleased(){
-	endSensorStates=SensorStates.released;
-	System.out.println("end sensor released");
-	stateChanged();
-	
-}
+	public AlexConveyorAgent(String name,Transducer t,int i){
+		super(name,t);
+		t.register(this, TChannel.SENSOR);
+		conveyorNumber[0]=i;
+		allowPass=false;
+		conveyorOn=false;
+		stateChanged();//to run the scheduler for the first time so it can send message to preCF
+	}
 
-@Override
-public void msgPassingGlass(GlassType gt) {//step 2 preCF sending glass to conveyor
-	// TODO Auto-generated method stub
-	glasses.add(gt);
-	//gtCount++;		
-	System.out.println("adding a glasstype");
-	stateChanged();
-	
-}
+	//message
 
-@Override
-public void msgIAmAvailable() {//step 6 receive message from popUp says ready
-	// TODO Auto-generated method stub
-	allowPass=true;
-	System.out.println("glass is allowed to pass to next agent");
-	stateChanged();
-}
 
-@Override
-public boolean pickAndExecuteAnAction() {
-	// TODO Auto-generated method stub
-if (startSensorStates==SensorStates.released){
-		tellingPreCFImAvailable();
-		startSensorStates=SensorStates.doingNothing;
-		return true;
+	public void msgStartSensorPressed() {
+		startSensorStates=SensorStates.pressed;
+		System.out.println("start sensor pressed");
+		stateChanged();
+	}
+
+	public void msgStartSensorReleased() { 
+		startSensorStates=SensorStates.released;
+		System.out.println("start sensor released");
+		stateChanged();
+
+	}
+
+	public void msgEndSensorPressed(){
+		endSensorStates=SensorStates.pressed;
+		System.out.println("end sensor pressed");
+		stateChanged();
+	}
+
+	public void msgEndSensorReleased(){
+		endSensorStates=SensorStates.released;
+		System.out.println("end sensor released");
+		stateChanged();
+
+	}
+
+	@Override
+	public void msgPassingGlass(GlassType gt) {
+		// TODO Auto-generated method stub
+		glasses.add(gt);	
+		System.out.println("adding a glasstype");
+		stateChanged();
+
+	}
+
+	@Override
+	public void msgIAmAvailable() {
+		// TODO Auto-generated method stub
+		allowPass=true;
+		System.out.println("glass is allowed to pass to next agent");
+		stateChanged();
+	}
+
+	@Override
+	public boolean pickAndExecuteAnAction() {
+		// TODO Auto-generated method stub
+		if (startSensorStates==SensorStates.released){
+			tellingPreCFImAvailable();
+			startSensorStates=SensorStates.doingNothing;
+			return true;
+		}
+
+
+
+		if (startSensorStates==SensorStates.pressed){
+			if (endSensorStates==SensorStates.released){
+				TurnOnConveyor();
+				startSensorStates=SensorStates.doingNothing;
+				return true;
+			}
+		}
+
+
+		if (endSensorStates==SensorStates.pressed){
+
+			if (allowPass==true){
+				TurnOnConveyor();
+				passingGlass();
+				endSensorStates=SensorStates.doingNothing;
+				return true;
+			}else 	{
+				TurnOffConveyor();
+				return true;
+			}
+		}
+
+		if (endSensorStates==SensorStates.released){
+			TurnOnConveyor();
+			endSensorStates=SensorStates.doingNothing;
+			return true;
+		}
+
+		return false;
 	}
 
 
+	public void tellingPreCFImAvailable() {//step1 telling previous CF im available
+		preAgent.msgIAmAvailable();
 
-if (startSensorStates==SensorStates.pressed){
-	if (endSensorStates==SensorStates.released){
-		TurnOnConveyor();
-		startSensorStates=SensorStates.doingNothing;
-		return true;
-	}
-}
-
-
-if (endSensorStates==SensorStates.pressed){
-
-	//askIfPopUpReady();
-	//endSensorStates=SensorStates.waitToPass;
-	//return true;
-	if (allowPass==true){
-		TurnOnConveyor();
-		passingGlass();//step 7 sending glass to the popup and go back to Available status
-		endSensorStates=SensorStates.doingNothing;
-		return true;
-	}else 	{TurnOffConveyor();
-	return true;
-	}
-}
-
-if (endSensorStates==SensorStates.released){
-	TurnOnConveyor();
-	endSensorStates=SensorStates.doingNothing;
-	return true;
-}
-
-/*
-if (endSensorStates==SensorStates.waitToPass){
-	if (allowPass==true){
-		passingGlass();//step 7 sending glass to the popup and go back to Available status
-		endSensorStates=SensorStates.doingNothing;
-		return true;
-	}
-
-}*/
-		
-	return false;
-}
-
-
-public void tellingPreCFImAvailable() {//step1 telling previous CF im available
-	preAgent.msgIAmAvailable();
-	//System.out.println("sending msg to binAgent saying I'm ready");
-	
-	if(conveyorNumber[0]==0){
-		//binAgent.msgIAmAvailable();	
-		System.out.println("sending msg to binAgent saying I'm ready");
-	}//else if(conveyorNumber[0]==2){
-		//conveyor1Agent.msgIAmAvailable();	
-		//System.out.println("sending msg to conveyor1Agent saying I'm ready");
-	//}//else {
-	else if(conveyorNumber[0]==1){
-		//preAgent.msgIAmAvailable();
-		//cutterAgent.msgIAmAvailable();	
-		System.out.println("sending msg to cutterAgent saying I'm ready");
-	}else if(conveyorNumber[0]==2){
-		//conveyor1Agent.msgIAmAvailable();	
-		System.out.println("sending msg to conveyor1Agent saying I'm ready");
-	}else if(conveyorNumber[0]==3){
-		//breakoutAgent.msgIAmAvailable();	
-		System.out.println("sending msg to breakoutAgent saying I'm ready");
-	}else if(conveyorNumber[0]==4){
-		//manualBreakoutAgent.msgIAmAvailable();	
-		System.out.println("sending msg to manualBreakoutAgent saying I'm ready");
-	}/*else if(conveyorNumber[0]==5){
+		if(conveyorNumber[0]==0){
+			System.out.println("sending msg to binAgent saying I'm ready");
+		}else if(conveyorNumber[0]==1){
+			System.out.println("sending msg to cutterAgent saying I'm ready");
+		}else if(conveyorNumber[0]==2){
+			System.out.println("sending msg to conveyor1Agent saying I'm ready");
+		}else if(conveyorNumber[0]==3){
+			System.out.println("sending msg to breakoutAgent saying I'm ready");
+		}else if(conveyorNumber[0]==4){
+			System.out.println("sending msg to manualBreakoutAgent saying I'm ready");
+		}/*else if(conveyorNumber[0]==5){
 		conveyor4Agent.msgIAmAvailable();	
 		System.out.println("sending msg to conveyor4Agent saying I'm ready");
 	}else if(conveyorNumber==6){
@@ -225,59 +172,37 @@ public void tellingPreCFImAvailable() {//step1 telling previous CF im available
 		ovenAgent.msgIAmAvailable();	
 		System.out.println("sending msg to ovenAgent saying I'm ready");
 	}
-	*/
-}
+		 */
+	}
 
 
-public void TurnOnConveyor(){
-	conveyorOn=true;
-	transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, conveyorNumber);
+	public void TurnOnConveyor(){
+		conveyorOn=true;
+		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, conveyorNumber);
+		System.out.println("Conveyor "+ conveyorNumber[0]+" is on");
+	}
 
-	System.out.println("Conveyor is on");
-	//stateChanged();
-}
+	public void TurnOffConveyor(){
+		conveyorOn=false;
+		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, conveyorNumber);
+		System.out.println("Conveyor "+ conveyorNumber[0]+" is off");
+	}
 
-public void TurnOffConveyor(){
-	conveyorOn=false;
-	transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, conveyorNumber);
-	System.out.println("Conveyor is off");
-	
-	//stateChanged();
-}
+	public void passingGlass(){
+		GlassType temp=glasses.remove(0);
+		nextAgent.msgPassingGlass(temp);
 
-//public void askIfPopUpReady(){
-	//nextAgent.msgAreYouReady(glasses.get(0));
-	//System.out.println("sending msg to nextCF asking if ready");
-//}
-
-
-public void passingGlass(){//step 7 sending glass to the popup and go back to Available status
-	GlassType temp=glasses.remove(0);
-	nextAgent.msgPassingGlass(temp);
-	
-	if(conveyorNumber[0]==0){
-		//conveyor5Agent.msgPassingGlass(temp);
-		//System.out.println("passing glass " + temp.getGlassID()+ " to conveyor5");
-	//}/*else if(conveyorNumber[0]==1){
-		//conveyor2Agent.msgPassingGlass(temp);
-		//System.out.println("passing glass " + temp.getGlassID() + " to conveyor2");
-	//}else{
-		//nextAgent.msgPassingGlass(temp);
-		//cutterAgent.msgPassingGlass(temp);	
-		System.out.println("passing glass " + temp.getGlassID() + " to cutter");
-	}else if(conveyorNumber[0]==1){
-		//conveyor2Agent.msgPassingGlass(temp);
-		System.out.println("passing glass " + temp.getGlassID() + " to conveyor2");
-	}else if(conveyorNumber[0]==2){
-		//breakoutAgent.msgPassingGlass(temp);
-		System.out.println("passing glass " + temp.getGlassID()+ " to breakout");
-	}else if(conveyorNumber[0]==3){
-		//manualBreakoutAgent.msgPassingGlass(temp);	
-		System.out.println("passing glass " + temp.getGlassID()+ " to manualBreakout");
-	}else if(conveyorNumber[0]==4){
-		//conveyor5Agent.msgPassingGlass(temp);
-		System.out.println("passing glass " + temp.getGlassID()+ " to conveyor5");
-	}/*else if(conveyorNumber==5){
+		if(conveyorNumber[0]==0){
+			System.out.println("passing glass " + temp.getGlassID() + " to cutter");
+		}else if(conveyorNumber[0]==1){
+			System.out.println("passing glass " + temp.getGlassID() + " to conveyor2");
+		}else if(conveyorNumber[0]==2){
+			System.out.println("passing glass " + temp.getGlassID()+ " to breakout");
+		}else if(conveyorNumber[0]==3){
+			System.out.println("passing glass " + temp.getGlassID()+ " to manualBreakout");
+		}else if(conveyorNumber[0]==4){
+			System.out.println("passing glass " + temp.getGlassID()+ " to conveyor5");
+		}/*else if(conveyorNumber==5){
 		drillAgent.msgPassingGlass(temp);	
 		System.out.println("passing glass " + temp.getGlassID()+ " to drill popup");
 	}else if(conveyorNumber==6){
@@ -308,228 +233,48 @@ public void passingGlass(){//step 7 sending glass to the popup and go back to Av
 		truckAgent.msgPassingGlass(temp);	
 		System.out.println("passing glass " + temp.getGlassID()+ " to truck");
 	}*/
-	//gtCount--;
-	//System.out.println("passing glass " + temp.getGlassID());
-}
+	}
 
-@Override
-public void eventFired(TChannel channel, TEvent event, Object[] args) {
-	// TODO Auto-generated method stub
-	if (event == TEvent.SENSOR_GUI_PRESSED){
-		Integer[] newArgs = new Integer[1];
-		newArgs[0] = (Integer)args[0] / 2;//turn on the matching conveyor
-		if (conveyorNumber[0]==(Integer)newArgs[0]){
-		if (((Integer)args[0] % 2) == 0 ){//when it's start sensor pressed
-			this.msgStartSensorPressed();
-			System.out.println("1111111");
-		}else if (((Integer)args[0] % 2) == 1){//when it's end sensor pressed
-			this.msgEndSensorPressed();
-			System.out.println("2222222");
-		}
-		}
-	}else if (event == TEvent.SENSOR_GUI_RELEASED){
-		Integer[] newArgs = new Integer[1];
-		newArgs[0] = (Integer)args[0] / 2;//decide which machine to send message to based on the number of the start sensor
-		if (conveyorNumber[0]==(Integer)newArgs[0]){
-		if (((Integer)args[0] % 2) == 0){//when it's start sensor released	
-			this.msgStartSensorReleased();
-			System.out.println("3333");
-		}else if (((Integer)args[0] % 2) == 1){//when it's end sensor released
-			this.msgEndSensorReleased();
-			System.out.println("44444");
-			//do we need to fireEvent for next agent? or the animation does it automatically?
-		}
+	@Override
+	public void eventFired(TChannel channel, TEvent event, Object[] args) {
+		// TODO Auto-generated method stub
+		if (event == TEvent.SENSOR_GUI_PRESSED){
+			Integer[] newArgs = new Integer[1];
+			newArgs[0] = (Integer)args[0] / 2;//turn on the matching conveyor
+			if (conveyorNumber[0]==(Integer)newArgs[0]){
+				if (((Integer)args[0] % 2) == 0 ){//when it's start sensor pressed
+					this.msgStartSensorPressed();
+				}else if (((Integer)args[0] % 2) == 1){//when it's end sensor pressed
+					this.msgEndSensorPressed();
+				}
+			}
+		}else if (event == TEvent.SENSOR_GUI_RELEASED){
+			Integer[] newArgs = new Integer[1];
+			newArgs[0] = (Integer)args[0] / 2;//decide which machine to send message to based on the number of the start sensor
+			if (conveyorNumber[0]==(Integer)newArgs[0]){
+				if (((Integer)args[0] % 2) == 0){//when it's start sensor released	
+					this.msgStartSensorReleased();
+				}else if (((Integer)args[0] % 2) == 1){//when it's end sensor released
+					this.msgEndSensorReleased();
+				}
+			}
 		}
 	}
-}
 
-public ConveyorFamily getPreAgent() {
-	return preAgent;
-}
+	public ConveyorFamily getPreAgent() {
+		return preAgent;
+	}
 
-public void setPreAgent(ConveyorFamily preAgent) {
-	this.preAgent = preAgent;
-}
+	public void setPreAgent(ConveyorFamily preAgent) {
+		this.preAgent = preAgent;
+	}
 
-public ConveyorFamily getNextAgent() {
-	return nextAgent;
-}
+	public ConveyorFamily getNextAgent() {
+		return nextAgent;
+	}
 
-public void setNextAgent(ConveyorFamily nextAgent) {
-	this.nextAgent = nextAgent;
-}
+	public void setNextAgent(ConveyorFamily nextAgent) {
+		this.nextAgent = nextAgent;
+	}
 
-
-/*
-public BinAgent getBinAgent() {
-	return binAgent;
-}
-
-public void setBinAgent(BinAgent binAgent) {
-	this.binAgent = binAgent;
-}
-public BreakoutAgent getBreakoutAgent() {
-	return breakoutAgent;
-}
-
-public void setBreakoutAgent(BreakoutAgent breakoutAgent) {
-	this.breakoutAgent = breakoutAgent;
-}
-
-
-
-public AlexConveyorAgent getConveyor1Agent() {
-	return conveyor1Agent;
-}
-
-public void setConveyor1Agent(AlexConveyorAgent conveyor1Agent) {
-	this.conveyor1Agent = conveyor1Agent;
-}
-
-public AlexConveyorAgent getConveyor2Agent() {
-	return conveyor2Agent;
-}
-
-public void setConveyor2Agent(AlexConveyorAgent conveyor2Agent) {
-	this.conveyor2Agent = conveyor2Agent;
-}
-/*
-public AlexConveyorAgent getConveyor4Agent() {
-	return conveyor4Agent;
-}
-
-public void setConveyor4Agent(AlexConveyorAgent conveyor4Agent) {
-	this.conveyor4Agent = conveyor4Agent;
-}
-
-public SkyConveyorAgent getConveyor5Agent() {
-	return conveyor5Agent;
-}
-
-public void setConveyor5Agent(SkyConveyorAgent conveyor5Agent) {
-	this.conveyor5Agent = conveyor5Agent;
-}
-*/
-
-/*
-public AlexConveyorAgent getConveyor5Agent() {
-	return conveyor5Agent;
-}
-
-public void setConveyor5Agent(AlexConveyorAgent conveyor5Agent) {
-	this.conveyor5Agent = conveyor5Agent;
-}
-
-public AlexConveyorAgent getConveyor9Agent() {
-	return conveyor9Agent;
-}
-
-public void setConveyor9Agent(AlexConveyorAgent conveyor9Agent) {
-	this.conveyor9Agent = conveyor9Agent;
-}
-
-public AlexConveyorAgent getConveyor10Agent() {
-	return conveyor10Agent;
-}
-
-public void setConveyor10Agent(AlexConveyorAgent conveyor10Agent) {
-	this.conveyor10Agent = conveyor10Agent;
-}
-
-public AlexConveyorAgent getConveyor12Agent() {
-	return conveyor12Agent;
-}
-
-public void setConveyor12Agent(AlexConveyorAgent conveyor12Agent) {
-	this.conveyor12Agent = conveyor12Agent;
-}
-
-public AlexConveyorAgent getConveyor13Agent() {
-	return conveyor13Agent;
-}
-
-public void setConveyor13Agent(AlexConveyorAgent conveyor13Agent) {
-	this.conveyor13Agent = conveyor13Agent;
-}
-
-public CutterAgent getCutterAgent() {
-	return cutterAgent;
-}
-
-public void setCutterAgent(CutterAgent cutterAgent) {
-	this.cutterAgent = cutterAgent;
-}
-
-public ManualBreakoutAgent getManualBreakoutAgent() {
-	return manualBreakoutAgent;
-}
-
-public void setManualBreakoutAgent(ManualBreakoutAgent manualBreakoutAgent) {
-	this.manualBreakoutAgent = manualBreakoutAgent;
-}
-
-public OvenAgent getOvenAgent() {
-	return ovenAgent;
-}
-
-public void setOvenAgent(OvenAgent ovenAgent) {
-	this.ovenAgent = ovenAgent;
-}
-
-public PainterAgent getPainterAgent() {
-	return painterAgent;
-}
-
-public void setPainterAgent(PainterAgent painterAgent) {
-	this.painterAgent = painterAgent;
-}
-
-public PopUpAgent getDrillAgent() {
-	return drillAgent;
-}
-
-public void setDrillAgent(PopUpAgent drillAgent) {
-	this.drillAgent = drillAgent;
-}
-
-public PopUpAgent getCrossSeamerAgent() {
-	return crossSeamerAgent;
-}
-
-public void setCrossSeamerAgent(PopUpAgent crossSeamerAgent) {
-	this.crossSeamerAgent = crossSeamerAgent;
-}
-
-public PopUpAgent getGrinderAgent() {
-	return grinderAgent;
-}
-
-public void setGrinderAgent(PopUpAgent grinderAgent) {
-	this.grinderAgent = grinderAgent;
-}
-
-public TruckAgent getTruckAgent() {
-	return truckAgent;
-}
-
-public void setTruckAgent(TruckAgent truckAgent) {
-	this.truckAgent = truckAgent;
-}
-
-public UvLampAgent getUvLampAgent() {
-	return uvLampAgent;
-}
-
-public void setUvLampAgent(UvLampAgent uvLampAgent) {
-	this.uvLampAgent = uvLampAgent;
-}
-
-public WasherAgent getWasherAgent() {
-	return washerAgent;
-}
-
-public void setWasherAgent(WasherAgent washerAgent) {
-	this.washerAgent = washerAgent;
-}
-*/
 }

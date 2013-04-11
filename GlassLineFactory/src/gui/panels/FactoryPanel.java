@@ -93,21 +93,21 @@ public class FactoryPanel extends JPanel
 		// TODO initialize and start Agent threads here
 		// ===========================================================================
 
-		
+
 
 		// *************Instantiate *************
 
 		// Instantiate - Minh
 		bin = new BinAgent(transducer, "bin");
 		cPanel.setBinAgent();
-		
+
 		//Initializing Alex's agents
 		AlexConveyorAgent conveyor0=new AlexConveyorAgent("Conveyor0",transducer,0);
 		AlexConveyorAgent conveyor1=new AlexConveyorAgent("Conveyor1",transducer,1);
 		AlexConveyorAgent conveyor2=new AlexConveyorAgent("Conveyor2",transducer,2);
 		AlexConveyorAgent conveyor3=new AlexConveyorAgent("Conveyor3",transducer,3);
 		AlexConveyorAgent conveyor4=new AlexConveyorAgent("Conveyor4",transducer,4);
-		
+
 		MachineAgent cutterAgent=new MachineAgent("Cutter",transducer,0);
 		MachineAgent breakoutAgent=new MachineAgent("Breakout",transducer,1);
 		MachineAgent manualBreakoutAgent=new MachineAgent("ManualBreakout",transducer,2);
@@ -139,7 +139,7 @@ public class FactoryPanel extends JPanel
 		SkySensorAgent sensor13 = new SkySensorAgent(Position.Second, 13, "Sensor13", transducer);
 		SkySensorAgent sensor14 = new SkySensorAgent(Position.First, 14, "Sensor14", transducer);
 		SkySensorAgent sensor15 = new SkySensorAgent(Position.Second, 15, "Sensor15", transducer);
-		
+
 		//TODO: Josh initializations
 
 
@@ -147,7 +147,7 @@ public class FactoryPanel extends JPanel
 
 		// Linking - Minh
 		bin.setNextComponent(conveyor0);
-		
+
 		// Linking - Alex
 		conveyor0.setPreAgent(bin);
 		conveyor0.setNextAgent(cutterAgent);
@@ -159,25 +159,25 @@ public class FactoryPanel extends JPanel
 		conveyor3.setNextAgent(manualBreakoutAgent);
 		conveyor4.setPreAgent(manualBreakoutAgent);
 		conveyor4.setNextAgent(conveyor5);
-		
+
 		cutterAgent.setPreConveyor(conveyor0);
 		cutterAgent.setNextConveyor(conveyor1);
 		breakoutAgent.setPreConveyor(conveyor2);
 		breakoutAgent.setNextConveyor(conveyor3);
 		manualBreakoutAgent.setPreConveyor(conveyor3);
 		manualBreakoutAgent.setNextConveyor(conveyor4);
-		
+
 		// Linking - Sky
-		
+
 		// Linking - Josh
 
 
 
 		// **************Start Thread *****************
-		
+
 		//Minh start threads
 		bin.startThread();
-		
+
 		//Alex start threads
 		conveyor0.startThread();
 		conveyor1.startThread();
@@ -187,7 +187,7 @@ public class FactoryPanel extends JPanel
 		cutterAgent.startThread();
 		breakoutAgent.startThread();
 		manualBreakoutAgent.startThread();
-/*
+		/*
 		//Sky start threads
 		conveyor5.startThread();
 		conveyor6.startThread();
@@ -214,7 +214,7 @@ public class FactoryPanel extends JPanel
 		sensor13.startThread();
 		sensor14.startThread();
 		sensor15.startThread();
-*/
+		 */
 		//TODO:Josh start threads
 
 
