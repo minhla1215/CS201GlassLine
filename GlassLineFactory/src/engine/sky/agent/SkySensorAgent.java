@@ -1,21 +1,21 @@
-package engine.agent;
+package engine.sky.agent;
 
-import engine.interfaces.Conveyor;
+import engine.interfaces.SkyConveyor;
 import engine.interfaces.ConveyorFamily;
 import transducer.TChannel;
 import transducer.TEvent;
 
-public class SensorAgent extends Agent {
+public class SkySensorAgent extends Agent {
 	
 	/** Data **/
 	private Position pos;
-	private Conveyor myConveyor;
+	private SkyConveyor myConveyor;
 	
 	private int myGuiIndex;
 	private boolean informed;
 	public enum Position {First, Second};
 	
-	public SensorAgent(Conveyor c, Position p, int guiIndex) {
+	public SkySensorAgent(SkyConveyor c, Position p, int guiIndex) {
 		myConveyor = c;
 		pos = p;
 		myGuiIndex = guiIndex;

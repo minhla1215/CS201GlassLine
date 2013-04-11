@@ -15,8 +15,8 @@ import org.junit.Test;
 import transducer.Transducer;
 import transducer.TransducerDebugMode;
 
-import engine.agent.ConveyorAgent;
-import engine.agent.ConveyorAgent.ConveyorState;
+import engine.sky.agent.SkyConveyorAgent;
+import engine.sky.agent.SkyConveyorAgent.ConveyorState;
 import engine.util.GlassType;
 
 import agent.mock.MockAnimation;
@@ -33,7 +33,7 @@ public class ConveyorAgentTest extends TestCase{
 	
 	
 	public void testInitialCondition() {
-		ConveyorAgent conveyor= new ConveyorAgent(postPopUp, prePopUp, 10, "Conveyor", transducer);
+		SkyConveyorAgent conveyor= new SkyConveyorAgent(postPopUp, prePopUp, 10, "Conveyor", transducer);
 		assertEquals("Conveyor should originally have no glasses.",
 				0, conveyor.getGlasses().size());
 		assertTrue("Conveyor should originally have not informed anyone.",
@@ -51,7 +51,7 @@ public class ConveyorAgentTest extends TestCase{
 				prePopUp.log.containsString("Received message msgIAmAvailable"));
 	}
 	public void testMsgPassingGlass() {
-		ConveyorAgent conveyor= new ConveyorAgent(postPopUp, prePopUp, 10, "Conveyor", transducer);
+		SkyConveyorAgent conveyor= new SkyConveyorAgent(postPopUp, prePopUp, 10, "Conveyor", transducer);
 		
 		conveyor.msgPassingGlass(glass);
 		
@@ -70,7 +70,7 @@ public class ConveyorAgentTest extends TestCase{
 	}
 	
 	public void testMsgIAmAvailable() {
-		ConveyorAgent conveyor= new ConveyorAgent(postPopUp, prePopUp, 10, "Conveyor", transducer);		
+		SkyConveyorAgent conveyor= new SkyConveyorAgent(postPopUp, prePopUp, 10, "Conveyor", transducer);		
 		
 		assertTrue("post popup is originally unavailable",
 				!(conveyor.isPopUpAvailable()));
@@ -82,7 +82,7 @@ public class ConveyorAgentTest extends TestCase{
 	}
 	
 	public void testMsgGlassEntering() {
-		ConveyorAgent conveyor= new ConveyorAgent(postPopUp, prePopUp, 10, "Conveyor", transducer);		
+		SkyConveyorAgent conveyor= new SkyConveyorAgent(postPopUp, prePopUp, 10, "Conveyor", transducer);		
 		transducer.startTransducer();
 		conveyor.msgGlassEntering();
 		conveyor.msgPassingGlass(glass);
@@ -103,7 +103,7 @@ public class ConveyorAgentTest extends TestCase{
 	}
 	
 	public void testMsgGlassExiting() {
-		ConveyorAgent conveyor= new ConveyorAgent(postPopUp, prePopUp, 10, "Conveyor", transducer);		
+		SkyConveyorAgent conveyor= new SkyConveyorAgent(postPopUp, prePopUp, 10, "Conveyor", transducer);		
 		transducer.startTransducer();
 		
 		//there needs to be at least one glass on the conveyor before getting a msgGlassExiting
@@ -142,7 +142,7 @@ public class ConveyorAgentTest extends TestCase{
 	}
 	
 	public void testPassingInAnotherGlassWhileMoving() {
-		ConveyorAgent conveyor= new ConveyorAgent(postPopUp, prePopUp, 10, "Conveyor", transducer);		
+		SkyConveyorAgent conveyor= new SkyConveyorAgent(postPopUp, prePopUp, 10, "Conveyor", transducer);		
 		transducer.startTransducer();
 		
 		assertEquals("Conveyor should originally have no glasses.",
@@ -178,7 +178,7 @@ public class ConveyorAgentTest extends TestCase{
 	}
 	
 	public void testPostPopUpNotAvailable() {
-		ConveyorAgent conveyor= new ConveyorAgent(postPopUp, prePopUp, 10, "Conveyor", transducer);		
+		SkyConveyorAgent conveyor= new SkyConveyorAgent(postPopUp, prePopUp, 10, "Conveyor", transducer);		
 		transducer.startTransducer();
 		
 		conveyor.msgPassingGlass(glass);

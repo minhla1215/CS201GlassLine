@@ -1,4 +1,4 @@
-package engine.agent;
+package engine.sky.agent;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 
-public class ConveyorAgent extends Agent implements ConveyorFamily {
+public class SkyConveyorAgent extends Agent implements ConveyorFamily {
 	
 	/** DATA */
 	private ConveyorFamily postCF;
@@ -24,7 +24,7 @@ public class ConveyorAgent extends Agent implements ConveyorFamily {
 	private ArrayList<GlassType> myGlasses;
 	private String name;
 	
-	public ConveyorAgent(ConveyorFamily post, ConveyorFamily pre, int guiIndex, String n, Transducer tr) {
+	public SkyConveyorAgent(ConveyorFamily post, ConveyorFamily pre, int guiIndex, String n, Transducer tr) {
 		super(n,tr);
 		
 		name = n;

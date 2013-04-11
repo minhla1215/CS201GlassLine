@@ -1,10 +1,10 @@
 package agent.mock;
 
-import engine.interfaces.Conveyor;
+import engine.interfaces.SkyConveyor;
 import engine.interfaces.ConveyorFamily;
 import engine.util.GlassType;
 
-public class MockConveyor extends MockAgent implements Conveyor, ConveyorFamily {
+public class MockConveyor extends MockAgent implements SkyConveyor, ConveyorFamily {
 
 	public MockConveyor(String name) {
 		super(name);

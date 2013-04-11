@@ -6,10 +6,10 @@ import org.junit.Test;
 import transducer.Transducer;
 import transducer.TransducerDebugMode;
 
-import engine.agent.PopUpAgent;
-import engine.agent.PopUpAgent.ConveyorState;
-import engine.agent.PopUpAgent.GlassState;
-import engine.agent.PopUpAgent.MachineState;
+import engine.sky.agent.SkyPopUpAgent;
+import engine.sky.agent.SkyPopUpAgent.ConveyorState;
+import engine.sky.agent.SkyPopUpAgent.GlassState;
+import engine.sky.agent.SkyPopUpAgent.MachineState;
 import engine.util.GlassType;
 
 import agent.mock.MockAnimation;
@@ -29,7 +29,7 @@ public class PopUpAgentTest extends TestCase {
 	public MockMachine secondMachine = new MockMachine("second machine");
 
 	public void testInitialCondition() {
-		PopUpAgent popUp = new PopUpAgent(preConveyor, postConveyor, firstMachine, secondMachine, 1, "PopUp", transducer);
+		SkyPopUpAgent popUp = new SkyPopUpAgent(preConveyor, postConveyor, firstMachine, secondMachine, 1, "PopUp", transducer);
 		assertTrue("PopUp should originally not inform anyone.", !popUp.getInformed());
 		assertEquals("First Machine should be Idle", MachineState.Idle,popUp.getFirstMachineState());
 		assertEquals("Second Machine should be Idle", MachineState.Idle,popUp.getSecondMachineState());
@@ -42,7 +42,7 @@ public class PopUpAgentTest extends TestCase {
 	}
 	
 	public void testMsgPassingGlass() {
-		PopUpAgent popUp = new PopUpAgent(preConveyor, postConveyor, firstMachine, secondMachine, 1, "PopUp", transducer);
+		SkyPopUpAgent popUp = new SkyPopUpAgent(preConveyor, postConveyor, firstMachine, secondMachine, 1, "PopUp", transducer);
 		transducer.startTransducer();
 		transducer.setDebugMode(TransducerDebugMode.EVENTS_AND_ACTIONS_AND_SCHEDULER);
 		
@@ -62,7 +62,7 @@ public class PopUpAgentTest extends TestCase {
 	}
 	
 	public void testMsgGlassDone() {
-		PopUpAgent popUp = new PopUpAgent(preConveyor, postConveyor, firstMachine, secondMachine, 1, "PopUp", transducer);
+		SkyPopUpAgent popUp = new SkyPopUpAgent(preConveyor, postConveyor, firstMachine, secondMachine, 1, "PopUp", transducer);
 		transducer.startTransducer();
 		
 		popUp.msgGlassDone(firstMachine, glass2);
@@ -80,7 +80,7 @@ public class PopUpAgentTest extends TestCase {
 	}
 	
 	public void testMsgReturningGlass() {
-		PopUpAgent popUp = new PopUpAgent(preConveyor, postConveyor, firstMachine, secondMachine, 1, "PopUp", transducer);
+		SkyPopUpAgent popUp = new SkyPopUpAgent(preConveyor, postConveyor, firstMachine, secondMachine, 1, "PopUp", transducer);
 		
 		popUp.msgReturningGlass(firstMachine, glass2);
 		assertEquals("currentGlass should be Processed", GlassState.Processed, popUp.getGlassState());
@@ -98,7 +98,7 @@ public class PopUpAgentTest extends TestCase {
 	}
 	
 	public void testMsgIAmAvailable() {
-		PopUpAgent popUp = new PopUpAgent(preConveyor, postConveyor, firstMachine, secondMachine, 1, "PopUp", transducer);
+		SkyPopUpAgent popUp = new SkyPopUpAgent(preConveyor, postConveyor, firstMachine, secondMachine, 1, "PopUp", transducer);
 		assertEquals("postConveyor should be not available", ConveyorState.UnAvailable,popUp.getPostConveyorState());
 		
 		popUp.msgIAmAvailable();
@@ -107,7 +107,7 @@ public class PopUpAgentTest extends TestCase {
 	}
 	
 	public void testPassingGlassWithoutProcessing() {
-		PopUpAgent popUp = new PopUpAgent(preConveyor, postConveyor, firstMachine, secondMachine, 1, "PopUp", transducer);
+		SkyPopUpAgent popUp = new SkyPopUpAgent(preConveyor, postConveyor, firstMachine, secondMachine, 1, "PopUp", transducer);
 		popUp.msgPassingGlass(glass3);
 		popUp.msgIAmAvailable();
 		popUp.pickAndExecuteAnAction();
@@ -118,7 +118,7 @@ public class PopUpAgentTest extends TestCase {
 	}
 	
 	public void testGlassProcessedButPostConveyorUnavailable() {
-		PopUpAgent popUp = new PopUpAgent(preConveyor, postConveyor, firstMachine, secondMachine, 1, "PopUp", transducer);
+		SkyPopUpAgent popUp = new SkyPopUpAgent(preConveyor, postConveyor, firstMachine, secondMachine, 1, "PopUp", transducer);
 		
 		popUp.msgReturningGlass(firstMachine, glass2);
 		popUp.pickAndExecuteAnAction();

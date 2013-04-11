@@ -1,9 +1,9 @@
 package agent.mock;
 
-import engine.interfaces.Machine;
+import engine.interfaces.SkyMachine;
 import engine.util.GlassType;
 
-public class MockMachine extends MockAgent implements Machine {
+public class MockMachine extends MockAgent implements SkyMachine {
 
 	public MockMachine(String name) {
 		super(name);

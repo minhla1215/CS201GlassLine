@@ -1,7 +1,7 @@
 package agent.mock;
 
 import engine.interfaces.ConveyorFamily;
-import engine.interfaces.Machine;
+import engine.interfaces.SkyMachine;
 import engine.util.GlassType;
 
 public class MockPopUp extends MockAgent implements ConveyorFamily {
@@ -26,7 +26,7 @@ public class MockPopUp extends MockAgent implements ConveyorFamily {
 				"Received message msgIAmAvailable."));
 	}
 	
-	public void msgGlassDone(Machine machine, GlassType gt) {
+	public void msgGlassDone(SkyMachine machine, GlassType gt) {
 		log.add(new LoggedEvent(
 				"Received message msgGlassDone from machine " + machine.getName()
 				+ "GlassType " + gt.getGlassID() + "."));

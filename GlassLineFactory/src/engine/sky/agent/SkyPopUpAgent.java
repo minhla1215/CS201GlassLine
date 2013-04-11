@@ -1,16 +1,16 @@
-package engine.agent;
+package engine.sky.agent;
 
 import java.util.concurrent.Semaphore;
 
 import engine.interfaces.ConveyorFamily;
-import engine.interfaces.Machine;
+import engine.interfaces.SkyMachine;
 import engine.util.GlassType;
 
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 
-public class PopUpAgent extends Agent implements ConveyorFamily {
+public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	
 	/** Data **/
 	
@@ -50,17 +50,17 @@ public class PopUpAgent extends Agent implements ConveyorFamily {
 	}
 	
 	private class MyMachine {
-		Machine machine;
+		SkyMachine machine;
 		MachineState state;
 		
-		public MyMachine(Machine m, MachineState s) {
+		public MyMachine(SkyMachine m, MachineState s) {
 			machine = m;
 			state = s;
 		}
 	}
 	
 	/** Constructor **/
-	public PopUpAgent(ConveyorFamily pre, ConveyorFamily post, Machine first, Machine second, int guiIndex, String n, Transducer tr) {
+	public SkyPopUpAgent(ConveyorFamily pre, ConveyorFamily post, SkyMachine first, SkyMachine second, int guiIndex, String n, Transducer tr) {
 		preConveyor = new MyConveyor(pre, ConveyorState.UnAvailable);
 		postConveyor = new MyConveyor(post, ConveyorState.UnAvailable);
 		firstMachine = new MyMachine (first, MachineState.Idle);
@@ -88,7 +88,7 @@ public class PopUpAgent extends Agent implements ConveyorFamily {
 		stateChanged();
 	}
 	
-	public void msgGlassDone(Machine machine, GlassType gt) {
+	public void msgGlassDone(SkyMachine machine, GlassType gt) {
 		if (machine == firstMachine.machine) {
 			firstMachine.state = MachineState.Done;
 		} else if (machine == secondMachine.machine) {
@@ -98,7 +98,7 @@ public class PopUpAgent extends Agent implements ConveyorFamily {
 		stateChanged();
 	}
 	
-	public void msgReturningGlass(Machine machine, GlassType gt) {
+	public void msgReturningGlass(SkyMachine machine, GlassType gt) {
 		currentGlass = new MyGlass (gt, GlassState.Processed);
 		if (machine == firstMachine.machine) {
 			firstMachine.state = MachineState.Idle;

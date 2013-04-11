@@ -1,12 +1,12 @@
-package engine.agent;
+package engine.sky.agent;
 
 import engine.interfaces.ConveyorFamily;
-import engine.interfaces.Machine;
+import engine.interfaces.SkyMachine;
 import engine.util.GlassType;
 import transducer.TChannel;
 import transducer.TEvent;
 
-public class MachineAgent extends Agent implements ConveyorFamily, Machine {
+public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine {
 
 	/* (non-Javadoc)
 	 * @see engine.agent.Machine#msgPassingGlass(engine.agent.GlassType)
@@ -15,7 +15,7 @@ public class MachineAgent extends Agent implements ConveyorFamily, Machine {
 	private String name;
 	private int index;
 	private ConveyorFamily pairedPopUp;
-	public MachineAgent (ConveyorFamily popUp, int in, String n) {
+	public SkyMachineAgent (ConveyorFamily popUp, int in, String n) {
 		pairedPopUp = popUp;
 		index = in;
 		name = n;
