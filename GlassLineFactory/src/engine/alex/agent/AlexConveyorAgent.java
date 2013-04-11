@@ -10,6 +10,7 @@ import transducer.TReceiver;
 import transducer.Transducer;
 import engine.agent.Agent;
 import engine.interfaces.ConveyorFamily;
+import engine.sky.agent.SkyConveyorAgent;
 import engine.util.GlassType;
 
 public class AlexConveyorAgent extends Agent implements ConveyorFamily{
@@ -24,12 +25,14 @@ SensorStates endSensorStates=SensorStates.released;
 boolean allowPass;
 boolean conveyorOn;
 
+
+
 BinAgent binAgent;
-BreakoutAgent breakoutAgent;
+//BreakoutAgent breakoutAgent;
 SkyConveyorAgent conveyor5Agent;
-AlexConveyorAgent conveyor1Agent,conveyor2Agent,conveyor4Agent;//,conveyor5Agent,conveyor9Agent,conveyor10Agent,conveyor12Agent,conveyor13Agent;
-CutterAgent cutterAgent;
-ManualBreakoutAgent manualBreakoutAgent;
+AlexConveyorAgent conveyor1Agent,conveyor2Agent;//,conveyor4Agent;//,conveyor5Agent,conveyor9Agent,conveyor10Agent,conveyor12Agent,conveyor13Agent;
+MachineAgent preAgent,nextAgent;
+//ManualBreakoutAgent manualBreakoutAgent;
 //OvenAgent ovenAgent;
 //PainterAgent painterAgent;
 //PopUpAgent drillAgent,crossSeamerAgent,grinderAgent;
@@ -107,7 +110,7 @@ public void msgPassingGlass(GlassType gt) {//step 2 preCF sending glass to conve
 public void msgIAmAvailable() {//step 6 receive message from popUp says ready
 	// TODO Auto-generated method stub
 	allowPass=true;
-	System.out.println("glass is allowed to pass to popup");
+	System.out.println("glass is allowed to pass to next agent");
 	stateChanged();
 }
 
@@ -166,10 +169,15 @@ public void tellingPreCFImAvailable() {//step1 telling previous CF im available
 	if(conveyorNumber[0]==0){
 		binAgent.msgIAmAvailable();	
 		System.out.println("sending msg to binAgent saying I'm ready");
-	}else if(conveyorNumber[0]==1){
-		cutterAgent.msgIAmAvailable();	
-		System.out.println("sending msg to cutterAgent saying I'm ready");
 	}else if(conveyorNumber[0]==2){
+		conveyor1Agent.msgIAmAvailable();	
+		System.out.println("sending msg to conveyor1Agent saying I'm ready");
+	}else {
+	//else if(conveyorNumber[0]==1){
+		preAgent.msgIAmAvailable();
+		//cutterAgent.msgIAmAvailable();	
+		System.out.println("sending msg to preAgent saying I'm ready");
+	}/*else if(conveyorNumber[0]==2){
 		conveyor1Agent.msgIAmAvailable();	
 		System.out.println("sending msg to conveyor1Agent saying I'm ready");
 	}else if(conveyorNumber[0]==3){
@@ -181,7 +189,7 @@ public void tellingPreCFImAvailable() {//step1 telling previous CF im available
 	}else if(conveyorNumber[0]==5){
 		conveyor4Agent.msgIAmAvailable();	
 		System.out.println("sending msg to conveyor4Agent saying I'm ready");
-	}/*else if(conveyorNumber==6){
+	}else if(conveyorNumber==6){
 		drillAgent.msgIAmAvailable();	
 		System.out.println("sending msg to drillAgent saying I'm ready");
 	}else if(conveyorNumber==7){
@@ -237,10 +245,17 @@ public void TurnOffConveyor(){
 
 public void passingGlass(){//step 7 sending glass to the popup and go back to Available status
 	GlassType temp=glasses.remove(0);
-	if(conveyorNumber[0]==0){
-		cutterAgent.msgPassingGlass(temp);	
-		System.out.println("passing glass " + temp.getGlassID() + " to cutter");
+	if(conveyorNumber[0]==4){
+		conveyor5Agent.msgPassingGlass(temp);
+		System.out.println("passing glass " + temp.getGlassID()+ " to conveyor5");
 	}else if(conveyorNumber[0]==1){
+		conveyor2Agent.msgPassingGlass(temp);
+		System.out.println("passing glass " + temp.getGlassID() + " to conveyor2");
+	}else{
+		nextAgent.msgPassingGlass(temp);
+		//cutterAgent.msgPassingGlass(temp);	
+		System.out.println("passing glass " + temp.getGlassID() + " to cutter");
+	}/*else if(conveyorNumber[0]==1){
 		conveyor2Agent.msgPassingGlass(temp);
 		System.out.println("passing glass " + temp.getGlassID() + " to conveyor2");
 	}else if(conveyorNumber[0]==2){
@@ -321,7 +336,7 @@ public BinAgent getBinAgent() {
 public void setBinAgent(BinAgent binAgent) {
 	this.binAgent = binAgent;
 }
-
+/*
 public BreakoutAgent getBreakoutAgent() {
 	return breakoutAgent;
 }
@@ -331,7 +346,7 @@ public void setBreakoutAgent(BreakoutAgent breakoutAgent) {
 }
 
 
-
+*/
 public AlexConveyorAgent getConveyor1Agent() {
 	return conveyor1Agent;
 }
@@ -347,14 +362,14 @@ public AlexConveyorAgent getConveyor2Agent() {
 public void setConveyor2Agent(AlexConveyorAgent conveyor2Agent) {
 	this.conveyor2Agent = conveyor2Agent;
 }
-
+/*
 public AlexConveyorAgent getConveyor4Agent() {
 	return conveyor4Agent;
 }
 
 public void setConveyor4Agent(AlexConveyorAgent conveyor4Agent) {
 	this.conveyor4Agent = conveyor4Agent;
-}
+}*/
 
 public SkyConveyorAgent getConveyor5Agent() {
 	return conveyor5Agent;
