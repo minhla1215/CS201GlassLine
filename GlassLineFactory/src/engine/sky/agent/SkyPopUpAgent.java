@@ -2,6 +2,7 @@ package engine.sky.agent;
 
 import java.util.concurrent.Semaphore;
 
+import engine.agent.Agent;
 import engine.interfaces.ConveyorFamily;
 import engine.interfaces.SkyMachine;
 import engine.util.GlassType;

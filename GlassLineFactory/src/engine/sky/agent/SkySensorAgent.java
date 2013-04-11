@@ -1,5 +1,6 @@
 package engine.sky.agent;
 
+import engine.agent.Agent;
 import engine.interfaces.SkyConveyor;
 import engine.interfaces.ConveyorFamily;
 import transducer.TChannel;
