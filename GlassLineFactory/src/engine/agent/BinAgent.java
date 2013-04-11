@@ -32,13 +32,11 @@ public class BinAgent extends Agent implements ConveyorFamily {
 	NextComponent nextComponent;
 	List <GlassType> glasses = new ArrayList<GlassType>();
 	Transducer transducer;
-	Timer timer = new Timer();
 	
-	public BinAgent(Transducer t, ConveyorFamily nextC){
+	public BinAgent(Transducer t){
 		this.transducer = t;
-		nextComponent = new NextComponent(nextC, ConveyorState.NOTHING);
+		nextComponent = null;
 	}
-	
 	
 	
 
@@ -69,25 +67,26 @@ public class BinAgent extends Agent implements ConveyorFamily {
 
 	}
 
-	// ACTION=
+	// ACTION
+	// Send the glass to the first conveyer. Also sends a fireEvent to create
+	// the GUI Glass
 	public void sendingGlass(){
 		nextComponent.nextComponent.msgPassingGlass(glasses.get(0));
+		transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 		glasses.remove(0);
 		nextComponent.state = ConveyorState.NOTHING;
 		stateChanged();
 	}
 	
+	//Create GlassType out of Configs
 	public void hereIsConfig(ArrayList<Config> configs){
 		for(int i = 0; i < configs.size();i++){
 			glasses.add(new GlassType(configs.get(0).getConfig(0),configs.get(0).getConfig(1),
 					configs.get(0).getConfig(2), configs.get(0).getConfigID()));
-			transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
-			timer.schedule(new TimerTask(){
-				public void run(){//this routine is like a message reception    
-					;
-				}
-			}, (int)(1000));
 		}
 	}
 
+	public void setNextComponent(ConveyorFamily nextC){
+		nextComponent = new NextComponent(nextC, ConveyorState.NOTHING);
+	}
 }

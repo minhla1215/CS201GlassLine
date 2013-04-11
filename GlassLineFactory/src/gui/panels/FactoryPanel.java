@@ -1,6 +1,7 @@
 
 package gui.panels;
 
+import engine.agent.BinAgent;
 import gui.drivers.FactoryFrame;
 
 import javax.swing.BoxLayout;
@@ -28,6 +29,9 @@ public class FactoryPanel extends JPanel
 
 	/** Allows the control panel to communicate with the back end and give commands */
 	private Transducer transducer;
+	
+	// A reference of Bin Agent for the Control Panel
+	BinAgent bin;
 
 	/**
 	 * Constructor links this panel to its frame
@@ -81,6 +85,8 @@ public class FactoryPanel extends JPanel
 		// ===========================================================================
 		// TODO initialize and start Agent threads here
 		// ===========================================================================
+		bin = new BinAgent(transducer);
+		
 		System.out.println("Back end initialization finished.");
 	}
 
@@ -112,5 +118,10 @@ public class FactoryPanel extends JPanel
 	public DisplayPanel getDisplayPanel()
 	{
 		return dPanel;
+	}
+	
+
+	public BinAgent getBinAgent(){
+		return bin;
 	}
 }
