@@ -1,6 +1,6 @@
 package gui.panels.subcontrolpanels;
 
-import engine.sky.agent.Agent;
+import engine.agent.Agent;
 
 /**
  * TracePanelMessage represents a message and contains the agent

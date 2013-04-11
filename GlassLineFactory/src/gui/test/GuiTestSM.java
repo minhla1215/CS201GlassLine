@@ -28,14 +28,12 @@ public class GuiTestSM implements TReceiver
 		t.register(this, TChannel.TRUCK);//added by monroe
 
 		t.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
-		Integer[] newArgs = new Integer[1];
-		newArgs[0] = 0;
-		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START,newArgs);
 	}
 
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args)
 	{
+		/*
 		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED)
 		{
 			Integer[] newArgs = new Integer[1];
@@ -124,5 +122,6 @@ public class GuiTestSM implements TReceiver
 		else if(channel==TChannel.TRUCK && event == TEvent.TRUCK_GUI_LOAD_FINISHED){//added by monroe
 			t.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_EMPTY, null);
 		}
+		*/
 	}
 }

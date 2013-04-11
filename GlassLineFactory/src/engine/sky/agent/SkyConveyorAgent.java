@@ -2,6 +2,7 @@ package engine.sky.agent;
 
 import java.util.ArrayList;
 
+import engine.agent.Agent;
 import engine.interfaces.ConveyorFamily;
 import engine.util.GlassType;
 

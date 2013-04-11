@@ -1,7 +1,7 @@
 
 package gui.panels.subcontrolpanels;
 
-import engine.sky.agent.Agent;
+import engine.agent.Agent;
 import gui.panels.ControlPanel;
 
 import java.awt.Color;

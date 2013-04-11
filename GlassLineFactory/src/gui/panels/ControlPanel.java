@@ -170,6 +170,9 @@ public class ControlPanel extends JPanel implements TReceiver
 		transducer = fTransducer;
 
 		parent = fPanel;
+		
+		//added by Minh
+		glassSelectPanel.setBinAgent(parent.getBinAgent());
 	}
 
 	/**
