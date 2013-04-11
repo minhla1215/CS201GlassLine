@@ -109,8 +109,8 @@ public class FactoryPanel extends JPanel
 		AlexConveyorAgent conveyor4=new AlexConveyorAgent("Conveyor4",transducer,4);
 		
 		MachineAgent cutterAgent=new MachineAgent("Cutter",transducer,0);
-		MachineAgent breakoutAgent=new MachineAgent("Breakout",transducer,0);
-		MachineAgent manualBreakoutAgent=new MachineAgent("ManualBreakout",transducer,0);
+		MachineAgent breakoutAgent=new MachineAgent("Breakout",transducer,1);
+		MachineAgent manualBreakoutAgent=new MachineAgent("ManualBreakout",transducer,2);
 
 		//Initializing Sky's PopUps 0 - 2
 		SkyPopUpAgent popUp0 = new SkyPopUpAgent(0, "PopUp0", transducer);
@@ -149,6 +149,23 @@ public class FactoryPanel extends JPanel
 		bin.setNextComponent(conveyor0);
 		
 		// Linking - Alex
+		conveyor0.setPreAgent(bin);
+		conveyor0.setNextAgent(cutterAgent);
+		conveyor1.setPreAgent(cutterAgent);
+		conveyor1.setNextAgent(conveyor2);
+		conveyor2.setPreAgent(conveyor1);
+		conveyor2.setNextAgent(breakoutAgent);
+		conveyor3.setPreAgent(breakoutAgent);
+		conveyor3.setNextAgent(manualBreakoutAgent);
+		conveyor4.setPreAgent(manualBreakoutAgent);
+		conveyor4.setNextAgent(conveyor5);
+		
+		cutterAgent.setPreConveyor(conveyor0);
+		cutterAgent.setNextConveyor(conveyor1);
+		breakoutAgent.setPreConveyor(conveyor2);
+		breakoutAgent.setNextConveyor(conveyor3);
+		manualBreakoutAgent.setPreConveyor(conveyor3);
+		manualBreakoutAgent.setNextConveyor(conveyor4);
 		
 		// Linking - Sky
 		
@@ -170,7 +187,7 @@ public class FactoryPanel extends JPanel
 		cutterAgent.startThread();
 		breakoutAgent.startThread();
 		manualBreakoutAgent.startThread();
-
+/*
 		//Sky start threads
 		conveyor5.startThread();
 		conveyor6.startThread();
@@ -197,7 +214,7 @@ public class FactoryPanel extends JPanel
 		sensor13.startThread();
 		sensor14.startThread();
 		sensor15.startThread();
-
+*/
 		//TODO:Josh start threads
 
 

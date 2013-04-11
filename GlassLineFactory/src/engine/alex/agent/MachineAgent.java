@@ -14,21 +14,29 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 	
 	enum States {noparts,doingnothing,partsloaded,readytopass};
 	
-	AlexConveyorAgent preConveyor,nextConveyor;
+	ConveyorFamily preConveyor,nextConveyor;
 	
 	boolean allowPass;
 	
-	Transducer t;
+	//Transducer t;
 	int machineNumber;
 	GlassType glass;
 	States myState;
 	
 	
 	public MachineAgent(String name,Transducer t,int i){
-		this.t=t;
+		super(name,t);
+		//this.t=t;
 		machineNumber=i;
 		allowPass=false;
 		myState=States.noparts;
+		if(machineNumber==0){
+		t.register(this, TChannel.CUTTER);
+		}else if(machineNumber==1){
+			t.register(this, TChannel.BREAKOUT);
+		}else if(machineNumber==2){
+			t.register(this, TChannel.MANUAL_BREAKOUT);
+		}
 		stateChanged();//to run the scheduler for the first time so it can send message to preCF
 		
 	}
@@ -101,17 +109,36 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 	//action
 	public void tellingPreCFImAvailable() {//step1 telling previous CF im available
 			preConveyor.msgIAmAvailable();	
-			System.out.println("sending msg to preConveyor saying I'm ready");
+			if(machineNumber==0){
+				System.out.println("sending msg to Conveyor0 saying I'm ready");
+				}else if(machineNumber==1){
+					System.out.println("sending msg to Conveyor2 saying I'm ready");
+				}else if(machineNumber==2){
+					System.out.println("sending msg to Conveyor3 saying I'm ready");
+				}
+			
 	}
 	
 	public void workingStationDoAction(){
-		t.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_DO_ACTION, null );
+		if(machineNumber==0){
+		transducer.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_DO_ACTION, null );
+		}else if(machineNumber==1){
+			transducer.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_DO_ACTION, null);
+		}else if(machineNumber==2){
+			transducer.fireEvent(TChannel.MANUAL_BREAKOUT, TEvent.WORKSTATION_DO_ACTION, null);
+		}
 		System.out.println("doing workstation animation ");
 	}
 	
 	public void passingGlass(){
 		nextConveyor.msgPassingGlass(glass);
-		t.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_RELEASE_GLASS, null);
+		if(machineNumber==0){
+			transducer.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_RELEASE_GLASS, null );
+			}else if(machineNumber==1){
+				transducer.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_RELEASE_GLASS, null);
+			}else if(machineNumber==2){
+				transducer.fireEvent(TChannel.MANUAL_BREAKOUT, TEvent.WORKSTATION_RELEASE_GLASS, null);
+			}
 	}
 	
 	@Override
@@ -137,6 +164,30 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 
 
 
+	public ConveyorFamily getPreConveyor() {
+		return preConveyor;
+	}
+
+
+
+	public void setPreConveyor(ConveyorFamily preConveyor) {
+		this.preConveyor = preConveyor;
+	}
+
+
+
+	public ConveyorFamily getNextConveyor() {
+		return nextConveyor;
+	}
+
+
+
+	public void setNextConveyor(ConveyorFamily nextConveyor) {
+		this.nextConveyor = nextConveyor;
+	}
+
+
+/*
 	public AlexConveyorAgent getPreConveyor() {
 		return preConveyor;
 	}
@@ -159,6 +210,6 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 		this.nextConveyor = nextConveyor;
 	}
 
-
+*/
 
 }
