@@ -1,16 +1,14 @@
 
 package gui.panels;
 
-import engine.interfaces.ConveyorFamily;
-import engine.interfaces.SkyMachine;
+import engine.agent.BinAgent;
+import engine.alex.agent.AlexConveyorAgent;
+import engine.alex.agent.MachineAgent;
 import engine.sky.agent.SkyConveyorAgent;
 import engine.sky.agent.SkyMachineAgent;
 import engine.sky.agent.SkyPopUpAgent;
 import engine.sky.agent.SkySensorAgent;
 import engine.sky.agent.SkySensorAgent.Position;
-import engine.agent.BinAgent;
-import engine.alex.agent.AlexConveyorAgent;
-import engine.alex.agent.MachineAgent;
 import gui.drivers.FactoryFrame;
 
 import javax.swing.BoxLayout;
@@ -38,7 +36,7 @@ public class FactoryPanel extends JPanel
 
 	/** Allows the control panel to communicate with the back end and give commands */
 	private Transducer transducer;
-	
+
 	// A reference of Bin Agent for the Control Panel
 	BinAgent bin;
 
@@ -94,9 +92,14 @@ public class FactoryPanel extends JPanel
 		// ===========================================================================
 		// TODO initialize and start Agent threads here
 		// ===========================================================================
+
 		
-		///following are Alex's conveyors and machines 
-		
+
+		// *************Instantiate *************
+
+		// Instantiate - Minh
+		bin = new BinAgent(transducer, "bin");
+		cPanel.setBinAgent();
 		
 		//Initializing Alex's agents
 		AlexConveyorAgent conveyor0=new AlexConveyorAgent("Conveyor0",transducer,0);
@@ -104,47 +107,31 @@ public class FactoryPanel extends JPanel
 		AlexConveyorAgent conveyor2=new AlexConveyorAgent("Conveyor2",transducer,2);
 		AlexConveyorAgent conveyor3=new AlexConveyorAgent("Conveyor3",transducer,3);
 		AlexConveyorAgent conveyor4=new AlexConveyorAgent("Conveyor4",transducer,4);
+		
 		MachineAgent cutterAgent=new MachineAgent("Cutter",transducer,0);
 		MachineAgent breakoutAgent=new MachineAgent("Breakout",transducer,0);
 		MachineAgent manualBreakoutAgent=new MachineAgent("ManualBreakout",transducer,0);
-	
-		//Link Between Alex's agents
-		
-		
-		//Start the threads
-		conveyor0.startThread();
-		conveyor1.startThread();
-		conveyor2.startThread();
-		conveyor3.startThread();
-		conveyor4.startThread();
-		cutterAgent.startThread();
-		breakoutAgent.startThread();
-		manualBreakoutAgent.startThread();
-		
-		////All above are Alex's agents
-		
-		
-		
-		//Initializing Sky's Conveyors 5 - 7
-		SkyConveyorAgent conveyor5 = new SkyConveyorAgent(5, "Conveyor5", transducer);
-		SkyConveyorAgent conveyor6 = new SkyConveyorAgent(6, "Conveyor6", transducer);
-		SkyConveyorAgent conveyor7 = new SkyConveyorAgent(7, "Conveyor7", transducer);
-		
-		//Start the conveyor agents threads
-		conveyor5.startThread();
-		conveyor6.startThread();
-		conveyor7.startThread();
-		
+
 		//Initializing Sky's PopUps 0 - 2
 		SkyPopUpAgent popUp0 = new SkyPopUpAgent(0, "PopUp0", transducer);
 		SkyPopUpAgent popUp1 = new SkyPopUpAgent(1, "PopUp1", transducer);
 		SkyPopUpAgent popUp2 = new SkyPopUpAgent(2, "PopUp2", transducer);
-		
-		//Start the popup agents threads
-		popUp0.startThread();
-		popUp1.startThread();
-		popUp2.startThread();
-		
+
+		//Initializing Sky's Conveyors 5 - 7
+		SkyConveyorAgent conveyor5 = new SkyConveyorAgent(5, "Conveyor5", transducer);
+		SkyConveyorAgent conveyor6 = new SkyConveyorAgent(6, "Conveyor6", transducer);
+		SkyConveyorAgent conveyor7 = new SkyConveyorAgent(7, "Conveyor7", transducer);
+
+		//Initializing Sky's Machines : Drill, Cross_Seamer, Grinder
+		SkyMachineAgent drill0 = new SkyMachineAgent(0, "Drill0", transducer);
+		SkyMachineAgent drill1 = new SkyMachineAgent(1, "Drill1", transducer);
+
+		SkyMachineAgent cross_seamer0 = new SkyMachineAgent(0, "Cross_Seamer0", transducer);
+		SkyMachineAgent cross_seamer1 = new SkyMachineAgent(1, "Cross_Seamer1", transducer);
+
+		SkyMachineAgent grinder0 = new SkyMachineAgent(0, "Grinder0", transducer);
+		SkyMachineAgent grinder1 = new SkyMachineAgent(1, "Grinder1", transducer);
+
 		//Initializing Sky's Sensors 10 - 15
 		SkySensorAgent sensor10 = new SkySensorAgent(Position.First, 10, "Sensor10", transducer);
 		SkySensorAgent sensor11 = new SkySensorAgent(Position.Second, 11, "Sensor11", transducer);
@@ -153,40 +140,72 @@ public class FactoryPanel extends JPanel
 		SkySensorAgent sensor14 = new SkySensorAgent(Position.First, 14, "Sensor14", transducer);
 		SkySensorAgent sensor15 = new SkySensorAgent(Position.Second, 15, "Sensor15", transducer);
 		
-		//Start Sensor agents threads
+		//TODO: Josh initializations
+
+
+		// **************Link the agents *****************
+
+		// Linking - Minh
+		bin.setNextComponent(conveyor0);
+		
+		// Linking - Alex
+		
+		// Linking - Sky
+		
+		// Linking - Josh
+
+
+
+		// **************Start Thread *****************
+		
+		//Minh start threads
+		bin.startThread();
+		
+		//Alex start threads
+		conveyor0.startThread();
+		conveyor1.startThread();
+		conveyor2.startThread();
+		conveyor3.startThread();
+		conveyor4.startThread();
+		cutterAgent.startThread();
+		breakoutAgent.startThread();
+		manualBreakoutAgent.startThread();
+
+		//Sky start threads
+		conveyor5.startThread();
+		conveyor6.startThread();
+		conveyor7.startThread();
+
+		drill0.startThread();
+		drill1.startThread();
+
+		cross_seamer0.startThread();
+		cross_seamer1.startThread();
+
+		grinder0.startThread();
+		grinder1.startThread();
+
+
+		popUp0.startThread();
+		popUp1.startThread();
+		popUp2.startThread();
+
+
 		sensor10.startThread();
 		sensor11.startThread();
 		sensor12.startThread();
 		sensor13.startThread();
 		sensor14.startThread();
 		sensor15.startThread();
-		
-		//Initializing Sky's Machines : Drill, Cross_Seamer, Grinder
-		SkyMachineAgent drill0 = new SkyMachineAgent(0, "Drill0", transducer);
-		SkyMachineAgent drill1 = new SkyMachineAgent(1, "Drill1", transducer);
-		
-		SkyMachineAgent cross_seamer0 = new SkyMachineAgent(0, "Cross_Seamer0", transducer);
-		SkyMachineAgent cross_seamer1 = new SkyMachineAgent(1, "Cross_Seamer1", transducer);
-		
-		SkyMachineAgent grinder0 = new SkyMachineAgent(0, "Grinder0", transducer);
-		SkyMachineAgent grinder1 = new SkyMachineAgent(1, "Grinder1", transducer);
-		
-		//Start Machine agents threads
-		drill0.startThread();
-		drill1.startThread();
-		
-		cross_seamer0.startThread();
-		cross_seamer1.startThread();
-		
-		grinder0.startThread();
-		grinder1.startThread();
-		
-		
-		
-		bin = new BinAgent(transducer);
-		
+
+		//TODO:Josh start threads
+
+
+
+
+
 		System.out.println("Back end initialization finished.");
-		
+
 	}
 
 	/**
@@ -218,7 +237,7 @@ public class FactoryPanel extends JPanel
 	{
 		return dPanel;
 	}
-	
+
 
 	public BinAgent getBinAgent(){
 		return bin;
