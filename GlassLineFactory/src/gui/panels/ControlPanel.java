@@ -1,6 +1,7 @@
 
 package gui.panels;
 
+import gui.panels.subcontrolpanels.ConfigSelectPanel;
 import gui.panels.subcontrolpanels.GlassInfoPanel;
 import gui.panels.subcontrolpanels.GlassSelectPanel;
 import gui.panels.subcontrolpanels.LogoPanel;
@@ -59,6 +60,11 @@ public class ControlPanel extends JPanel implements TReceiver
 	 */
 	GlassSelectPanel glassSelectPanel;
 
+	/*
+	 * The panel containing the buttons to production of the config
+	 */
+	ConfigSelectPanel configSelectPanel;
+	
 	/**
 	 * The panel displaying information on current glass production
 	 */
@@ -100,6 +106,7 @@ public class ControlPanel extends JPanel implements TReceiver
 		// construct subpanels
 		titlePanel = new TitlePanel(this);
 		statePanel = new StatePanel(this);
+		configSelectPanel = new ConfigSelectPanel(this);
 		glassSelectPanel = new GlassSelectPanel(this);
 		glassInfoPanel = new GlassInfoPanel(this);
 		nonNormPanel = new NonNormPanel(this);
@@ -112,6 +119,7 @@ public class ControlPanel extends JPanel implements TReceiver
 
 		JTabbedPane selectTabbedPanel = new JTabbedPane(JTabbedPane.TOP);
 		selectTabbedPanel.add("Glass Select", glassSelectPanel);
+		selectTabbedPanel.add("Produce Config", configSelectPanel);
 		selectTabbedPanel.add("Non Norms", nonNormPanel);
 		selectTabbedPanel.setBackground(Color.black);
 		selectTabbedPanel.setForeground(Color.white);
@@ -244,6 +252,15 @@ public class ControlPanel extends JPanel implements TReceiver
 		return glassSelectPanel;
 	}
 
+	/**
+	 * Returns the config select panel
+	 * @return the config select panel
+	 */
+	public ConfigSelectPanel getConfigSelectPanel()
+	{
+		return configSelectPanel;
+	}
+	
 	/**
 	 * Returns the non-norm panel
 	 * @return the NonNormPanel
