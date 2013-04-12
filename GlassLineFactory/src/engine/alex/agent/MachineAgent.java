@@ -34,7 +34,18 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 			t.register(this, TChannel.BREAKOUT);
 		}else if(machineNumber==2){
 			t.register(this, TChannel.MANUAL_BREAKOUT);
+		}else if(machineNumber==3){
+			t.register(this, TChannel.WASHER);
+		}else if(machineNumber==4){
+			t.register(this, TChannel.UV_LAMP);
+		}else if(machineNumber==5){
+			t.register(this, TChannel.PAINTER);
+		}else if(machineNumber==6){
+			t.register(this, TChannel.OVEN);
 		}
+		
+		
+		
 		stateChanged();//to run the scheduler for the first time so it can send message to preCF
 
 	}
@@ -107,14 +118,6 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 	//action
 	public void tellingPreCFImAvailable() {
 		preConveyor.msgIAmAvailable();	
-		if(machineNumber==0){
-			System.out.println("sending msg to Conveyor0 saying I'm ready");
-		}else if(machineNumber==1){
-			System.out.println("sending msg to Conveyor2 saying I'm ready");
-		}else if(machineNumber==2){
-			System.out.println("sending msg to Conveyor3 saying I'm ready");
-		}
-
 	}
 
 	public void workingStationDoAction(){
@@ -124,6 +127,14 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 			transducer.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_DO_ACTION, null);
 		}else if(machineNumber==2){
 			transducer.fireEvent(TChannel.MANUAL_BREAKOUT, TEvent.WORKSTATION_DO_ACTION, null);
+		}else if(machineNumber==3){
+			transducer.fireEvent(TChannel.WASHER, TEvent.WORKSTATION_DO_ACTION, null );
+		}else if(machineNumber==4){
+			transducer.fireEvent(TChannel.UV_LAMP, TEvent.WORKSTATION_DO_ACTION, null );
+		}else if(machineNumber==5){
+			transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_DO_ACTION, null );
+		}else if(machineNumber==6){
+			transducer.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_DO_ACTION, null );
 		}
 		System.out.println("doing workstation animation ");
 	}
@@ -137,6 +148,14 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 			transducer.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_RELEASE_GLASS, null);
 		}else if(machineNumber==2){
 			transducer.fireEvent(TChannel.MANUAL_BREAKOUT, TEvent.WORKSTATION_RELEASE_GLASS, null);
+		}else if(machineNumber==3){
+			transducer.fireEvent(TChannel.WASHER, TEvent.WORKSTATION_RELEASE_GLASS, null );
+		}else if(machineNumber==4){
+			transducer.fireEvent(TChannel.UV_LAMP, TEvent.WORKSTATION_RELEASE_GLASS, null );
+		}else if(machineNumber==5){
+			transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_RELEASE_GLASS, null );
+		}else if(machineNumber==6){
+			transducer.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_RELEASE_GLASS, null );
 		}
 	}
 
