@@ -130,6 +130,7 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 
 	public void passingGlass(){
 		nextConveyor.msgPassingGlass(glass);
+		allowPass=false;
 		if(machineNumber==0){
 			transducer.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_RELEASE_GLASS, null );
 		}else if(machineNumber==1){
