@@ -4,6 +4,7 @@ package gui.panels;
 import engine.agent.BinAgent;
 import engine.alex.agent.AlexConveyorAgent;
 import engine.alex.agent.MachineAgent;
+import engine.josh.agent.JoshConveyorAgent;
 import engine.sky.agent.SkyConveyorAgent;
 import engine.sky.agent.SkyMachineAgent;
 import engine.sky.agent.SkyPopUpAgent;
@@ -141,6 +142,9 @@ public class FactoryPanel extends JPanel
 		SkySensorAgent sensor15 = new SkySensorAgent(Position.Second, 15, "Sensor15", transducer);
 
 		//TODO: Josh initializations
+		
+		//TODO:Sky made this hack for his linking, can be deleted later
+		JoshConveyorAgent conveyor8 = new JoshConveyorAgent();
 
 
 		// **************Link the agents *****************
@@ -168,6 +172,29 @@ public class FactoryPanel extends JPanel
 		manualBreakoutAgent.setNextConveyor(conveyor4);
 
 		// Linking - Sky
+		conveyor5.connectAgents(conveyor4, popUp0);
+		conveyor6.connectAgents(popUp0, popUp1);
+		conveyor7.connectAgents(popUp1, popUp2);
+		
+		popUp0.connectAgents(conveyor5, conveyor6, drill0, drill1);
+		popUp1.connectAgents(conveyor6, conveyor7, cross_seamer0, cross_seamer1);
+		popUp2.connectAgents(conveyor7, conveyor8, grinder0, grinder1);
+		
+		drill0.connectAgents(popUp0);
+		drill1.connectAgents(popUp0);
+		cross_seamer0.connectAgents(popUp1);
+		cross_seamer1.connectAgents(popUp1);
+		grinder0.connectAgents(popUp2);
+		grinder1.connectAgents(popUp2);
+		
+		sensor10.connectAgents(conveyor5);
+		sensor11.connectAgents(conveyor5);
+		sensor12.connectAgents(conveyor6);
+		sensor13.connectAgents(conveyor6);
+		sensor14.connectAgents(conveyor7);
+		sensor15.connectAgents(conveyor7);
+		
+
 
 		// Linking - Josh
 
@@ -187,7 +214,7 @@ public class FactoryPanel extends JPanel
 		cutterAgent.startThread();
 		breakoutAgent.startThread();
 		manualBreakoutAgent.startThread();
-		/*
+		
 		//Sky start threads
 		conveyor5.startThread();
 		conveyor6.startThread();
@@ -195,10 +222,8 @@ public class FactoryPanel extends JPanel
 
 		drill0.startThread();
 		drill1.startThread();
-
 		cross_seamer0.startThread();
 		cross_seamer1.startThread();
-
 		grinder0.startThread();
 		grinder1.startThread();
 
@@ -214,7 +239,7 @@ public class FactoryPanel extends JPanel
 		sensor13.startThread();
 		sensor14.startThread();
 		sensor15.startThread();
-		 */
+		 
 		//TODO:Josh start threads
 
 
