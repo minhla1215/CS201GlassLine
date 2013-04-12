@@ -25,7 +25,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	private Semaphore waitAnimation = new Semaphore(0,true);
 	private boolean informed;
 	
-	public enum GlassState { OnBoard, Processing, Processed};
+	public enum GlassState {Idle, OnBoard, Processing, Processed};
 	public enum MachineState {Idle, Processing, Done, Called};
 	public enum ConveyorState {Available, UnAvailable};
 	
@@ -85,7 +85,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 	@Override
 	public void msgPassingGlass(GlassType gt) {
-		currentGlass = new MyGlass (gt, GlassState.OnBoard);
+		currentGlass = new MyGlass (gt, GlassState.Idle);
 		informed = false;
 		
 	}
@@ -180,13 +180,21 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		mg = null;
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
+		
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
 		transducer.fireEvent(TChannel.POPUP, TEvent.WORKSTATION_DO_LOAD_GLASS, args);
+		try {
+			waitAnimation.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
 		try {
 			waitAnimation.acquire();
@@ -239,7 +247,11 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		System.out.println("Event heard by popUp!" + channel + " " + event + " " + args[0]);
+		if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED &&((Integer)args[0]).equals(myGuiIndex)) {
+			currentGlass.state = GlassState.OnBoard;
+			stateChanged();
+		}
+		
 		if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_UP && ((Integer)args[0]).equals(myGuiIndex)) {
 			System.out.println("POPUP GUI MOVED UP and waitAnimation released");
 			waitAnimation.release();
@@ -248,6 +260,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_DOWN && ((Integer)args[0]).equals(myGuiIndex)) {
 			waitAnimation.release();
 		}
+		
 	}
 
 }
