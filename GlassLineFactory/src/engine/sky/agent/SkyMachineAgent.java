@@ -199,6 +199,8 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if (event == TEvent.WORKSTATION_GUI_ACTION_FINISHED) {
 			this.msgActionFinished();
+			((SkyPopUpAgent) pairedPopUp).msgGlassDone(this,myGlass);
+
 		}
 		if (event == TEvent.WORKSTATION_LOAD_FINISHED) {
 			this.msgLoadFinished();

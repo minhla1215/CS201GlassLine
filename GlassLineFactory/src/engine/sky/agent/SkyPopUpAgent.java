@@ -191,7 +191,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		
 		mm.machine.msgPassingGlass(mg.gt);
 		mm.state = MachineState.Processing;
-//		mg.state = GlassState.Processing;
+		mg.state = GlassState.Processing;
 		mg = null;
 		
 		try {
