@@ -71,13 +71,13 @@ public class BinAgent extends Agent implements ConveyorFamily {
 	// Send the glass to the first conveyer. Also sends a fireEvent to create
 	// the GUI Glass
 	public void sendingGlass(){
-		nextComponent.nextComponent.msgPassingGlass(glasses.get(0));
+		nextComponent.nextComponent.msgPassingGlass(glasses.remove(0));
 		if(transducer != null)
 			transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 		else{
 			System.out.println("transducer is null");
 		}
-		glasses.remove(0);
+		//glasses.remove(0);
 		nextComponent.state = ConveyorState.NOTHING;
 		stateChanged();
 	}
