@@ -8,63 +8,88 @@ import transducer.TEvent;
 import transducer.Transducer;
 
 public class SkySensorAgent extends Agent {
-	
+
 	/** Data **/
 	private Position pos;
 	private SkyConveyor myConveyor;
-	
+	private SensorState state;
+
 	private int myGuiIndex;
-	private boolean informed;
+	public enum SensorState {Informed, Detected, Released};
 	public enum Position {First, Second};
-	
+
 	public SkySensorAgent(SkyConveyor c, Position p, int guiIndex, String name, Transducer tr) {
 		super(name,tr);
 		myConveyor = c;
 		pos = p;
 		myGuiIndex = guiIndex;
-		informed = true;
+		state = SensorState.Informed;
+		transducer.register(this, TChannel.SENSOR);
+
 	}
-	
+
 	public SkySensorAgent(Position p, int guiIndex, String name, Transducer tr) {
 		super(name,tr);
 		pos = p;
 		myGuiIndex = guiIndex;
-		informed = true;
+		state = SensorState.Informed;
+		transducer.register(this, TChannel.SENSOR);
+
 	}
-	
+
 	/** Messages **/
 	public void msgGlassDetected() {
-		informed = false;
+		state = SensorState.Detected;
 		stateChanged();
 	}
-	
+
+	public void msgGlassExited() {
+		state = SensorState.Released;
+		stateChanged();
+	}
+
 	/** Scheduler **/
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		if (!informed) {
-			informConveyor ();
+		if (state == SensorState.Detected && pos == Position.First) {
+			informConveyorEntering();
+			return true;
+		}
+
+		if (state == SensorState.Released && pos == Position.Second) {
+			informConveyorExiting();
+			return true;
+		}
+
+		return false;
+	}
+
+	/** Actions **/
+	private void informConveyorEntering() {
+		System.out.println(this.name+" telling conveyor " + myConveyor.toString() + " glass entering");
+		myConveyor.msgGlassEntering();
+
+		state = SensorState.Informed;
+		stateChanged();
+	}
+
+	private void informConveyorExiting() {
+		System.out.println(this.name+" telling conveyor " + myConveyor.toString() + " glass exiting");
+		myConveyor.msgGlassExiting();
+		
+		state = SensorState.Informed;
+		stateChanged();
+
+	}
+
+	/** Utilities **/
+	public boolean getInformed() {
+		if (state == SensorState.Informed) {
 			return true;
 		}
 		return false;
 	}
-	
-	/** Actions **/
-	private void informConveyor() {
-		if (pos == Position.First) {
-			 myConveyor.msgGlassEntering();
-		}
-		else {
-			 myConveyor.msgGlassExiting();
-		}
-		informed = true;
-		stateChanged();
-	}
-	
-	/** Utilities **/
-	public boolean getInformed() {
-		return informed;
-	}
-	
+
 	public void connectAgents(SkyConveyor cf) {
 		myConveyor = cf;
 	}
@@ -75,6 +100,9 @@ public class SkySensorAgent extends Agent {
 			msgGlassDetected();
 		}
 
+		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED && ((Integer)args[0]).equals(myGuiIndex)) {
+			msgGlassExited();
+		}
 	}
 
 }

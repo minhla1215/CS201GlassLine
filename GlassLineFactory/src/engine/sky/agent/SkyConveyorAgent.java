@@ -4,13 +4,14 @@ import java.util.ArrayList;
 
 import engine.agent.Agent;
 import engine.interfaces.ConveyorFamily;
+import engine.interfaces.SkyConveyor;
 import engine.util.GlassType;
 
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 
-public class SkyConveyorAgent extends Agent implements ConveyorFamily {
+public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyor {
 	
 	/** DATA */
 	private ConveyorFamily postCF;
@@ -121,7 +122,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily {
 		myState = ConveyorState.Waiting;
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
-		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
+//		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
 		stateChanged();
 		
 	}
