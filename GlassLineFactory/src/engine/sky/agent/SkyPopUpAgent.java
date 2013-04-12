@@ -97,6 +97,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	}
 	
 	public void msgLoadFinished() {
+		System.out.println("Popup received msgLoadFinished().");
 		waitAnimation.release();
 	}
 	
