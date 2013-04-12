@@ -203,6 +203,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 
 		}
 		if (event == TEvent.WORKSTATION_LOAD_FINISHED) {
+			System.out.println("I'm Called: workstation_load_finished in MachineAgent: " + this);
 			this.msgLoadFinished();
 			((SkyPopUpAgent) pairedPopUp).msgLoadFinished();
 			
