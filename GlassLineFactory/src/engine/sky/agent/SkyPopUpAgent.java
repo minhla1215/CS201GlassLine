@@ -96,6 +96,10 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		stateChanged();
 	}
 	
+	public void msgLoadFinished() {
+		waitAnimation.release();
+	}
+	
 	public void msgGlassDone(SkyMachine machine, GlassType gt) {
 		if (machine == firstMachine.machine) {
 			firstMachine.state = MachineState.Done;
@@ -174,10 +178,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	}
 
 	private void popUpAndPass(MyGlass mg, MyMachine mm) {
-		mm.machine.msgPassingGlass(mg.gt);
-		mm.state = MachineState.Processing;
-//		mg.state = GlassState.Processing;
-		mg = null;
+
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 		
@@ -188,12 +189,17 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 			e.printStackTrace();
 		}
 		
-		transducer.fireEvent(TChannel.POPUP, TEvent.WORKSTATION_DO_LOAD_GLASS, args);
+		mm.machine.msgPassingGlass(mg.gt);
+		mm.state = MachineState.Processing;
+//		mg.state = GlassState.Processing;
+		mg = null;
+		
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
 		
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
 		try {

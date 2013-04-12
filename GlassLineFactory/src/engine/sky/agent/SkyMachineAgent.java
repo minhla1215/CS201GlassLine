@@ -19,7 +19,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 	private ConveyorFamily pairedPopUp;
 	private GlassType myGlass;
 	boolean readyToPass;
-	private enum MachineState {Idle, Informed, Loading, Loaded, Finished}
+	private enum MachineState {Idle, Loading, Loaded, Finished,DoingNothing}
 	private MachineState state;
 	private MachineType type;
 	public SkyMachineAgent (ConveyorFamily popUp, int in, String n, Transducer tr) {
@@ -137,11 +137,10 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 	/** Action **/
 	public void informAvailability() {
 		pairedPopUp.msgIAmAvailable();
-		state = MachineState.Informed;
+		state = MachineState.DoingNothing;
 	}
 	
 	public void loadGlass() {
-		state = MachineState.Loaded;
 		Object[] args = new Object[1];
 		args[0] = new Integer(myGuiIndex);
 		if (type==MachineType.DRILL){
@@ -153,10 +152,11 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		else if (type == MachineType.GRINDER) {
 			transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_DO_LOAD_GLASS, args);
 		}
+		state = MachineState.DoingNothing;
+		
 	}
 	
 	public void processGlass() {
-		state = MachineState.Finished;
 		Object[] args = new Object[1];
 		args[0] = new Integer(myGuiIndex);
 		if (type==MachineType.DRILL){
@@ -168,6 +168,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		else if (type == MachineType.GRINDER) {
 			transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_DO_ACTION, args);
 		}
+		state = MachineState.DoingNothing;
 	}
 	
 	public void passGlass(GlassType gt) {
@@ -184,6 +185,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		else if (type == MachineType.GRINDER) {
 			transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_RELEASE_GLASS, args);
 		}
+		state = MachineState.DoingNothing;
 		
 	}
 	
@@ -200,6 +202,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		}
 		if (event == TEvent.WORKSTATION_LOAD_FINISHED) {
 			this.msgLoadFinished();
+			((SkyPopUpAgent) pairedPopUp).msgLoadFinished();
 			
 		}
 		if (event == TEvent.WORKSTATION_RELEASE_FINISHED) {
