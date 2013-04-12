@@ -35,7 +35,7 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 		t.register(this, TChannel.SENSOR);
 		conveyorNumber[0]=i;
 		allowPass=false;
-		conveyorOn=false;
+		conveyorOn=true;
 		stateChanged();//to run the scheduler for the first time so it can send message to preCF
 	}
 
@@ -191,7 +191,7 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public void passingGlass(){
 		GlassType temp=glasses.remove(0);
 		nextAgent.msgPassingGlass(temp);
-
+		allowPass=false;
 		if(conveyorNumber[0]==0){
 			System.out.println("passing glass " + temp.getGlassID() + " to cutter");
 		}else if(conveyorNumber[0]==1){
