@@ -20,7 +20,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	
 	private int myGuiIndex;
 	
-	public enum ConveyorState {Idle, Waiting, ReadyToMove, Moving, ReadyToPass};
+	public enum ConveyorState {Idle, Waiting, ReadyToMove, Moving, Passing};
 	private boolean informed;
 	private boolean PopUpAvailable;
 	private ArrayList<GlassType> myGlasses;
@@ -53,6 +53,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	
 	@Override
 	public void msgPassingGlass(GlassType gt) {
+		System.out.println(this +": Received message: msgPassingGlass");
 		myGlasses.add(gt);
 		informed = false;
 		stateChanged();
@@ -70,12 +71,13 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	}
 	
 	public void msgGlassExiting() {
-		myState = ConveyorState.ReadyToPass;
+		System.out.println(this+ ": received msgGlassExited, glasses size = " + myGlasses.size() + " Conveyor in state: " + myState);
+		myState = ConveyorState.Passing;
 		stateChanged();
 	}
 
 	/** Scheduler */
-	
+	//TODO : Conveyor States need to be fixed.
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		if ((myGlasses.size()==0 || myState == ConveyorState.Moving) && !informed) {
@@ -85,24 +87,25 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		
 		if (myGlasses.size()>0) {
 			if (myState == ConveyorState.ReadyToMove) {
-				moveGlassDownConveyor();
+				startConveyor();
 				return true;
 			}
 			
-			if (myState == ConveyorState.ReadyToPass) {
+			if (myState == ConveyorState.Passing) {
 				if (PopUpAvailable) {
 					passGlass(myGlasses.remove(0));
 					return true;
 				}
-				stopConveyor();
-
+				else {
+					stopConveyor();
+					return true;
+				}
 			}
 			
 			if(myState == ConveyorState.Waiting) {
 				if (PopUpAvailable) {
 					passGlass(myGlasses.remove(0));
 					return true;
-
 				}
 			}
 		}
@@ -112,6 +115,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	/** Actions */
 	
 	private void passGlass(GlassType gt) {
+		System.out.println(this + ": action - passGlass");
 		postCF.msgPassingGlass(gt);
 		myState = ConveyorState.ReadyToMove;
 		stateChanged();
@@ -119,6 +123,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	}
 
 	private void stopConveyor() {
+		System.out.println(this + ": action - stopConveyor");
 		myState = ConveyorState.Waiting;
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
@@ -127,7 +132,8 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		
 	}
 
-	private void moveGlassDownConveyor() {
+	private void startConveyor() {
+		System.out.println(this + ": action - startConveyor");
 		myState = ConveyorState.Moving;
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
@@ -138,6 +144,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 
 
 	private void informAvailability() {
+		System.out.println(this + ": action - informAvailability");
 		informed = true;
 		preCF.msgIAmAvailable();
 		stateChanged();
