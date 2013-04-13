@@ -107,7 +107,8 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		} else if (machine == secondMachine.machine) {
 			secondMachine.state =MachineState.Done;
 		}
-		currentGlass = new MyGlass(gt,GlassState.Processing);
+//		currentGlass = new MyGlass(gt,GlassState.Processing);
+//		System.out.println("CurrentGlass: " + currentGlass.gt + " CurrentGlass state: " + currentGlass.state);
 		stateChanged();
 	}
 	
@@ -144,14 +145,17 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 				}
 			}
 
-			if (firstMachine.state == MachineState.Done) {
-				popUpAndSayReady(firstMachine);
-				return true;
-			} else if (secondMachine.state == MachineState.Done) {
-				popUpAndSayReady(secondMachine);
-				return true;
-			}
-		} else if ((firstMachine.state == MachineState.Idle || secondMachine.state == MachineState.Idle) &&currentGlass==null && !informed) {
+			
+		} 
+		if (firstMachine.state == MachineState.Done && currentGlass==null) {
+			popUpAndSayReady(firstMachine);
+			return true;
+		} else if (secondMachine.state == MachineState.Done && currentGlass==null) {
+			popUpAndSayReady(secondMachine);
+			return true;
+		}
+		
+		if ((firstMachine.state == MachineState.Idle || secondMachine.state == MachineState.Idle) &&currentGlass==null && !informed) {
 			informIAmAvailable();
 			return true;
 		}
@@ -170,6 +174,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		System.out.println("Calling popUpAndSayReady");
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
+		
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 		try {
 			waitAnimation.acquire();
@@ -187,6 +192,12 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 		
+		try {
+			waitAnimation.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 		try {
 			waitAnimation.acquire();
@@ -196,8 +207,8 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		
 		mm.machine.msgPassingGlass(mg.gt);
 		mm.state = MachineState.Processing;
-		mg.state = GlassState.Processing;
-		mg = null;
+//		mg.state = GlassState.Processing;
+		currentGlass = null;
 		
 		try {
 			waitAnimation.acquire();
@@ -278,12 +289,12 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED &&((Integer)args[0]).equals(myGuiIndex)) {
-			((SkyConveyorAgent) preConveyor.conveyor).msgGlassExiting();
-			stateChanged();
+//			((SkyConveyorAgent) preConveyor.conveyor).msgGlassExiting();
+			waitAnimation.release();
+//			stateChanged();
 		}
 		
 		if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_UP && ((Integer)args[0]).equals(myGuiIndex)) {
-			System.out.println("POPUP GUI MOVED UP and waitAnimation released");
 			waitAnimation.release();
 		}
 		

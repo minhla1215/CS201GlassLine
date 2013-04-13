@@ -137,6 +137,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 
 	/** Action **/
 	public void informAvailability() {
+		System.out.println("Telling popup that machine " + this + " is available");
 		pairedPopUp.msgIAmAvailable();
 		state = MachineState.DoingNothing;
 	}
