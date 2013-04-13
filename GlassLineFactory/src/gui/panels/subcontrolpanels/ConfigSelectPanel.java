@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import engine.agent.BinAgent;
@@ -51,7 +52,7 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 		bin = null;
 		//this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		//Alex GUI for production panel
-		configList = new ArrayList<GlassType>();
+		configList = Collections.synchronizedList(new ArrayList<GlassType>());
 //		name=new String[10];
 //		list=new JList(name);
 //		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -93,7 +94,9 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 				//ArrayList <Config> testConfig = new ArrayList<Config>();
 				//testConfig.add(new Config(true,true,true, "Dragon"));
 				//bin.hereIsConfig(testConfig);
-				bin.hereIsConfig(configList);
+				while(!configList.isEmpty()){
+				bin.hereIsConfig(configList.remove(0));
+				}
 			}
 		}
 	}

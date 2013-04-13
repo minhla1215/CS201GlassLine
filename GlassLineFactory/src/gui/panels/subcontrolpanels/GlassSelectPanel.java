@@ -83,6 +83,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		popup1Label = new JLabel("Pop-up 1");
 		popup1CheckBox = new JCheckBox();
 		popup1CheckBox.addActionListener(this);
+		popup1CheckBox.setSelected(true);
 		popup1Panel.add(popup1Label);
 		popup1Panel.add(popup1CheckBox);
 		
@@ -91,6 +92,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		popup2Label = new JLabel("Pop-up 2");
 		popup2CheckBox = new JCheckBox();
 		popup2CheckBox.addActionListener(this);
+		popup2CheckBox.setSelected(true);
 		popup2Panel.add(popup2Label);
 		popup2Panel.add(popup2CheckBox);
 		
@@ -99,6 +101,7 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 		popup3Label = new JLabel("Pop-up 3");
 		popup3CheckBox = new JCheckBox();
 		popup3CheckBox.addActionListener(this);
+		popup3CheckBox.setSelected(true);
 		popup3Panel.add(popup3Label);
 		popup3Panel.add(popup3CheckBox);
 		
@@ -265,9 +268,9 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 			
 			
 
-			popup1CheckBox.setSelected(false);
-			popup2CheckBox.setSelected(false);
-			popup3CheckBox.setSelected(false);
+			popup1CheckBox.setSelected(true);
+			popup2CheckBox.setSelected(true);
+			popup3CheckBox.setSelected(true);
 			nameTextField.setText("");
 			
 			//reset all the check box

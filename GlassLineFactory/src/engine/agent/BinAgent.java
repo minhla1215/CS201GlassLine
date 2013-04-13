@@ -80,7 +80,7 @@ public class BinAgent extends Agent implements ConveyorFamily {
 			    public void run(){//this routine is like a message reception    
 			    	transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 			    }
-			}, 300);
+			}, 500);
 		    
 			
 		}else{
@@ -102,10 +102,8 @@ public class BinAgent extends Agent implements ConveyorFamily {
 //	}
 
 	//alex: change the type reference received
-	public void hereIsConfig(List<GlassType> configs){
-		for(int i = 0; i < configs.size();i++){
-			glasses.add(configs.remove(0));
-		}
+	public void hereIsConfig(GlassType configs){
+			glasses.add(configs);
 		System.out.println("hereIsConfig" + glasses.size() + nextComponent.state);
 		stateChanged();
 	}
