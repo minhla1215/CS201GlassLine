@@ -81,16 +81,17 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 
 	@Override
 	public void msgIAmAvailable() {
-		
+
 	}
 
 
 	@Override
 	public void msgIAmReady() {
+		System.out.println("Pop up is ready to received the finished glass");
 		readyToPass = true;
-
+		stateChanged();
 	}
-	
+
 	public void msgLoadFinished() {
 		state = MachineState.Loaded;
 		stateChanged();
@@ -100,14 +101,14 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		state = MachineState.Finished;
 		stateChanged();
 	}
-	
 
-	
+
+
 	public void msgReleaseFinished() {
 		state = MachineState.Idle;
 		stateChanged();
 	}
-	
+
 	/** Scheduler **/
 	@Override
 	public boolean pickAndExecuteAnAction() {
@@ -115,17 +116,17 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 			informAvailability();
 			return true;
 		}
-		
+
 		if (state == MachineState.Loading) {
 			loadGlass();
 			return true;
 		}
-		
+
 		if (state == MachineState.Loaded) {
 			processGlass();
 			return true;
 		}
-		
+
 		if (readyToPass && state == MachineState.Finished) {
 			passGlass(myGlass);
 			return true;
@@ -133,14 +134,15 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		return false;
 	}
 
-	
+
 	/** Action **/
 	public void informAvailability() {
 		pairedPopUp.msgIAmAvailable();
 		state = MachineState.DoingNothing;
 	}
-	
+
 	public void loadGlass() {
+		System.out.println("loadGlass called " + this);
 		Object[] args = new Object[1];
 		args[0] = new Integer(myGuiIndex);
 		if (type==MachineType.DRILL){
@@ -153,9 +155,9 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 			transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_DO_LOAD_GLASS, args);
 		}
 		state = MachineState.DoingNothing;
-		
+
 	}
-	
+
 	public void processGlass() {
 		Object[] args = new Object[1];
 		args[0] = new Integer(myGuiIndex);
@@ -170,9 +172,9 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		}
 		state = MachineState.DoingNothing;
 	}
-	
+
 	public void passGlass(GlassType gt) {
-		pairedPopUp.msgPassingGlass(myGlass);
+		((SkyPopUpAgent)pairedPopUp).msgReturningGlass(this, myGlass);
 		readyToPass = false;
 		Object[] args = new Object[1];
 		args[0] = new Integer(myGuiIndex);
@@ -186,29 +188,33 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 			transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_RELEASE_GLASS, args);
 		}
 		state = MachineState.DoingNothing;
-		
+
 	}
-	
+
 	/** Utilities **/
-	
+
 	public void connectAgents(ConveyorFamily cf) {
 		pairedPopUp = cf;
 	}
 
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if (event == TEvent.WORKSTATION_GUI_ACTION_FINISHED) {
-			this.msgActionFinished();
-		}
-		if (event == TEvent.WORKSTATION_LOAD_FINISHED) {
-			System.out.println("I'm Called: workstation_load_finished in MachineAgent: " + this);
-			this.msgLoadFinished();
-			((SkyPopUpAgent) pairedPopUp).msgLoadFinished();
-			
-		}
-		if (event == TEvent.WORKSTATION_RELEASE_FINISHED) {
-			this.msgReleaseFinished();
-			
+		if ((Integer)args[0] == myGuiIndex) {
+			if (event == TEvent.WORKSTATION_GUI_ACTION_FINISHED) {
+				this.msgActionFinished();
+				((SkyPopUpAgent) pairedPopUp).msgGlassDone(this,myGlass);
+
+			}
+			if (event == TEvent.WORKSTATION_LOAD_FINISHED ) {
+				System.out.println("I'm Called: workstation_load_finished in MachineAgent: " + this);
+				this.msgLoadFinished();
+				((SkyPopUpAgent) pairedPopUp).msgLoadFinished();
+
+			}
+			if (event == TEvent.WORKSTATION_RELEASE_FINISHED) {
+				this.msgReleaseFinished();
+
+			}
 		}
 	}
 

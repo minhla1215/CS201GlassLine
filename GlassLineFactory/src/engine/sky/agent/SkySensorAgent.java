@@ -100,9 +100,9 @@ public class SkySensorAgent extends Agent {
 			msgGlassDetected();
 		}
 
-		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED && ((Integer)args[0]).equals(myGuiIndex)) {
-			msgGlassExited();
-		}
+//		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED && ((Integer)args[0]).equals(myGuiIndex)) {
+//			msgGlassExited();
+//		}
 	}
 
 }
