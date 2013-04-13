@@ -8,7 +8,7 @@ import engine.agent.Agent;
 import engine.interfaces.ConveyorFamily;
 import engine.util.GlassType;
 
-public class MachineAgent extends Agent implements ConveyorFamily{
+public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 
 	//data
 
@@ -23,7 +23,7 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 	States myState;
 
 
-	public MachineAgent(String name,Transducer t,int i){
+	public AlexInlineMachineAgent(String name,Transducer t,int i){
 		super(name,t);
 		machineNumber=i;
 		allowPass=false;
