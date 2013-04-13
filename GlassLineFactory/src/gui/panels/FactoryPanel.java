@@ -2,6 +2,7 @@
 package gui.panels;
 
 import engine.agent.BinAgent;
+import engine.agent.TruckAgent;
 import engine.alex.agent.AlexConveyorAgent;
 import engine.alex.agent.MachineAgent;
 import engine.josh.agent.JoshConveyorAgent;
@@ -101,6 +102,7 @@ public class FactoryPanel extends JPanel
 		// Instantiate - Minh
 		bin = new BinAgent(transducer, "bin");
 		cPanel.setBinAgent();
+		
 
 		//Initializing Alex's agents
 		AlexConveyorAgent conveyor0=new AlexConveyorAgent("Conveyor0",transducer,0);
@@ -109,6 +111,12 @@ public class FactoryPanel extends JPanel
 		AlexConveyorAgent conveyor3=new AlexConveyorAgent("Conveyor3",transducer,3);
 		AlexConveyorAgent conveyor4=new AlexConveyorAgent("Conveyor4",transducer,4);
 		
+		
+		MachineAgent cutterAgent=new MachineAgent("Cutter",transducer,0);
+		MachineAgent breakoutAgent=new MachineAgent("Breakout",transducer,1);
+		MachineAgent manualBreakoutAgent=new MachineAgent("ManualBreakout",transducer,2);
+		
+		//test run
 //		AlexConveyorAgent conveyor8=new AlexConveyorAgent("Conveyor8",transducer,8);
 //		AlexConveyorAgent conveyor9=new AlexConveyorAgent("Conveyor9",transducer,9);
 //		AlexConveyorAgent conveyor10=new AlexConveyorAgent("Conveyor10",transducer,10);
@@ -116,16 +124,13 @@ public class FactoryPanel extends JPanel
 //		AlexConveyorAgent conveyor12=new AlexConveyorAgent("Conveyor12",transducer,12);
 //		AlexConveyorAgent conveyor13=new AlexConveyorAgent("Conveyor13",transducer,13);
 //		AlexConveyorAgent conveyor14=new AlexConveyorAgent("Conveyor14",transducer,14);
-
-		MachineAgent cutterAgent=new MachineAgent("Cutter",transducer,0);
-		MachineAgent breakoutAgent=new MachineAgent("Breakout",transducer,1);
-		MachineAgent manualBreakoutAgent=new MachineAgent("ManualBreakout",transducer,2);
-		
+//
 //		MachineAgent washerAgent=new MachineAgent("Washer",transducer,3);
-//		MachineAgent uvLampAgent=new MachineAgent("Uv_Lamp",transducer,4);
-//		MachineAgent painterAgent=new MachineAgent("Painter",transducer,5);
+//		MachineAgent painterAgent=new MachineAgent("Painter",transducer,4);
+//		MachineAgent uvLampAgent=new MachineAgent("Uv_Lamp",transducer,5);
 //		MachineAgent ovenAgent=new MachineAgent("Oven",transducer,6);
-		
+////		
+//		TruckAgent truckAgent=new TruckAgent(transducer,"Truck");
 
 		//Initializing Sky's PopUps 0 - 2
 		SkyPopUpAgent popUp0 = new SkyPopUpAgent(0, "PopUp0", transducer);
@@ -165,6 +170,7 @@ public class FactoryPanel extends JPanel
 
 		// Linking - Minh
 		bin.setNextComponent(conveyor0);
+		
 
 		// Linking - Alex
 		conveyor0.setPreAgent(bin);
@@ -178,20 +184,7 @@ public class FactoryPanel extends JPanel
 		conveyor4.setPreAgent(manualBreakoutAgent);
 		conveyor4.setNextAgent(conveyor5);
 		
-//		conveyor8.setPreAgent(popUp2);
-//		conveyor8.setNextAgent(washerAgent);
-//		conveyor9.setPreAgent(washerAgent);
-//		conveyor9.setNextAgent(conveyor10);
-//		conveyor10.setPreAgent(conveyor9);
-//		conveyor10.setNextAgent(uvLampAgent);
-//		conveyor11.setPreAgent(uvLampAgent);
-//		conveyor11.setNextAgent(painterAgent);
-//		conveyor12.setPreAgent(painterAgent);
-//		conveyor12.setNextAgent(conveyor13);
-//		conveyor13.setPreAgent(conveyor12);
-//		conveyor13.setNextAgent(ovenAgent);
-//		conveyor14.setPreAgent(ovenAgent);
-//		//conveyor14.setNextAgent();
+		
 //		
 
 		cutterAgent.setPreConveyor(conveyor0);
@@ -201,15 +194,32 @@ public class FactoryPanel extends JPanel
 		manualBreakoutAgent.setPreConveyor(conveyor3);
 		manualBreakoutAgent.setNextConveyor(conveyor4);
 		
+		//test run
+//		conveyor8.setPreAgent(popUp2);
+//		conveyor8.setNextAgent(washerAgent);
+//		conveyor9.setPreAgent(washerAgent);
+//		conveyor9.setNextAgent(conveyor10);
+//		conveyor10.setPreAgent(conveyor9);
+//		conveyor10.setNextAgent(painterAgent);
+//		conveyor11.setPreAgent(painterAgent);
+//		conveyor11.setNextAgent(uvLampAgent);
+//		conveyor12.setPreAgent(uvLampAgent);
+//		conveyor12.setNextAgent(conveyor13);
+//		conveyor13.setPreAgent(conveyor12);
+//		conveyor13.setNextAgent(ovenAgent);
+//		conveyor14.setPreAgent(ovenAgent);
+//		conveyor14.setNextAgent(truckAgent);
+//		
 //		washerAgent.setPreConveyor(conveyor8);
 //		washerAgent.setNextConveyor(conveyor9);
-//		uvLampAgent.setPreConveyor(conveyor10);
-//		uvLampAgent.setNextConveyor(conveyor11);
-//		painterAgent.setPreConveyor(conveyor11);
-//		painterAgent.setNextConveyor(conveyor12);
+//		painterAgent.setPreConveyor(conveyor10);
+//		painterAgent.setNextConveyor(conveyor11);
+//		uvLampAgent.setPreConveyor(conveyor11);
+//		uvLampAgent.setNextConveyor(conveyor12);
 //		ovenAgent.setPreConveyor(conveyor13);
 //		ovenAgent.setNextConveyor(conveyor14);
-		
+//		
+//		truckAgent.setPreviousComponent(conveyor14);
 
 		// Linking - Sky
 		conveyor5.connectAgents(conveyor4, popUp0);
@@ -252,6 +262,11 @@ public class FactoryPanel extends JPanel
 		conveyor3.startThread();
 		conveyor4.startThread();
 		
+		cutterAgent.startThread();
+		breakoutAgent.startThread();
+		manualBreakoutAgent.startThread();
+		
+		//test run
 //		conveyor8.startThread();
 //		conveyor9.startThread();
 //		conveyor10.startThread();
@@ -259,15 +274,13 @@ public class FactoryPanel extends JPanel
 //		conveyor12.startThread();
 //		conveyor13.startThread();
 //		conveyor14.startThread();
-		
-		cutterAgent.startThread();
-		breakoutAgent.startThread();
-		manualBreakoutAgent.startThread();
-		
+//		
 //		washerAgent.startThread();
 //		uvLampAgent.startThread();
 //		painterAgent.startThread();
 //		ovenAgent.startThread();
+//		
+//		truckAgent.startThread();
 
 		//Sky start threads
 		conveyor5.startThread();

@@ -37,9 +37,9 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 		}else if(machineNumber==3){
 			t.register(this, TChannel.WASHER);
 		}else if(machineNumber==4){
-			t.register(this, TChannel.UV_LAMP);
-		}else if(machineNumber==5){
 			t.register(this, TChannel.PAINTER);
+		}else if(machineNumber==5){
+			t.register(this, TChannel.UV_LAMP);
 		}else if(machineNumber==6){
 			t.register(this, TChannel.OVEN);
 		}
@@ -135,9 +135,9 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 		}else if(machineNumber==3){
 			transducer.fireEvent(TChannel.WASHER, TEvent.WORKSTATION_DO_ACTION, null );
 		}else if(machineNumber==4){
-			transducer.fireEvent(TChannel.UV_LAMP, TEvent.WORKSTATION_DO_ACTION, null );
-		}else if(machineNumber==5){
 			transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_DO_ACTION, null );
+		}else if(machineNumber==5){
+			transducer.fireEvent(TChannel.UV_LAMP, TEvent.WORKSTATION_DO_ACTION, null );
 		}else if(machineNumber==6){
 			transducer.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_DO_ACTION, null );
 		}
@@ -163,9 +163,9 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 		}else if(machineNumber==3){
 			transducer.fireEvent(TChannel.WASHER, TEvent.WORKSTATION_RELEASE_GLASS, null );
 		}else if(machineNumber==4){
-			transducer.fireEvent(TChannel.UV_LAMP, TEvent.WORKSTATION_RELEASE_GLASS, null );
-		}else if(machineNumber==5){
 			transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_RELEASE_GLASS, null );
+		}else if(machineNumber==5){
+			transducer.fireEvent(TChannel.UV_LAMP, TEvent.WORKSTATION_RELEASE_GLASS, null );
 		}else if(machineNumber==6){
 			transducer.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_RELEASE_GLASS, null );
 		}

@@ -20,7 +20,7 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 	// the size of the truck
 	int glassSize = 3;
 
-	enum TruckState{LOADING, LEAVING, RETURNING};
+	enum TruckState{LOADING,LEAVING,DOINGNOTHING};
 	
 	List <GlassType> glasses = Collections.synchronizedList(new ArrayList<GlassType>());
 	List <GlassType> currentGlass = Collections.synchronizedList(new ArrayList<GlassType>());
@@ -30,6 +30,7 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 		super(name, t);
 		previousComponent = null;
 		state = TruckState.LOADING;
+		stateChanged();
 	}
 
 
@@ -45,6 +46,17 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 	public void msgIAmAvailable() {
 		// Empty method
 	}
+	
+	
+	public void msgGlassLoadedToTruck(){
+		state = TruckState.LOADING;
+		stateChanged();
+	}
+	
+	public void msgTruckIsBack(){
+		state = TruckState.LOADING;
+		stateChanged();
+	}
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
@@ -58,13 +70,14 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 		
 		if(glasses.size() < glassSize && state == TruckState.LOADING){
 			tellIAmAvailable();
+			state = TruckState.DOINGNOTHING;
 			return true;
 		}
 		
-		if(state == TruckState.RETURNING){
-			state = TruckState.LOADING;
-			return true;
-		}
+//		if(state == TruckState.RETURNING){
+//			state = TruckState.LOADING;
+//			return true;
+//		}
 		
 		
 		return false;
@@ -74,12 +87,14 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		// TODO Auto-generated method stub
 		if(event == TEvent.TRUCK_GUI_EMPTY_FINISHED){
-			state = TruckState.RETURNING;
+			//state = TruckState.RETURNING;
+			this.msgTruckIsBack();
 		}
 		if(event == TEvent.TRUCK_GUI_LOAD_FINISHED){
-			if(currentGlass.size() > 0)
-				glasses.add(currentGlass.get(0));
-			else
+			if(currentGlass.size() > 0){
+				glasses.add(currentGlass.remove(0));
+				this.msgGlassLoadedToTruck();
+			}else
 				System.out.println("Loading error");
 		}
 
@@ -89,7 +104,6 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 	public void tellIAmAvailable(){	
 		previousComponent.msgIAmAvailable();
 		//state = TruckState.LOADING;
-		stateChanged();
 	}
 
 	public void setPreviousComponent(ConveyorFamily previousC){

@@ -289,7 +289,9 @@ public class ControlPanel extends JPanel implements TReceiver
 
 	//added by Minh
 	public void setBinAgent(){
-	glassSelectPanel.setBinAgent(parent.getBinAgent());
+	//glassSelectPanel.setBinAgent(parent.getBinAgent());
+		//alex configSelectPanel will send the message to bin
+		configSelectPanel.setBinAgent(parent.getBinAgent())	;
 	System.out.println("set BinAgent");
 	}
 }
