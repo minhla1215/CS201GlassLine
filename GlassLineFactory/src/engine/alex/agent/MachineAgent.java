@@ -98,9 +98,14 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 
 
 		if (myState==States.partsloaded){
+			if(glass.getinlineMachineProcessingNeeded()[machineNumber]==true){
 			workingStationDoAction();
 			myState=States.doingnothing;
 			return true;
+			}else{
+				noActionNeeded();
+				return true;
+			}
 		}
 
 		if (myState==States.readytopass){
@@ -139,6 +144,13 @@ public class MachineAgent extends Agent implements ConveyorFamily{
 		System.out.println("doing workstation animation ");
 	}
 
+	public void noActionNeeded(){
+		myState=States.readytopass;
+		stateChanged();
+		System.out.println("no action needed in " + this.getName());
+	}
+	
+	
 	public void passingGlass(){
 		nextConveyor.msgPassingGlass(glass);
 		allowPass=false;

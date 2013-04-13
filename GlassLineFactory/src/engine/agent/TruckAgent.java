@@ -1,6 +1,7 @@
 package engine.agent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import transducer.TChannel;
@@ -21,8 +22,8 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 
 	enum TruckState{LOADING, LEAVING, RETURNING};
 	
-	List <GlassType> glasses = new ArrayList<GlassType>();
-	List <GlassType> currentGlass = new ArrayList<GlassType>();
+	List <GlassType> glasses = Collections.synchronizedList(new ArrayList<GlassType>());
+	List <GlassType> currentGlass = Collections.synchronizedList(new ArrayList<GlassType>());
 	String name;
 
 	public TruckAgent(Transducer t, String name){

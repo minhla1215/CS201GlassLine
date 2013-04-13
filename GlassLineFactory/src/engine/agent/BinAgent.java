@@ -1,6 +1,7 @@
 package engine.agent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -30,7 +31,7 @@ public class BinAgent extends Agent implements ConveyorFamily {
 	}
 
 	NextComponent nextComponent;
-	List <GlassType> glasses = new ArrayList<GlassType>();
+	List <GlassType> glasses = Collections.synchronizedList(new ArrayList<GlassType>());
 	String name;
 
 	public BinAgent(Transducer t, String name){
