@@ -1,6 +1,7 @@
 
 package gui.panels.subcontrolpanels;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -15,6 +16,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * The ConfigSelectPanel class contains buttons allowing the user to select what
@@ -32,8 +36,9 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 	
 	//ALEX: SET UP GUI FOR PRODUCTION PANEL
 	JButton produceButton;
-	JList list;
+	//JList list;
 	BinAgent bin;
+	//String[] name;
 	
 	/**
 	 * Creates a new ConfigSelect and links it to the control panel
@@ -44,14 +49,22 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 	{
 		parent = cp;
 		bin = null;
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		//this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		//Alex GUI for production panel
+		configList = new ArrayList<GlassType>();
+//		name=new String[10];
+//		list=new JList(name);
+//		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//		list.setVisibleRowCount(10);
+//		list.addListSelectionListener(this);
+		
+		this.setLayout(new BorderLayout());
 		produceButton = new JButton("Produce");
 		produceButton.addActionListener(this);
-		configList = new ArrayList<GlassType>();
 		
 		
-		this.add(produceButton);
+		//this.add(list,BorderLayout.WEST);
+		this.add(produceButton,BorderLayout.SOUTH);
 	}
 
 	/**
@@ -92,5 +105,10 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 	public void setBinAgent(BinAgent b){
 		this.bin = b;
 	}
+
+//	public JList getList() {
+//		return list;
+//	}
+
 
 }

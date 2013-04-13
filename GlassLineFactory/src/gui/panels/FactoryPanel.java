@@ -4,7 +4,7 @@ package gui.panels;
 import engine.agent.BinAgent;
 import engine.agent.TruckAgent;
 import engine.alex.agent.AlexConveyorAgent;
-import engine.alex.agent.MachineAgent;
+import engine.alex.agent.AlexInlineMachineAgent;
 import engine.josh.agent.JoshConveyorAgent;
 import engine.sky.agent.SkyConveyorAgent;
 import engine.sky.agent.SkyMachineAgent;
@@ -112,9 +112,9 @@ public class FactoryPanel extends JPanel
 		AlexConveyorAgent conveyor4=new AlexConveyorAgent("Conveyor4",transducer,4);
 		
 		
-		MachineAgent cutterAgent=new MachineAgent("Cutter",transducer,0);
-		MachineAgent breakoutAgent=new MachineAgent("Breakout",transducer,1);
-		MachineAgent manualBreakoutAgent=new MachineAgent("ManualBreakout",transducer,2);
+		AlexInlineMachineAgent cutterAgent=new AlexInlineMachineAgent("Cutter",transducer,0);
+		AlexInlineMachineAgent breakoutAgent=new AlexInlineMachineAgent("Breakout",transducer,1);
+		AlexInlineMachineAgent manualBreakoutAgent=new AlexInlineMachineAgent("ManualBreakout",transducer,2);
 		
 		//test run
 //		AlexConveyorAgent conveyor8=new AlexConveyorAgent("Conveyor8",transducer,8);
