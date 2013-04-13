@@ -85,9 +85,9 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 	@Override
 	public void msgPassingGlass(GlassType gt) {
-		currentGlass = new MyGlass (gt, GlassState.Idle);
+		currentGlass = new MyGlass (gt, GlassState.OnBoard);
 		informed = false;
-		
+		stateChanged();
 	}
 
 	@Override
@@ -128,14 +128,17 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	public boolean pickAndExecuteAnAction() {
 		if (currentGlass != null) {
 			if ((currentGlass.state == GlassState.Processed || !currentGlass.gt.getConfig(myGuiIndex)) && postConveyor.state == ConveyorState.Available) {
-				passGlass(currentGlass);
+				popDownAndPass(currentGlass);
 				return true;
 			}
 			if (currentGlass.gt.getConfig(myGuiIndex) && currentGlass.state == GlassState.OnBoard) {
+				System.out.println("ready to send popUpAndPass");
 				if (firstMachine.state == MachineState.Idle) {
+					System.out.println("pop up and pass to first machine");
 					popUpAndPass(currentGlass, firstMachine);
 					return true;
 				} else if (secondMachine.state == MachineState.Idle) {
+					System.out.println("pop up and pass to second machine");
 					popUpAndPass(currentGlass, secondMachine);
 					return true;
 				}
@@ -179,6 +182,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	}
 
 	private void popUpAndPass(MyGlass mg, MyMachine mm) {
+		System.out.println("In Pop Up and pass");
 
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
@@ -212,8 +216,27 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		
 	}
 
-	private void passGlass(MyGlass mg) {
+	private void popDownAndPass(MyGlass mg) {
+		System.out.println(this + ": popping down and pass to next conveyor");
+		
+		Object[] args = new Object[1];
+		args[0] = myGuiIndex;
+		
+		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
+		try {
+			waitAnimation.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		postConveyor.conveyor.msgPassingGlass(mg.gt);
+		
+		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
+		try {
+			waitAnimation.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		currentGlass = null;
 		stateChanged();
 	}
@@ -255,7 +278,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED &&((Integer)args[0]).equals(myGuiIndex)) {
-			currentGlass.state = GlassState.OnBoard;
+			((SkyConveyorAgent) preConveyor.conveyor).msgGlassExiting();
 			stateChanged();
 		}
 		

@@ -90,11 +90,11 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 			}
 			
 			if (myState == ConveyorState.ReadyToPass) {
-				stopConveyor();
 				if (PopUpAvailable) {
 					passGlass(myGlasses.remove(0));
 					return true;
 				}
+				stopConveyor();
 
 			}
 			
@@ -122,7 +122,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		myState = ConveyorState.Waiting;
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
-//		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
+		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
 		stateChanged();
 		
 	}
