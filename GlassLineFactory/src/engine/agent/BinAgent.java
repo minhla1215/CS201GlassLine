@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -38,8 +39,9 @@ public class BinAgent extends Agent implements ConveyorFamily {
 		super(name, t);
 		nextComponent = null;
 	}
+	
 
-
+	
 
 	@Override
 	public void msgPassingGlass(GlassType gt) {
@@ -73,9 +75,15 @@ public class BinAgent extends Agent implements ConveyorFamily {
 	// the GUI Glass
 	public void sendingGlass(){
 		nextComponent.nextComponent.msgPassingGlass(glasses.remove(0));
-		if(transducer != null)
-			transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
-		else{
+		if(transducer != null){
+			new Timer().schedule(new TimerTask(){
+			    public void run(){//this routine is like a message reception    
+			    	transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+			    }
+			}, 300);
+		    
+			
+		}else{
 			System.out.println("transducer is null");
 		}
 		//glasses.remove(0);
@@ -84,15 +92,26 @@ public class BinAgent extends Agent implements ConveyorFamily {
 	}
 
 	//Create GlassType out of Configs
-	public void hereIsConfig(ArrayList<Config> configs){
+//	public void hereIsConfig(ArrayList<Config> configs){
+//		for(int i = 0; i < configs.size();i++){
+//			glasses.add(new GlassType(configs.get(0).getConfig(0),configs.get(0).getConfig(1),
+//					configs.get(0).getConfig(2), configs.get(0).getConfigID()));
+//		}
+//		System.out.println("hereIsConfig" + glasses.size() + nextComponent.state);
+//		stateChanged();
+//	}
+
+	//alex: change the type reference received
+	public void hereIsConfig(List<GlassType> configs){
 		for(int i = 0; i < configs.size();i++){
-			glasses.add(new GlassType(configs.get(0).getConfig(0),configs.get(0).getConfig(1),
-					configs.get(0).getConfig(2), configs.get(0).getConfigID()));
+			glasses.add(configs.remove(0));
 		}
 		System.out.println("hereIsConfig" + glasses.size() + nextComponent.state);
 		stateChanged();
 	}
-
+	
+	
+	
 	public void setNextComponent(ConveyorFamily nextC){
 		nextComponent = new NextComponent(nextC, ConveyorState.NOTHING);
 	}

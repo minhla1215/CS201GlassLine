@@ -8,10 +8,12 @@ import java.util.List;
 
 import engine.agent.BinAgent;
 import engine.util.Config;
+import engine.util.GlassType;
 import gui.panels.ControlPanel;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JPanel;
 
 /**
@@ -24,7 +26,14 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 	/** The ControlPanel this is linked to */
 	private ControlPanel parent;
 	
-	private List <Config> configList = new ArrayList<Config>();
+	//private List <Config> configList = new ArrayList<Config>();
+	//alex change into glasstype
+	private List <GlassType> configList;
+	
+	//ALEX: SET UP GUI FOR PRODUCTION PANEL
+	JButton produceButton;
+	JList list;
+	BinAgent bin;
 	
 	/**
 	 * Creates a new ConfigSelect and links it to the control panel
@@ -34,7 +43,15 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 	public ConfigSelectPanel(ControlPanel cp)
 	{
 		parent = cp;
+		bin = null;
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		//Alex GUI for production panel
+		produceButton = new JButton("Produce");
+		produceButton.addActionListener(this);
+		configList = new ArrayList<GlassType>();
+		
+		
+		this.add(produceButton);
 	}
 
 	/**
@@ -45,14 +62,35 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 	{
 		return parent;
 	}
+	
+	
+	
+	
+	
+	
+	
 
 	public void actionPerformed(ActionEvent ae)
 	{
 		
+		// alex: produce the chosen glasstype
+		if(ae.getSource() == produceButton){
+			if(bin!=null){
+				System.out.println("product created");
+				//ArrayList <Config> testConfig = new ArrayList<Config>();
+				//testConfig.add(new Config(true,true,true, "Dragon"));
+				//bin.hereIsConfig(testConfig);
+				bin.hereIsConfig(configList);
+			}
+		}
 	}
 	
-	public List<Config> getConfigList(){
+	public List<GlassType> getConfigList(){
 		return configList;
+	}
+	
+	public void setBinAgent(BinAgent b){
+		this.bin = b;
 	}
 
 }
