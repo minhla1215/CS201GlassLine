@@ -1,3 +1,4 @@
+// Minh and Alex
 
 package gui.panels.subcontrolpanels;
 
@@ -238,14 +239,6 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 
 	public void actionPerformed(ActionEvent ae)
 	{
-//		if(ae.getSource() == produceButton){
-//			if(bin!=null){
-//				System.out.println("product created");
-//				ArrayList <Config> testConfig = new ArrayList<Config>();
-//				testConfig.add(new Config(true,true,true, "Dragon"));
-//				bin.hereIsConfig(testConfig);
-//			}
-//		}
 		if(ae.getSource() == createButton){	
 			// create a new config in the Config Select Panel's list
 			
@@ -264,8 +257,9 @@ public class GlassSelectPanel extends JPanel implements ActionListener
 			tempGlass.getinlineMachineProcessingNeeded()[4]=painterCheckBox.isSelected();
 			tempGlass.getinlineMachineProcessingNeeded()[5]=uvLampCheckBox.isSelected();
 			tempGlass.getinlineMachineProcessingNeeded()[6]=ovenCheckBox.isSelected();
-			configSelectPanel.getConfigList().add(tempGlass);
-			
+			//configSelectPanel.getConfigList().add(tempGlass);
+			// Call the panel to create the glass display and revalidate
+			configSelectPanel.addConfigToPanel(tempGlass);
 			
 
 			popup1CheckBox.setSelected(true);
