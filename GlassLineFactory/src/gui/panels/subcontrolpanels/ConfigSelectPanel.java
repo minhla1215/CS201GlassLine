@@ -100,11 +100,12 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 				//testConfig.add(new Config(true,true,true, "Dragon"));
 				//bin.hereIsConfig(testConfig);
 				while(!configList.isEmpty()){
-					new Timer().schedule(new TimerTask(){
-					    public void run(){//this routine is like a message reception    
+					//new Timer().schedule(new TimerTask(){
+					  //  public void run(){//this routine is like a message reception   
+					    	
 					    	bin.hereIsConfig(configList.remove(0));
-					    }
-					}, 500);
+					    //}
+				//	}, 500);
 				
 				}
 			}

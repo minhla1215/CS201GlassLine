@@ -99,6 +99,7 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 
 		if (myState==States.partsloaded){
 			if(glass.getinlineMachineProcessingNeeded()[machineNumber]==true){
+				glass.setInlineMachineProcessingHistory(machineNumber);
 			workingStationDoAction();
 			myState=States.doingnothing;
 			return true;

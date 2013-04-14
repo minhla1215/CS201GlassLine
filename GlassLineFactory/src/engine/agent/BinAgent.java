@@ -80,7 +80,7 @@ public class BinAgent extends Agent implements ConveyorFamily {
 			    public void run(){//this routine is like a message reception    
 			    	transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 			    }
-			}, 500);
+			}, 200);
 		    
 			
 		}else{

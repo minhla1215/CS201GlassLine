@@ -266,7 +266,7 @@ public class FactoryPanel extends JPanel
 //		ovenAgent.setPreConveyor(conveyor13);
 //		ovenAgent.setNextConveyor(conveyor14);
 //		
-//		truckAgent.setPreviousComponent(conveyor14);
+		truckAgent.setPreviousComponent(sensor29);
 
 		// Linking - Sky
 		conveyor5.connectAgents(conveyor4, popUp0);
@@ -381,7 +381,7 @@ public class FactoryPanel extends JPanel
 //		painterAgent.startThread();
 //		ovenAgent.startThread();
 //		
-//		truckAgent.startThread();
+		
 
 		//Sky start threads
 		conveyor5.startThread();
@@ -441,7 +441,7 @@ public class FactoryPanel extends JPanel
 
 
 
-
+		truckAgent.startThread();
 
 
 		System.out.println("Back end initialization finished.");
