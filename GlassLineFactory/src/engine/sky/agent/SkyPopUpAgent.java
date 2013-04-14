@@ -328,9 +328,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED &&((Integer)args[0]).equals(myGuiIndex)) {
-			//			((SkyConveyorAgent) preConveyor.conveyor).msgGlassExiting();
 			waitAnimation.release();
-			//			stateChanged();
 		}
 
 		if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_UP && ((Integer)args[0]).equals(myGuiIndex)) {
