@@ -3,34 +3,26 @@
 
 package gui.panels.subcontrolpanels;
 
+import engine.agent.BinAgent;
+import engine.util.GlassType;
+import gui.panels.ControlPanel;
+
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import engine.agent.BinAgent;
-import engine.util.Config;
-import engine.util.GlassType;
-import gui.panels.ControlPanel;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import transducer.TChannel;
-import transducer.TEvent;
 
 /**
  * The ConfigSelectPanel class contains buttons allowing the user to select what
@@ -86,7 +78,9 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 //		list.addListSelectionListener(this);
 		
 		configPanel = new JPanel();
+		//configPanel.setPreferredSize(new Dimension(400,200));
 		configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.Y_AXIS));
+		
 		
 		// Creation of the title display
 		JPanel cPanel = new JPanel();
@@ -97,10 +91,16 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 		cPanel.add(nLabel);
 		cPanel.add(numLabel);
 		cPanel.add(delLabel);
+		cPanel.setPreferredSize(new Dimension(400,20));
+		cPanel.setMaximumSize(new Dimension(400,20));
 		configPanel.add(cPanel);
 		
 		configScrollPane = new JScrollPane(configPanel);
-		configScrollPane.createVerticalScrollBar();
+		configScrollPane.setPreferredSize(new Dimension(400,200));
+		configScrollPane.setWheelScrollingEnabled(true);
+		configScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		configScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		//configScrollPane.createVerticalScrollBar();
 		//configScrollPane.getViewport().add(configScrollPane);  
 		
 		
@@ -111,7 +111,7 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 		
 		
 		//this.add(list,BorderLayout.WEST);
-		this.add(configPanel,BorderLayout.NORTH);
+		this.add(configScrollPane,BorderLayout.NORTH);
 		this.add(produceButton,BorderLayout.SOUTH);
 	}
 
@@ -138,6 +138,8 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 		configTextList.add(text);
 		configDeleteList.add(delete);
 		JPanel pane = new JPanel();
+		pane.setPreferredSize(new Dimension(400,20));
+		pane.setMaximumSize(new Dimension(400,20));
 		pane.setLayout(new GridLayout(1,3));
 		pane.add(name);
 		pane.add(text);
