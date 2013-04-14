@@ -5,6 +5,7 @@ public class GlassType {
 	private boolean[] popUps;
 	private boolean[] processed;
 	private boolean[] inlineMachineProcessed;
+	private boolean[] inlineMachineProcessingNeeded;
 	
 	private String glassID;
 
@@ -33,6 +34,16 @@ public class GlassType {
 		inlineMachineProcessed[4] = false;
 		inlineMachineProcessed[5] = false;
 		inlineMachineProcessed[6] = false;
+		
+		//This remembers which inline machines the glass need to be processed
+		inlineMachineProcessingNeeded = new boolean[7];
+		inlineMachineProcessingNeeded[0] = true;
+		inlineMachineProcessingNeeded[1] = true;
+		inlineMachineProcessingNeeded[2] = true;
+		inlineMachineProcessingNeeded[3] = true;
+		inlineMachineProcessingNeeded[4] = true;
+		inlineMachineProcessingNeeded[5] = true;
+		inlineMachineProcessingNeeded[6] = true;
 
 	}
 
@@ -77,4 +88,15 @@ public class GlassType {
 		return glassID;
 	}
 
+	
+	//This returns the boolean to decide if the inline machines need to process the glass
+	public boolean[] getinlineMachineProcessingNeeded() {
+		return inlineMachineProcessingNeeded;
+	}
+
+
+
+	public void setinlineMachineProcessingNeeded(boolean[] inlineMachineProcessingNeeded) {
+		this.inlineMachineProcessingNeeded = inlineMachineProcessingNeeded;
+	}
 }

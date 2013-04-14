@@ -17,7 +17,7 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshBa
 
 	int glassCapacity;
 	public JoshConveyorAgent conveyor;
-	public JoshInlineMachineAgent inlineMachine;
+	public ConveyorFamily inlineMachine;
 	public Queue<GlassType> glassPanes;
 	public Boolean atCapacity;
 	public Boolean passingGlass;
@@ -83,6 +83,7 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshBa
 		//This passes glass to the conveyor.
 		if(passingGlass){
 			passGlass();
+			//Reinitialize();
 		}
 		return false;
 	}
@@ -108,9 +109,12 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshBa
 	
 	void passGlass(){
 		if(!glassPanes.isEmpty()){
+			System.out.println("Glass " + glassPanes.peek().getGlassID() + " is on Sensor " + name);
+			
 			
 			//Backend: Note: The glass is actually passed once the piece slides off the sensor
 			//This is done in the eventFired when we recieve the SENSOR_GUI_RELEASED.
+			Reinitialize();
 			passingGlass = false;
 			
 			//FrontEnd
@@ -118,6 +122,11 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshBa
 			arg[0] = conveyor.conveyorNumber;
 			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, arg);
 		}
+	}
+	
+	void Reinitialize(){
+		atCapacity = false;
+		passingGlass = false;
 	}
 
 	
@@ -139,7 +148,7 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshBa
 				if(sensorNumber == 16){
 					
 					//This slots in the first piece of glass for testing
-					msgPassingGlass(new GlassType(true, true, true, "The Glass"));
+					//msgPassingGlass(new GlassType(true, true, true, "The Glass"));
 					
 					if(!glassPanes.peek().getInlineMachineProcessingHistory(3)){
 						System.out.println(" Washer has yet to process the glass.");
@@ -155,7 +164,6 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshBa
 					}
 					
 				}
-				System.out.println("Glass " + glassPanes.peek().getGlassID() + " is on Sensor " + name);
 				
 			}
 		}
@@ -186,7 +194,7 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshBa
 		conveyor = c;
 	}
 	
-	public void set_inlineMachine(JoshInlineMachineAgent i){
+	public void set_inlineMachine(ConveyorFamily i){
 		inlineMachine = i;
 	}
 	

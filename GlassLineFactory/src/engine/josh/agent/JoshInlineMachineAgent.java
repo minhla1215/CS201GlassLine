@@ -102,12 +102,17 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 	
 	void ProcessGlass(){
 		//BackEnd
-		glassPanes.peek().setInlineMachineProcessingHistory(machineNumber);
-		
-		//FrontEnd
-		Object[] arg = new Object[1];
-		arg[0] = frontSensor.sensorNumber;
-		transducer.fireEvent(myTChannel, TEvent.WORKSTATION_DO_ACTION, arg);
+		if(glassPanes.peek().getinlineMachineProcessingNeeded()[machineNumber]){
+			glassPanes.peek().setInlineMachineProcessingHistory(machineNumber);
+			
+			//FrontEnd
+			Object[] arg = new Object[1];
+			arg[0] = frontSensor.sensorNumber;
+			transducer.fireEvent(myTChannel, TEvent.WORKSTATION_DO_ACTION, arg);
+		}
+		else{
+			ReleaseGlass();
+		}
 	}
 	
 	void ReleaseGlass(){
@@ -120,12 +125,19 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 	
 	void passGlass(){
 		if(!glassPanes.isEmpty()){
+			System.out.println("Glass " + glassPanes.peek().getGlassID() + " is in Workstation " + name);
+			Reinitialize();
 			backSensor.msgPassingGlass(glassPanes.remove());
 			glassReleased = false;
 		}
 	}
 	
-	
+	void Reinitialize(){
+		passingGlass = false;
+		glassInWorkstation = false;
+		glassReleased = true;
+		glassPaneProcessed = false;
+	}
 	
 	
 	
@@ -157,7 +169,6 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 		else if (channel == myTChannel && event == TEvent.WORKSTATION_LOAD_FINISHED)
 		{
 				//System.out.println("WORKSTATION_LOAD_FINISHED: " + myTChannel.toString());
-				System.out.println("Glass " + glassPanes.peek().getGlassID() + " is in Workstation " + name);
 				glassInWorkstation = true;
 				stateChanged();
 		}

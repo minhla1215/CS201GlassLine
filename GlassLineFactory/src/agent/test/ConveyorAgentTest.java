@@ -121,7 +121,7 @@ public class ConveyorAgentTest extends TestCase{
 		
 		conveyor.msgGlassExiting();
 		assertEquals("Conveyor should  be in ReadyToPass state",
-				ConveyorState.ReadyToPass, conveyor.myState);
+				ConveyorState.Passing, conveyor.myState);
 		
 		conveyor.msgIAmAvailable();
 		conveyor.pickAndExecuteAnAction();

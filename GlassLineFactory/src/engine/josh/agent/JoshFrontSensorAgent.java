@@ -17,7 +17,7 @@ import engine.interfaces.JoshFrontSensor;
 public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshFrontSensor{
 
 	int glassCapacity;
-	public JoshInlineMachineAgent inlineMachine;
+	public ConveyorFamily inlineMachine;
 	public JoshConveyorAgent conveyor;
 	public Queue<GlassType> glassPanes;
 	public Boolean atCapacity;
@@ -81,6 +81,7 @@ public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshF
 		}
 		if(passingGlass && sensorPressed){
 			passGlass();
+			//if(inlineMachine.)
 		}
 		return false;
 	}
@@ -106,6 +107,8 @@ public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshF
 	void passGlass(){
 		//BackEnd
 		if(!glassPanes.isEmpty()){
+			System.out.println("Glass " + glassPanes.peek().getGlassID() + " is on Sensor " + name);
+			Reinitialize();
 			inlineMachine.msgPassingGlass(glassPanes.remove());
 			passingGlass = false;
 		}
@@ -116,6 +119,11 @@ public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshF
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, arg);
 	}
 
+	void Reinitialize(){
+		atCapacity = false;
+		passingGlass = false;
+		sensorPressed = false;
+	}
 	
 	
 	
@@ -130,7 +138,6 @@ public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshF
 				//System.out.println("Sensor Pressed: " + sensorNumber);
 				sensorPressed = true;
 				stateChanged();
-				System.out.println("Glass " + glassPanes.peek().getGlassID() + " is on Sensor " + name);
 				
 				
 				//This is for testing purposes
@@ -165,7 +172,7 @@ public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshF
 	
 	//Extra Functions
 	
-	public void set_inlineMachine(JoshInlineMachineAgent i){
+	public void set_inlineMachine(ConveyorFamily i){
 		inlineMachine = i;
 	}
 	

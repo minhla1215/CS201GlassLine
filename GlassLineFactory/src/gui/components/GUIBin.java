@@ -53,7 +53,7 @@ public class GUIBin extends GuiComponent
 	{
 		nextComponent = component;
 		target = new Point(nextComponent.getCenterX() + (2 * nextComponent.getIcon().getIconWidth()) / 5,
-			nextComponent.getCenterY());
+				nextComponent.getCenterY());
 	}
 
 	@Override

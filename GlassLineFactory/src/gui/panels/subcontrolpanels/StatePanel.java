@@ -116,8 +116,8 @@ public class StatePanel extends JPanel
 		// set up buttons
 		startButton.addActionListener(new StartButtonListener());
 		stopButton.addActionListener(new StopButtonListener());
-		startButton.setEnabled(false);
-		stopButton.setEnabled(false);
+		startButton.setEnabled(true);
+		stopButton.setEnabled(true);
 
 		// setup sliders
 		speedSlider.addChangeListener(new SpeedSliderListener());

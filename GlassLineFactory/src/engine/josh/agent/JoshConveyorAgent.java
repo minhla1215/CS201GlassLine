@@ -113,11 +113,18 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	//Passes glass to frontSensor
 	void passGlass(){
 		if(!glassPanes.isEmpty()){
+			System.out.println("Glass " + glassPanes.peek().getGlassID() + " is on Conveyor " + name);
+			Reinitialize();
 			frontSensor.msgPassingGlass(glassPanes.remove());
 			passingGlass = false;
 		}
 	}
-
+	
+	void Reinitialize()
+	{
+		atCapacity = false;
+		passingGlass = false;
+	}
 	
 	
 	
