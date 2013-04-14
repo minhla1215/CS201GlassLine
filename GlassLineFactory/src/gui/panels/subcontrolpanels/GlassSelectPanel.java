@@ -2,7 +2,7 @@
 
 package gui.panels.subcontrolpanels;
 
-import engine.agent.BinAgent;
+import engine.minh.agent.BinAgent;
 import engine.util.Config;
 import engine.util.GlassType;
 import gui.panels.ControlPanel;

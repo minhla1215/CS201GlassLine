@@ -131,6 +131,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		if (currentGlass != null) {
 			if (!currentGlass.gt.getConfig(myGuiIndex) && postConveyor.state == ConveyorState.Available) {
 				skipGlass(currentGlass);
+				return true;
 			}
 
 			if (currentGlass.state == GlassState.Processed && postConveyor.state == ConveyorState.Available) {

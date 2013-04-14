@@ -1,4 +1,4 @@
-package engine.agent;
+package engine.minh.agent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
+import engine.agent.Agent;
 import engine.interfaces.ConveyorFamily;
 import engine.josh.agent.JoshFrontSensorAgent;
 import engine.util.Config;

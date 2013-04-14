@@ -1,13 +1,14 @@
-// Minh and Alex
+// Minh
 
 
 package gui.panels.subcontrolpanels;
 
-import engine.agent.BinAgent;
+import engine.minh.agent.BinAgent;
 import engine.util.GlassType;
 import gui.panels.ControlPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -16,13 +17,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 
 /**
  * The ConfigSelectPanel class contains buttons allowing the user to select what
@@ -91,8 +93,9 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 		cPanel.add(nLabel);
 		cPanel.add(numLabel);
 		cPanel.add(delLabel);
-		cPanel.setPreferredSize(new Dimension(400,20));
-		cPanel.setMaximumSize(new Dimension(400,20));
+		cPanel.setPreferredSize(new Dimension(400,25));
+		cPanel.setMaximumSize(new Dimension(400,25));
+		cPanel.setBorder(new TitledBorder(""));
 		configPanel.add(cPanel);
 		
 		configScrollPane = new JScrollPane(configPanel);
@@ -129,6 +132,7 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 	}
 	
 	
+	//Add the glass to the list. Also create the GUI and add the GUI to the lists
 	public void addConfigToPanel(GlassType gt){
 		configList.add(gt);
 		JTextField text = new JTextField(5);
@@ -138,13 +142,14 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 		configTextList.add(text);
 		configDeleteList.add(delete);
 		JPanel pane = new JPanel();
-		pane.setPreferredSize(new Dimension(400,20));
-		pane.setMaximumSize(new Dimension(400,20));
+		pane.setPreferredSize(new Dimension(400,30));
+		pane.setMaximumSize(new Dimension(400,30));
 		pane.setLayout(new GridLayout(1,3));
 		pane.add(name);
 		pane.add(text);
 		pane.add(delete);
 		delete.addActionListener(this);
+		pane.setBorder(new TitledBorder(""));
 		configPanelList.add(pane);
 		configPanel.add(pane);
 		//configPanel.revalidate();
