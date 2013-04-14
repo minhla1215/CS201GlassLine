@@ -89,6 +89,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	public void msgPassingGlass(GlassType gt) {
 		currentGlass = new MyGlass (gt, GlassState.OnBoard);
 		informed = false;
+		isBusy = true;
 		stateChanged();
 	}
 
@@ -103,6 +104,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	}
 
 	public void msgGlassDone(SkyMachine machine, GlassType gt) {
+		((SkyConveyorAgent) preConveyor.conveyor).msgIAmBusy(); 
 		if (machine == firstMachine.machine) {
 			firstMachine.state = MachineState.Done;
 
@@ -117,6 +119,8 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 	public void msgReturningGlass(SkyMachine machine, GlassType gt) {
 		currentGlass = new MyGlass (gt, GlassState.Processed);
+		((SkyConveyorAgent) preConveyor.conveyor).msgIAmBusy();
+		
 		if (machine == firstMachine.machine) {
 			firstMachine.state = MachineState.Idle;
 		} else if (machine == secondMachine.machine) {
@@ -189,7 +193,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		}
 		mm.machine.msgIAmReady();
 		mm.state = MachineState.Called;
-		stateChanged();
+//		stateChanged();
 	}
 
 	private void popUpAndPass(MyGlass mg, MyMachine mm) {
@@ -197,7 +201,8 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
-
+		
+		((SkyConveyorAgent) preConveyor.conveyor).msgIAmBusy(); 
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
@@ -230,6 +235,8 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		isBusy = false;
 		stateChanged();
 
 	}
@@ -239,6 +246,8 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
+		
+		((SkyConveyorAgent) preConveyor.conveyor).msgIAmBusy(); 
 
 		try {
 			waitAnimation.acquire();
