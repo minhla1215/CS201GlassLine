@@ -45,6 +45,7 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 	public void msgPassingGlass(GlassType gt) {
 	
 		 glasses.add(gt);
+		 /*
 		//This is for testing purposes
 		 if(glasses.get(0).getInlineMachineProcessingHistory(0)){
 			 System.out.println(" Cutter has processed the glass.");
@@ -67,7 +68,7 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 		 if(glasses.get(0).getInlineMachineProcessingHistory(6)){
 			 System.out.println(" Oven has processed the glass.");
 		 }
-
+		 */
 
 		//currentGlass.add(gt);
 		transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_LOAD_GLASS, null);
@@ -83,7 +84,7 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 	
 	
 	public void msgGlassLoadedToTruck(){
-		System.out.println("i'm loaded");
+		//System.out.println("i'm loaded");
 		state = TruckState.LOADED;
 		stateChanged();
 	}
@@ -98,7 +99,7 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 		
 		if(state == TruckState.LOADED){
 			transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_EMPTY, null);
-			System.out.println("Truck do empty");
+			//System.out.println("Truck do empty");
 			state = TruckState.DOINGNOTHING;
 			return true;
 		}
@@ -124,13 +125,13 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 		if(event == TEvent.TRUCK_GUI_EMPTY_FINISHED){
 			//state = TruckState.RETURNING;
 			this.msgTruckIsBack();
-			System.out.println("u fired me! TRUCK_GUI_EMPTY_FINISHED");
+			//System.out.println("u fired me! TRUCK_GUI_EMPTY_FINISHED");
 		}
 		if(event == TEvent.TRUCK_GUI_LOAD_FINISHED){
 			//if(currentGlass.size() > 0){
 				//glasses.add(currentGlass.remove(0));
 				this.msgGlassLoadedToTruck();
-				System.out.println("u fired me! TRUCK_GUI_LOAD_FINISHED");
+				//System.out.println("u fired me! TRUCK_GUI_LOAD_FINISHED");
 			//}else
 				//System.out.println("Loading error");
 		}
