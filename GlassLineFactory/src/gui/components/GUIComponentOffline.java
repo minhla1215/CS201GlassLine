@@ -183,7 +183,6 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_RELEASE_FINISHED, args);
 				animationState = AnimationState.IDLE;
 				//above added by monroe
-
 				nextComponent.addPart(part);
 				return;
 			}
