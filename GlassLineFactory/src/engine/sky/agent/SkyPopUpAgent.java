@@ -29,6 +29,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	public enum GlassState {Idle, OnBoard, Processing, Processed};
 	public enum MachineState {Idle, Processing, Done, Called};
 	public enum ConveyorState {Available, UnAvailable};
+	public enum PopUpState {Free, Conveyor, Machine1, Machine2};
 
 	private class MyGlass {
 		GlassType gt;
@@ -104,8 +105,10 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	public void msgGlassDone(SkyMachine machine, GlassType gt) {
 		if (machine == firstMachine.machine) {
 			firstMachine.state = MachineState.Done;
+
 		} else if (machine == secondMachine.machine) {
 			secondMachine.state =MachineState.Done;
+
 		}
 		//		currentGlass = new MyGlass(gt,GlassState.Processing);
 		//		System.out.println("CurrentGlass: " + currentGlass.gt + " CurrentGlass state: " + currentGlass.state);
@@ -155,7 +158,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 			return true;
 		}
 
-		if ((firstMachine.state == MachineState.Idle && secondMachine.state == MachineState.Idle) &&currentGlass==null && !informed) {
+		if ((firstMachine.state == MachineState.Idle && secondMachine.state == MachineState.Idle) &&currentGlass==null && !informed && !isBusy) {
 			informIAmAvailable();
 			return true;
 		}
@@ -237,7 +240,14 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 
+		try {
+			waitAnimation.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
+
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
@@ -256,6 +266,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		//TODO: here is buggy
 		informed = false;
 		isBusy = false;
+//		postConveyor.state = ConveyorState.UnAvailable;
 		stateChanged();
 	}
 
@@ -263,30 +274,31 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 		isBusy = true;
-		
+
 		System.out.println("Before waitAnimation : need loadFinished()");
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("After waitAnimation: loadFinished() called");
 		postConveyor.conveyor.msgPassingGlass(mg.gt);
 
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
-		
+
 		System.out.println("Before waitAnimation: need popup release glass()");
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("After waitAnimation:  popup release glass() called");
 		currentGlass = null;
 		informed = false;
 		isBusy = false;
+//		postConveyor.state = ConveyorState.UnAvailable;
 		stateChanged();
 	}
 
@@ -337,11 +349,10 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_DOWN && ((Integer)args[0]).equals(myGuiIndex)) {
 			waitAnimation.release();
 		}
-		
+
 		if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_RELEASE_FINISHED && ((Integer)args[0]).equals(myGuiIndex)) {
 			waitAnimation.release();
 		}
-
 	}
 
 }

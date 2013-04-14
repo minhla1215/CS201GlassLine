@@ -15,7 +15,7 @@ public class SkySensorAgent extends Agent {
 	private SensorState state;
 
 	private int myGuiIndex;
-	public enum SensorState {Informed, Detected, Released};
+	public enum SensorState {Informed, Entering, Exiting, Entered, Exited};
 	public enum Position {First, Second};
 
 	public SkySensorAgent(SkyConveyor c, Position p, int guiIndex, String name, Transducer tr) {
@@ -38,26 +38,40 @@ public class SkySensorAgent extends Agent {
 	}
 
 	/** Messages **/
-	public void msgGlassDetected() {
-		state = SensorState.Detected;
+	public void msgGlassEntering() {
+		state = SensorState.Entering;
+		stateChanged();
+	}
+	
+	public void msgGlassEntered() {
+		state = SensorState.Entered;
 		stateChanged();
 	}
 
 	public void msgGlassExiting() {
-		state = SensorState.Released;
+		state = SensorState.Exiting;
 		stateChanged();
+	}
+	
+	public void msgGlassExited() {
+		state = SensorState.Exited;
 	}
 
 	/** Scheduler **/
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		if (state == SensorState.Detected && pos == Position.First) {
+		if (state == SensorState.Entering && pos == Position.First) {
 			informConveyorEntering();
 			return true;
 		}
 
-		if (state == SensorState.Released && pos == Position.Second) {
+		if (state == SensorState.Exiting && pos == Position.Second) {
 			informConveyorExiting();
+			return true;
+		}
+		
+		if (state == SensorState.Entered && pos == Position.First) {
+			informConveyorEntered();
 			return true;
 		}
 
@@ -69,6 +83,12 @@ public class SkySensorAgent extends Agent {
 		System.out.println(this.name+" telling conveyor " + myConveyor.toString() + " glass entering");
 		myConveyor.msgGlassEntering();
 
+		state = SensorState.Informed;
+		stateChanged();
+	}
+	
+	private void informConveyorEntered() {
+		((SkyConveyorAgent) myConveyor).msgGlassEntered();
 		state = SensorState.Informed;
 		stateChanged();
 	}
@@ -98,10 +118,16 @@ public class SkySensorAgent extends Agent {
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED && ((Integer)args[0]).equals(myGuiIndex)) {
 			if (myGuiIndex%2 == 0) {
-				msgGlassDetected();
+				msgGlassEntering();
 			}
 			else {
 				msgGlassExiting();
+			}
+		}
+		
+		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED &&((Integer)args[0]).equals(myGuiIndex)) {
+			if (myGuiIndex%2==0) {
+				msgGlassEntered();
 			}
 		}
 
