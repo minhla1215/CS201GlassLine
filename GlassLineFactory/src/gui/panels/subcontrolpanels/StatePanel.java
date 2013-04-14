@@ -300,7 +300,6 @@ public class StatePanel extends JPanel
 		{
 			int newSpeed = (speedSlider.getValue() * (MAX_FRAMES_PER_SECOND - MIN_FRAMES_PER_SECOND)
 				/ (MAX_SLIDER_VALUE - MIN_SLIDER_VALUE) + MIN_FRAMES_PER_SECOND);
-
 			// get to the timer, set new speed
 			try
 			{

@@ -3,17 +3,12 @@ package engine.minh.agent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
 
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 import engine.agent.Agent;
 import engine.interfaces.ConveyorFamily;
-import engine.josh.agent.JoshFrontSensorAgent;
-import engine.util.Config;
 import engine.util.GlassType;
 
 enum ConveyorState {
@@ -109,7 +104,7 @@ public class BinAgent extends Agent implements ConveyorFamily {
 	//alex: change the type reference received
 	public void hereIsConfig(GlassType configs){
 			glasses.add(configs);
-		System.out.println("hereIsConfig" + glasses.size() + nextComponent.state);
+		//System.out.println("hereIsConfig" + glasses.size() + nextComponent.state);
 		stateChanged();
 	}
 	
