@@ -35,6 +35,9 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 
 
 
+	
+	//Messages
+	
 	@Override
 	public void msgPassingGlass(GlassType gt) {
 		currentGlass.add(gt);
@@ -42,6 +45,7 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 		stateChanged();
 	}
 
+	
 	@Override
 	public void msgIAmAvailable() {
 		// Empty method
@@ -60,7 +64,6 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
-
 		
 		if(glasses.size() == glassSize && state == TruckState.LOADING){
 			transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_EMPTY, null);

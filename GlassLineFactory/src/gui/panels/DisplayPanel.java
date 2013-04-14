@@ -1,3 +1,4 @@
+
 package gui.panels;
 
 import gui.components.GUIBin;
@@ -395,3 +396,4 @@ public class DisplayPanel extends JLayeredPane {
 		return parent;
 	}
 }
+

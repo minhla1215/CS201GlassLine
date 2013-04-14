@@ -105,7 +105,6 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 					    	bin.hereIsConfig(configList.remove(0));
 					    }
 					}, 500);
-				
 				}
 			}
 		}
