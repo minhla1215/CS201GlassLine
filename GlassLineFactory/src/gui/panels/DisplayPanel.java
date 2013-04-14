@@ -13,6 +13,7 @@ import gui.components.GUIShuttle;
 import gui.components.GUITruck;
 import gui.components.GuiComponent;
 import gui.test.GuiTestSM;
+import gui.test.JoshGuiTestSM;
 
 import java.awt.Dimension;
 import java.io.File;
@@ -76,7 +77,8 @@ public class DisplayPanel extends JLayeredPane {
 	int machineCount = 0;
 	int transferCount = 0;
 	
-	GuiTestSM test;
+	//GuiTestSM test;
+	JoshGuiTestSM test;
 	
 	ArrayList<GUIGlass> activePieces = new ArrayList<GUIGlass>();
 	
@@ -211,8 +213,9 @@ public class DisplayPanel extends JLayeredPane {
 			NOTE: You can observe the factory work on one piece of glass without agents by leaving the below line alone. Comment it out when you are ready to start working.
 		*/
 		//System.err.println("****** GUI TEST IS RUNNING. Comment out 2 lines in DisplayPanel.java (near line 212, at the end of 'setupComponents()') in order to stop GUI test from running in the future.");
-		test = new GuiTestSM(transducer);
-		
+		//test = new GuiTestSM(transducer);
+		test = new JoshGuiTestSM(transducer, parent);
+
 	}
 	
 	private void createPopUp(int x,int y)

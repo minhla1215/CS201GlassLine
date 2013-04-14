@@ -49,6 +49,12 @@ public class GlassType {
 	public boolean getProcessingHistory(int popUpNumber) {
 		return processed[popUpNumber];
 	}
+	
+	
+	//This returns which inlineMachines have already processed this piece of glass.
+	public boolean getInlineMachineProcessingHistory(int inlineMachineNumber) {
+		return inlineMachineProcessed[inlineMachineNumber];
+	}
 
 	
 	
