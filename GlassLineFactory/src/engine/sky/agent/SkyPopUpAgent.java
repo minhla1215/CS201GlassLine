@@ -175,6 +175,8 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 		
+		((SkyConveyorAgent) preConveyor.conveyor).msgIAmBusy(); 
+		
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 		try {
 			waitAnimation.acquire();
@@ -249,6 +251,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 			e.printStackTrace();
 		}
 		currentGlass = null;
+		informed = false;
 		stateChanged();
 	}
 	
