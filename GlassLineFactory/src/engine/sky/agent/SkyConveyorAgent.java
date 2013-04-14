@@ -5,6 +5,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import engine.agent.Agent;
+import engine.alex.agent.AlexConveyorAgent;
 import engine.interfaces.ConveyorFamily;
 import engine.interfaces.SkyConveyor;
 import engine.util.GlassType;
@@ -143,6 +144,11 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		args[0] = myGuiIndex;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
 		stateChanged();
+		
+		if (preCF instanceof AlexConveyorAgent) {
+			preCF.msgIAmNotAvailable();
+			informed = false;
+		}
 		
 	}
 
