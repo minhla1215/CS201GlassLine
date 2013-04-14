@@ -64,6 +64,11 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		PopUpAvailable = true;
 		stateChanged();
 	}
+	
+	public void msgIAmBusy() {
+		PopUpAvailable = false;
+		stateChanged();
+	}
 
 	public void msgGlassEntering() {
 		myState = ConveyorState.ReadyToMove;
