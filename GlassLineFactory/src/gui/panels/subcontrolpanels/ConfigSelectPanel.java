@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import engine.agent.BinAgent;
 import engine.util.Config;
@@ -20,6 +22,9 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import transducer.TChannel;
+import transducer.TEvent;
 
 /**
  * The ConfigSelectPanel class contains buttons allowing the user to select what
@@ -95,7 +100,12 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 				//testConfig.add(new Config(true,true,true, "Dragon"));
 				//bin.hereIsConfig(testConfig);
 				while(!configList.isEmpty()){
-				bin.hereIsConfig(configList.remove(0));
+					new Timer().schedule(new TimerTask(){
+					    public void run(){//this routine is like a message reception    
+					    	bin.hereIsConfig(configList.remove(0));
+					    }
+					}, 500);
+				
 				}
 			}
 		}

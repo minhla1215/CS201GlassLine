@@ -88,7 +88,7 @@ public class BinAgent extends Agent implements ConveyorFamily {
 		}
 		//glasses.remove(0);
 		nextComponent.state = ConveyorState.NOTHING;
-		stateChanged();
+		//stateChanged();
 	}
 
 	//Create GlassType out of Configs
