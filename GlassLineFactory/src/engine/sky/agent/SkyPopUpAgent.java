@@ -24,6 +24,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	private int myGuiIndex;
 	private Semaphore waitAnimation = new Semaphore(0,true);
 	private boolean informed;
+	private boolean isBusy = false;
 	
 	public enum GlassState {Idle, OnBoard, Processing, Processed};
 	public enum MachineState {Idle, Processing, Done, Called};
@@ -144,18 +145,16 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 					return true;
 				}
 			}
-
-			
 		} 
-		if (firstMachine.state == MachineState.Done && currentGlass==null) {
+		if (!isBusy && firstMachine.state == MachineState.Done && currentGlass==null) {
 			popUpAndSayReady(firstMachine);
 			return true;
-		} else if (secondMachine.state == MachineState.Done && currentGlass==null) {
+		} else if (!isBusy && secondMachine.state == MachineState.Done && currentGlass==null) {
 			popUpAndSayReady(secondMachine);
 			return true;
 		}
 		
-		if ((firstMachine.state == MachineState.Idle || secondMachine.state == MachineState.Idle) &&currentGlass==null && !informed) {
+		if ((firstMachine.state == MachineState.Idle && secondMachine.state == MachineState.Idle) &&currentGlass==null && !informed) {
 			informIAmAvailable();
 			return true;
 		}
@@ -174,6 +173,9 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		System.out.println("Calling popUpAndSayReady");
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
+		
+		((SkyConveyorAgent) preConveyor.conveyor).msgIAmBusy(); 
+		isBusy = true;
 		
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 		try {
@@ -209,6 +211,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		mm.state = MachineState.Processing;
 //		mg.state = GlassState.Processing;
 		currentGlass = null;
+
 		
 		try {
 			waitAnimation.acquire();
@@ -249,6 +252,9 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 			e.printStackTrace();
 		}
 		currentGlass = null;
+		//TODO: here is buggy
+		informed = false;
+		isBusy = false;
 		stateChanged();
 	}
 	

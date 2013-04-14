@@ -64,6 +64,11 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		PopUpAvailable = true;
 		stateChanged();
 	}
+	
+	public void msgIAmBusy() {
+		PopUpAvailable = false;
+		stateChanged();
+	}
 
 	public void msgGlassEntering() {
 		myState = ConveyorState.ReadyToMove;
@@ -117,7 +122,8 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	private void passGlass(GlassType gt) {
 		System.out.println(this + ": action - passGlass");
 		postCF.msgPassingGlass(gt);
-		myState = ConveyorState.ReadyToMove;
+		myState = ConveyorState.Moving;
+		startConveyor();
 		stateChanged();
 		
 	}
