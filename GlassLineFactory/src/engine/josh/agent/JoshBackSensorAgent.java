@@ -10,36 +10,34 @@ import transducer.TransducerDebugMode;
 import engine.agent.Agent;
 import engine.interfaces.ConveyorFamily;
 import engine.util.GlassType;
-import engine.interfaces.JoshBackSensor;
 import engine.interfaces.JoshConveyor;
+import engine.interfaces.JoshFrontSensor;
+import engine.josh.agent.JoshConveyorAgent.ConveyorState;
 
-public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshBackSensor{
 
-	int glassCapacity;
+public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFrontSensor{
+	
+	ConveyorFamily inlineMachine;
 	public JoshConveyorAgent conveyor;
-	public ConveyorFamily inlineMachine;
 	public Queue<GlassType> glassPanes;
-	public Boolean atCapacity;
 	public Boolean passingGlass;
 	int sensorNumber;
-	
+	enum SensorState{PRESSED, RELEASED, DONOTHING};
+	SensorState sensorState;
 	public Transducer transducer;
+	Object[] args;
 
 	
 	
 	
-	
-	//Initialize connections to null.  They'll all be set with setters later
 	public JoshBackSensorAgent(String n, int sNum, Transducer t){
-		glassCapacity = 1;
-		conveyor = null;
 		inlineMachine = null;
+		conveyor = null;
 		glassPanes = new LinkedList<GlassType>();
-		atCapacity = false;
 		passingGlass = false;
 		name = n;
 		sensorNumber = sNum;
-		
+		sensorState = SensorState.RELEASED;
 		transducer = t;
 		transducer.register(this, TChannel.SENSOR);
 	}
@@ -49,16 +47,15 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshBa
 	
 	
 	
+	//Messages///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	//Messages
-	
-	//The machine or popup before this sensor sends it a piece of glass
+
 	public void msgPassingGlass(GlassType gt) {
 		glassPanes.add(gt);
 		stateChanged();
 	}
 
-	//The conveyor in front of sensor tells it that it is available.
+
 	public void msgIAmAvailable() {
 		passingGlass = true;
 		stateChanged();
@@ -68,23 +65,34 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshBa
 	
 	
 	
-	//Scheduler
 	
-
+	
+	//Scheduler///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public boolean pickAndExecuteAnAction() {
-		//This sets the sensor to atCapacity = true;
-		if(glassPanes.size() >= glassCapacity){
-			holdSensor();
+		int glassOnConveyor = glassPanes.size() + conveyor.glassPanes.size() + conveyor.frontSensor.glassPanes.size();
+		
+		if(sensorState == SensorState.RELEASED && glassPanes.isEmpty() && glassOnConveyor <= 2){
+			sendIAmAvailable();
+			sensorState = SensorState.DONOTHING;
+			return true;
 		}
-		//This tells the popup or machine befor this sensor that the sensor is available.
-		if(!atCapacity){
-			releaseSensor();
+		
+//		if(conveyor.glassPanes.size() <= conveyor.conveyorCapacity){
+//			stopConveyor();
+//		}
+		
+		if(sensorState == SensorState.PRESSED && passingGlass){
+			moveConveyor();
+			sensorState = SensorState.DONOTHING;
+			return true;
 		}
-		//This passes glass to the conveyor.
-		if(passingGlass){
+		
+		if(sensorState == SensorState.RELEASED && passingGlass && !glassPanes.isEmpty()){
 			passGlass();
-			//Reinitialize();
+			return true;
 		}
+		
 		return false;
 	}
 
@@ -92,41 +100,35 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshBa
 	
 	
 	
-	//Actions
 	
-	void holdSensor(){
-		atCapacity = true;
-	}
+	//Actions///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	
-	void releaseSensor(){
-		if(inlineMachine != null){
-			inlineMachine.msgIAmAvailable();
-		}
-		atCapacity = false;
+	void sendIAmAvailable(){
+		inlineMachine.msgIAmAvailable();
 	}
 	
 	
 	void passGlass(){
 		if(!glassPanes.isEmpty()){
-			System.out.println("Glass " + glassPanes.peek().getGlassID() + " is on Sensor " + name);
-			
-			
-			//Backend: Note: The glass is actually passed once the piece slides off the sensor
-			//This is done in the eventFired when we recieve the SENSOR_GUI_RELEASED.
-			Reinitialize();
+			System.out.println(name + " passed glass.");
+			conveyor.msgPassingGlass(glassPanes.remove());
 			passingGlass = false;
-			
-			//FrontEnd
-			Object[] arg = new Object[1];
-			arg[0] = conveyor.conveyorNumber;
-			transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, arg);
+			sensorState = SensorState.RELEASED;
 		}
 	}
 	
-	void Reinitialize(){
-		atCapacity = false;
-		passingGlass = false;
+	
+	void moveConveyor(){
+		Object[] arg = new Object[1];
+		arg[0] = conveyor.conveyorNumber;
+		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, arg);
+	}
+	
+	
+	void stopConveyor(){
+		Object[] arg = new Object[1];
+		arg[0] = conveyor.conveyorNumber;
+		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, arg);
 	}
 
 	
@@ -135,34 +137,30 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshBa
 	
 	
 	
-	//TReciever
+	//EVENTS FIRED ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		
 		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED)
 		{
 			if (((Integer)args[0]) == sensorNumber){
-				//System.out.println("Sensor Pressed: " + sensorNumber);
+				sensorState = SensorState.PRESSED;
+				stateChanged();
 				
-				//This if is for testing purposes.  It places the first piece of glass into the sensor.
-				if(sensorNumber == 16){
-					
-					//This slots in the first piece of glass for testing
-					//msgPassingGlass(new GlassType(true, true, true, "The Glass"));
-					
-					if(!glassPanes.peek().getInlineMachineProcessingHistory(3)){
-						System.out.println(" Washer has yet to process the glass.");
+				
+				//This is for testing purposes
+				if(sensorNumber == 29){
+					if(glassPanes.peek().getInlineMachineProcessingHistory(3)){
+						System.out.println(" Washer has processed the glass.");
 					}
-					if(!glassPanes.peek().getInlineMachineProcessingHistory(4)){
-						System.out.println(" Painter has yet to process the glass.");
+					if(glassPanes.peek().getInlineMachineProcessingHistory(4)){
+						System.out.println(" Painter has processed the glass.");
 					}
-					if(!glassPanes.peek().getInlineMachineProcessingHistory(5)){
-						System.out.println(" UV_Lamp has yet to process the glass.");
+					if(glassPanes.peek().getInlineMachineProcessingHistory(5)){
+						System.out.println(" UV_Lamp has processed the glass.");
 					}
-					if(!glassPanes.peek().getInlineMachineProcessingHistory(6)){
-						System.out.println(" Oven has yet to process the glass.");
+					if(glassPanes.peek().getInlineMachineProcessingHistory(6)){
+						System.out.println(" Oven has processed the glass.");
 					}
-					
 				}
 				
 			}
@@ -171,11 +169,8 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshBa
 		{
 			if (((Integer)args[0]) == sensorNumber){
 				//System.out.println("Sensor Released: " + sensorNumber);
-				
-				//Once the glass is removed, it is passed to the next conveyor.
-				if(!glassPanes.isEmpty()){
-				conveyor.msgPassingGlass(glassPanes.remove());
-				}
+				sensorState = SensorState.RELEASED;
+				stateChanged();
 			}
 		}
 		
@@ -184,18 +179,17 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshBa
 	
 	
 	
-	
-	
-	
-	
-	//Extra Functions
-	
-	public void set_conveyor(JoshConveyorAgent c){
-		conveyor = c;
-	}
+	//Extra Functions///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void set_inlineMachine(ConveyorFamily i){
 		inlineMachine = i;
 	}
 	
+	public void set_conveyor(JoshConveyorAgent c){
+		conveyor = c;
+	}
 }
+
+
+
+

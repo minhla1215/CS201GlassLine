@@ -69,7 +69,7 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 
 
 		//currentGlass.add(gt);
-		transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_LOAD_GLASS, null);
+		//transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_LOAD_GLASS, null);
 		//state = TruckState.LOADING;
 		//stateChanged();
 	}
@@ -121,9 +121,7 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		// TODO Auto-generated method stub
 		if(event == TEvent.TRUCK_GUI_EMPTY_FINISHED){
-			//state = TruckState.RETURNING;
 			this.msgTruckIsBack();
-			System.out.println("u fired me! TRUCK_GUI_EMPTY_FINISHED");
 		}
 		if(event == TEvent.TRUCK_GUI_LOAD_FINISHED){
 			//if(currentGlass.size() > 0){
