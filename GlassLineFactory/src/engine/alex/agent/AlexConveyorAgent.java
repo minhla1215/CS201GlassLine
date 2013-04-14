@@ -44,26 +44,26 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 
 	public void msgStartSensorPressed() {
 		startSensorStates=SensorStates.pressed;
-		System.out.println("start sensor pressed");
+		//System.out.println("start sensor pressed");
 		stateChanged();
 	}
 
 	public void msgStartSensorReleased() { 
 		startSensorStates=SensorStates.released;
-		System.out.println("start sensor released");
+		//System.out.println("start sensor released");
 		stateChanged();
 
 	}
 
 	public void msgEndSensorPressed(){
 		endSensorStates=SensorStates.pressed;
-		System.out.println("end sensor pressed");
+		//System.out.println("end sensor pressed");
 		stateChanged();
 	}
 
 	public void msgEndSensorReleased(){
 		endSensorStates=SensorStates.released;
-		System.out.println("end sensor released");
+		//System.out.println("end sensor released");
 		stateChanged();
 
 	}
@@ -72,7 +72,7 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public void msgPassingGlass(GlassType gt) {
 		// TODO Auto-generated method stub
 		glasses.add(gt);	
-		System.out.println("adding a glasstype");
+		//System.out.println("adding a glasstype");
 		stateChanged();
 
 	}
@@ -81,13 +81,13 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public void msgIAmAvailable() {
 		// TODO Auto-generated method stub
 		allowPass=true;
-		System.out.println("glass is allowed to pass to next agent");
+		//System.out.println("glass is allowed to pass to next agent");
 		stateChanged();
 	}
 	
 	public void msgIAmNotAvailable(){
 		allowPass=false;
-		System.out.println("glass is allowed to pass to next agent");
+		//System.out.println("glass is allowed to pass to next agent");
 		stateChanged();
 	}
 
@@ -97,7 +97,6 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 		if (startSensorStates==SensorStates.released){
 			tellingPreCFImAvailable();
 			startSensorStates=SensorStates.doingNothing;
-			return true;
 		}
 
 
@@ -106,7 +105,6 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 			if (endSensorStates==SensorStates.released){
 				TurnOnConveyor();
 				startSensorStates=SensorStates.doingNothing;
-				return true;
 			}
 		}
 
@@ -117,17 +115,14 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 				TurnOnConveyor();
 				passingGlass();
 				endSensorStates=SensorStates.doingNothing;
-				return true;
 			}else 	{
 				TurnOffConveyor();
-				return true;
 			}
 		}
 
 		if (endSensorStates==SensorStates.released){
 			TurnOnConveyor();
 			endSensorStates=SensorStates.doingNothing;
-			return true;
 		}
 
 		return false;
@@ -185,13 +180,13 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public void TurnOnConveyor(){
 		conveyorOn=true;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, conveyorNumber);
-		System.out.println("Conveyor "+ conveyorNumber[0]+" is on");
+		//System.out.println("Conveyor "+ conveyorNumber[0]+" is on");
 	}
 
 	public void TurnOffConveyor(){
 		conveyorOn=false;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, conveyorNumber);
-		System.out.println("Conveyor "+ conveyorNumber[0]+" is off");
+		//System.out.println("Conveyor "+ conveyorNumber[0]+" is off");
 	}
 
 	public void passingGlass(){
