@@ -219,6 +219,12 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		}
 	}
 
+	@Override
+	public void msgIAmNotAvailable() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 }

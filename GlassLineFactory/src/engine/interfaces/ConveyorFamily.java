@@ -6,4 +6,6 @@ public interface ConveyorFamily {
 	public abstract void msgPassingGlass(GlassType gt);
 
 	public abstract void msgIAmAvailable();
+	
+	public abstract void msgIAmNotAvailable();
 }

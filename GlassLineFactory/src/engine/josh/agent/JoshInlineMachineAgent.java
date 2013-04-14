@@ -216,6 +216,18 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 	public boolean get_GUIPass(){
 		return GUIPass;
 	}
+
+
+
+
+
+
+
+	@Override
+	public void msgIAmNotAvailable() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }

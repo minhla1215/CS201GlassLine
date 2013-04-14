@@ -151,4 +151,15 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 		frontSensor = fs;
 	}
 
+
+
+
+
+
+	@Override
+	public void msgIAmNotAvailable() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

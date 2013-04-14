@@ -147,4 +147,13 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 	public void setPreviousComponent(ConveyorFamily previousC){
 		previousComponent = previousC;
 	}
+
+
+
+
+	@Override
+	public void msgIAmNotAvailable() {
+		// TODO Auto-generated method stub
+		
+	}
 }
