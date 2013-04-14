@@ -4,11 +4,11 @@ import engine.josh.agent.JoshBackSensorAgent;
 import engine.josh.agent.JoshConveyorAgent;
 import engine.josh.agent.JoshFrontSensorAgent;
 import engine.josh.agent.JoshInlineMachineAgent;
-import engine.agent.BinAgent;
-import engine.agent.TruckAgent;
 import engine.alex.agent.AlexConveyorAgent;
 import engine.alex.agent.AlexInlineMachineAgent;
 import engine.josh.agent.JoshConveyorAgent;
+import engine.minh.agent.BinAgent;
+import engine.minh.agent.TruckAgent;
 import engine.sky.agent.SkyConveyorAgent;
 import engine.sky.agent.SkyMachineAgent;
 import engine.sky.agent.SkyPopUpAgent;
@@ -265,7 +265,7 @@ public class FactoryPanel extends JPanel
 //		ovenAgent.setPreConveyor(conveyor13);
 //		ovenAgent.setNextConveyor(conveyor14);
 //		
-		truckAgent.setPreviousComponent(sensor29);
+		
 
 		// Linking - Sky
 		conveyor5.connectAgents(conveyor4, popUp0);
@@ -348,7 +348,7 @@ public class FactoryPanel extends JPanel
 		sensor29.set_conveyor(conveyor14);
 		sensor29.set_inlineMachine(truckAgent);
 
-
+		truckAgent.setPreviousComponent(sensor29);
 
 		// **************Start Thread *****************
 

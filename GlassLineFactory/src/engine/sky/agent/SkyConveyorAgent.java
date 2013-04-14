@@ -1,8 +1,11 @@
 package engine.sky.agent;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import engine.agent.Agent;
+import engine.alex.agent.AlexConveyorAgent;
 import engine.interfaces.ConveyorFamily;
 import engine.interfaces.SkyConveyor;
 import engine.util.GlassType;
@@ -23,6 +26,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	public enum ConveyorState {Idle, Waiting, ReadyToMove, Moving, Passing};
 	private boolean informed;
 	private boolean PopUpAvailable;
+	private boolean frontSensorReleased;
 	private ArrayList<GlassType> myGlasses;
 	
 	public SkyConveyorAgent(ConveyorFamily post, ConveyorFamily pre, int guiIndex, String n, Transducer tr) {
@@ -47,6 +51,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		PopUpAvailable = false;
 		myGlasses = new ArrayList<GlassType>();
 		myGuiIndex = guiIndex;
+		frontSensorReleased = true;
 	}
 	
 	/** Messages */
@@ -72,6 +77,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 
 	public void msgGlassEntering() {
 		myState = ConveyorState.ReadyToMove;
+		frontSensorReleased = false;
 		stateChanged();
 	}
 	
@@ -79,6 +85,10 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		System.out.println(this+ ": received msgGlassExited, glasses size = " + myGlasses.size() + " Conveyor in state: " + myState);
 		myState = ConveyorState.Passing;
 		stateChanged();
+	}
+	
+	public void msgGlassEntered() {
+
 	}
 
 	/** Scheduler */
@@ -90,7 +100,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 			return true;
 		}
 		
-		if (myGlasses.size()>0) {
+		if (myGlasses.size()>0) {	
 			if (myState == ConveyorState.ReadyToMove) {
 				startConveyor();
 				return true;
@@ -125,7 +135,6 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		myState = ConveyorState.Moving;
 		startConveyor();
 		stateChanged();
-		
 	}
 
 	private void stopConveyor() {
@@ -135,6 +144,11 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		args[0] = myGuiIndex;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
 		stateChanged();
+		
+		if (preCF instanceof AlexConveyorAgent) {
+			((AlexConveyorAgent) preCF).msgIAmNotAvailable();
+			informed = false;
+		}
 		
 	}
 

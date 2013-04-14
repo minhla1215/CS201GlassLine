@@ -33,7 +33,7 @@ public class SensorAgentTest extends TestCase {
 	
 	public void testMsgGlassDetectedForFirstSensor() {
 		SkySensorAgent sensor = new SkySensorAgent(conveyor, Position.First, 5, "Sensor5", transducer);
-		sensor.msgGlassDetected();
+		sensor.msgGlassEntering();
 		sensor.pickAndExecuteAnAction();
 		
 		assertTrue("the conveyor should have got a msgGlassEntering. Log reads: "
@@ -44,7 +44,7 @@ public class SensorAgentTest extends TestCase {
 	
 	public void testMsgGlassDetectedForSecondSensor() {
 		SkySensorAgent sensor = new SkySensorAgent(conveyor, Position.First, 5, "Sensor5", transducer);
-		sensor.msgGlassDetected();
+		sensor.msgGlassEntering();
 		sensor.pickAndExecuteAnAction();
 		
 		assertTrue("the conveyor should have got a msgGlassExiting. Log reads: "
@@ -57,16 +57,16 @@ public class SensorAgentTest extends TestCase {
 
 		assertEquals("conveyor should originally have log size of 0", 0, conveyor.log.size());
 		
-		sensor.msgGlassDetected();
+		sensor.msgGlassEntering();
 		sensor.pickAndExecuteAnAction();
 		
 		assertTrue("the conveyor should have got a msgGlassEntering. Log reads: "
 				+conveyor.log.toString(),
 				conveyor.log.containsString("msgGlassEntering"));
 		
-		sensor.msgGlassDetected();
+		sensor.msgGlassEntering();
 		sensor.pickAndExecuteAnAction();
-		sensor.msgGlassDetected();
+		sensor.msgGlassEntering();
 		sensor.pickAndExecuteAnAction();
 		
 		assertEquals("conveyor should  have log size of 3", 3, conveyor.log.size());

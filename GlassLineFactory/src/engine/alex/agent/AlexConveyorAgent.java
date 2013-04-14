@@ -84,6 +84,12 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 		System.out.println("glass is allowed to pass to next agent");
 		stateChanged();
 	}
+	
+	public void msgIAmNotAvailable(){
+		allowPass=false;
+		System.out.println("glass is allowed to pass to next agent");
+		stateChanged();
+	}
 
 	@Override
 	public boolean pickAndExecuteAnAction() {

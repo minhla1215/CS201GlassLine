@@ -1,4 +1,4 @@
-package engine.agent;
+package engine.minh.agent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
+import engine.agent.Agent;
 import engine.interfaces.ConveyorFamily;
 import engine.josh.agent.JoshFrontSensorAgent;
 import engine.util.Config;
@@ -79,8 +80,7 @@ public class BinAgent extends Agent implements ConveyorFamily {
 //			new Timer().schedule(new TimerTask(){
 //			    public void run(){//this routine is like a message reception    
 			    	transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
-//			}, 500);
-		    
+
 			
 		}else{
 			System.out.println("transducer is null");
