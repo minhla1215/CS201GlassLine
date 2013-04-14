@@ -84,13 +84,13 @@ public class SkySensorAgent extends Agent {
 		myConveyor.msgGlassEntering();
 
 		state = SensorState.Informed;
-		stateChanged();
+//		stateChanged();
 	}
 	
 	private void informConveyorEntered() {
 		((SkyConveyorAgent) myConveyor).msgGlassEntered();
 		state = SensorState.Informed;
-		stateChanged();
+//		stateChanged();
 	}
 
 	private void informConveyorExiting() {
@@ -98,7 +98,7 @@ public class SkySensorAgent extends Agent {
 		myConveyor.msgGlassExiting();
 		
 		state = SensorState.Informed;
-		stateChanged();
+//		stateChanged();
 
 	}
 

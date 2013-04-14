@@ -172,13 +172,14 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	/**Actions **/
 
 	private void informIAmAvailable() {
+		System.out.println(this +" Action: informIAmAvailable");
 		informed = true;
 		preConveyor.conveyor.msgIAmAvailable();
-		stateChanged();
+//		stateChanged();
 	}
 
 	private void popUpAndSayReady(MyMachine mm) {
-		System.out.println("Calling popUpAndSayReady");
+		System.out.println(this +"Action: popUpAndSayReady");
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 
@@ -186,6 +187,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		isBusy = true;
 
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
+		//Wait for pop up to move up
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
@@ -193,16 +195,17 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		}
 		mm.machine.msgIAmReady();
 		mm.state = MachineState.Called;
-//		stateChanged();
 	}
 
 	private void popUpAndPass(MyGlass mg, MyMachine mm) {
-		System.out.println("In Pop Up and pass");
+		System.out.println(this + "Action: popUpAndPass");
 
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 		
-		((SkyConveyorAgent) preConveyor.conveyor).msgIAmBusy(); 
+		((SkyConveyorAgent) preConveyor.conveyor).msgIAmBusy();
+		
+		//Wait for Popup Load Finished
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
@@ -210,6 +213,8 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		}
 
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
+		
+		//Wait for the Popup to move up
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
@@ -218,10 +223,10 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 		mm.machine.msgPassingGlass(mg.gt);
 		mm.state = MachineState.Processing;
-		//		mg.state = GlassState.Processing;
-		currentGlass = null;
+		
 
 
+		//Wait for the Machine to finish loading
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
@@ -230,19 +235,21 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_DOWN, args);
+		
+		//Wait for the Popup to move down
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
+		currentGlass = null;
 		isBusy = false;
-		stateChanged();
 
 	}
 
 	private void popDownAndPass(MyGlass mg) {
-		System.out.println(this + ": popping down and pass to next conveyor");
+		System.out.println(this + "Action: popDownAndPass");
 
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
@@ -272,11 +279,10 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 			e.printStackTrace();
 		}
 		currentGlass = null;
-		//TODO: here is buggy
 		informed = false;
 		isBusy = false;
 //		postConveyor.state = ConveyorState.UnAvailable;
-		stateChanged();
+//		stateChanged();
 	}
 
 	private void skipGlass(MyGlass mg) {
@@ -284,31 +290,29 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		args[0] = myGuiIndex;
 		isBusy = true;
 
-		System.out.println("Before waitAnimation : need loadFinished()");
+		//Wait for load to finish
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		System.out.println("After waitAnimation: loadFinished() called");
 		postConveyor.conveyor.msgPassingGlass(mg.gt);
 
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
 
-		System.out.println("Before waitAnimation: need popup release glass()");
+		//Wait for release to finish
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		System.out.println("After waitAnimation:  popup release glass() called");
 		currentGlass = null;
-		informed = false;
+//		informed = false;
 		isBusy = false;
 //		postConveyor.state = ConveyorState.UnAvailable;
-		stateChanged();
+//		stateChanged();
 	}
 
 	/** Utilities **/

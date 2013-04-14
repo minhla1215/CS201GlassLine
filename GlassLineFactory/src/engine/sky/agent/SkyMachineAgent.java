@@ -87,7 +87,6 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 
 	@Override
 	public void msgIAmReady() {
-		System.out.println("Pop up is ready to received the finished glass");
 		readyToPass = true;
 		stateChanged();
 	}

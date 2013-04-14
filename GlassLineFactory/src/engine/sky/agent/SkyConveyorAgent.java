@@ -58,7 +58,6 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	
 	@Override
 	public void msgPassingGlass(GlassType gt) {
-		System.out.println(this +": Received message: msgPassingGlass");
 		myGlasses.add(gt);
 		informed = false;
 		stateChanged();
@@ -82,7 +81,6 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	}
 	
 	public void msgGlassExiting() {
-		System.out.println(this+ ": received msgGlassExited, glasses size = " + myGlasses.size() + " Conveyor in state: " + myState);
 		myState = ConveyorState.Passing;
 		stateChanged();
 	}
@@ -132,9 +130,8 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	private void passGlass(GlassType gt) {
 		System.out.println(this + ": action - passGlass");
 		postCF.msgPassingGlass(gt);
-		myState = ConveyorState.Moving;
-		startConveyor();
-		stateChanged();
+		myState = ConveyorState.ReadyToMove;
+//		stateChanged();
 	}
 
 	private void stopConveyor() {
@@ -143,12 +140,12 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
-		stateChanged();
 		
 		if (preCF instanceof AlexConveyorAgent) {
 			((AlexConveyorAgent) preCF).msgIAmNotAvailable();
 			informed = false;
 		}
+//		stateChanged();
 		
 	}
 
@@ -158,7 +155,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
-		stateChanged();
+//		stateChanged();
 		
 	}
 
@@ -167,7 +164,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		System.out.println(this + ": action - informAvailability");
 		informed = true;
 		preCF.msgIAmAvailable();
-		stateChanged();
+//		stateChanged();
 	}
 	
 	/** Utilities **/
