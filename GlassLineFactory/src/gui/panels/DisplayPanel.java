@@ -1,3 +1,4 @@
+
 package gui.panels;
 
 import gui.components.GUIBin;
@@ -214,9 +215,12 @@ public class DisplayPanel extends JLayeredPane {
 		*/
 		//System.err.println("****** GUI TEST IS RUNNING. Comment out 2 lines in DisplayPanel.java (near line 212, at the end of 'setupComponents()') in order to stop GUI test from running in the future.");
 
+		//test = new GuiTestSM(transducer);
 		//test = new JoshGuiTestSM(transducer, parent);
 
 
+//		test = new GuiTestSM(transducer);
+		
 	}
 	
 	private void createPopUp(int x,int y)
@@ -392,3 +396,4 @@ public class DisplayPanel extends JLayeredPane {
 		return parent;
 	}
 }
+

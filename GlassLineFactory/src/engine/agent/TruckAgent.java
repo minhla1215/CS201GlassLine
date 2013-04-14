@@ -18,16 +18,18 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 	TruckState state;
 	
 	// the size of the truck
-	int glassSize = 3;
+	int glassSize = 1;
 
-	enum TruckState{LOADING,LEAVING,DOINGNOTHING};
+	enum TruckState{LOADING,LEAVING,DOINGNOTHING,LOADED};
 	
 	List <GlassType> glasses = Collections.synchronizedList(new ArrayList<GlassType>());
-	List <GlassType> currentGlass = Collections.synchronizedList(new ArrayList<GlassType>());
+	//List <GlassType> currentGlass = Collections.synchronizedList(new ArrayList<GlassType>());
 	String name;
 
 	public TruckAgent(Transducer t, String name){
+		
 		super(name, t);
+		transducer.register(this, TChannel.TRUCK);
 		previousComponent = null;
 		state = TruckState.LOADING;
 		stateChanged();
@@ -35,13 +37,44 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 
 
 
+	
+	//Messages
+	
 	@Override
 	public void msgPassingGlass(GlassType gt) {
-		currentGlass.add(gt);
-		state = TruckState.LOADING;
-		stateChanged();
+	
+		 glasses.add(gt);
+		//This is for testing purposes
+		 if(glasses.get(0).getInlineMachineProcessingHistory(0)){
+			 System.out.println(" Cutter has processed the glass.");
+		 }
+		 if(glasses.get(0).getInlineMachineProcessingHistory(1)){
+			 System.out.println(" Breakout has processed the glass.");
+		 }
+		 if(glasses.get(0).getInlineMachineProcessingHistory(2)){
+			 System.out.println(" ManualBreakout has processed the glass.");
+		 }
+		 if(glasses.get(0).getInlineMachineProcessingHistory(3)){
+			 System.out.println(" Washer has processed the glass.");
+		 }
+		 if(glasses.get(0).getInlineMachineProcessingHistory(4)){
+			 System.out.println(" Painter has processed the glass.");
+		 }
+		 if(glasses.get(0).getInlineMachineProcessingHistory(5)){
+			 System.out.println(" UV_Lamp has processed the glass.");
+		 }
+		 if(glasses.get(0).getInlineMachineProcessingHistory(6)){
+			 System.out.println(" Oven has processed the glass.");
+		 }
+
+
+		//currentGlass.add(gt);
+		transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_LOAD_GLASS, null);
+		//state = TruckState.LOADING;
+		//stateChanged();
 	}
 
+	
 	@Override
 	public void msgIAmAvailable() {
 		// Empty method
@@ -49,7 +82,8 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 	
 	
 	public void msgGlassLoadedToTruck(){
-		state = TruckState.LOADING;
+		System.out.println("i'm loaded");
+		state = TruckState.LOADED;
 		stateChanged();
 	}
 	
@@ -60,15 +94,15 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
-
 		
-		if(glasses.size() == glassSize && state == TruckState.LOADING){
+		if(state == TruckState.LOADED){
 			transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_EMPTY, null);
-			state = TruckState.LEAVING;
+			System.out.println("Truck do empty");
+			state = TruckState.DOINGNOTHING;
 			return true;
 		}
 		
-		if(glasses.size() < glassSize && state == TruckState.LOADING){
+		if(state == TruckState.LOADING){
 			tellIAmAvailable();
 			state = TruckState.DOINGNOTHING;
 			return true;
@@ -89,13 +123,15 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 		if(event == TEvent.TRUCK_GUI_EMPTY_FINISHED){
 			//state = TruckState.RETURNING;
 			this.msgTruckIsBack();
+			System.out.println("u fired me! TRUCK_GUI_EMPTY_FINISHED");
 		}
 		if(event == TEvent.TRUCK_GUI_LOAD_FINISHED){
-			if(currentGlass.size() > 0){
-				glasses.add(currentGlass.remove(0));
+			//if(currentGlass.size() > 0){
+				//glasses.add(currentGlass.remove(0));
 				this.msgGlassLoadedToTruck();
-			}else
-				System.out.println("Loading error");
+				System.out.println("u fired me! TRUCK_GUI_LOAD_FINISHED");
+			//}else
+				//System.out.println("Loading error");
 		}
 
 	}

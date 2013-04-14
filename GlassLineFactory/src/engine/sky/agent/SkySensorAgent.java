@@ -43,7 +43,7 @@ public class SkySensorAgent extends Agent {
 		stateChanged();
 	}
 
-	public void msgGlassExited() {
+	public void msgGlassExiting() {
 		state = SensorState.Released;
 		stateChanged();
 	}
@@ -97,12 +97,17 @@ public class SkySensorAgent extends Agent {
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED && ((Integer)args[0]).equals(myGuiIndex)) {
-			msgGlassDetected();
+			if (myGuiIndex%2 == 0) {
+				msgGlassDetected();
+			}
+			else {
+				msgGlassExiting();
+			}
 		}
 
-		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED && ((Integer)args[0]).equals(myGuiIndex)) {
-			msgGlassExited();
-		}
+//		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_PRESSED && ((Integer)args[0]).equals(myGuiIndex)) {
+//			msgGlassExited();
+//		}
 	}
 
 }

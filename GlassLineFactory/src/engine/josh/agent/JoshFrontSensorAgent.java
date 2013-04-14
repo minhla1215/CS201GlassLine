@@ -83,6 +83,9 @@ public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshF
 			passGlass();
 			//if(inlineMachine.)
 		}
+		if(passingGlass && !sensorPressed){
+			//holdSensor();
+		}
 		return false;
 	}
 
@@ -140,21 +143,21 @@ public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshF
 				stateChanged();
 				
 				
-				//This is for testing purposes
-				if(sensorNumber == 29){
-					if(glassPanes.peek().getInlineMachineProcessingHistory(3)){
-						System.out.println(" Washer has processed the glass.");
-					}
-					if(glassPanes.peek().getInlineMachineProcessingHistory(4)){
-						System.out.println(" Painter has processed the glass.");
-					}
-					if(glassPanes.peek().getInlineMachineProcessingHistory(5)){
-						System.out.println(" UV_Lamp has processed the glass.");
-					}
-					if(glassPanes.peek().getInlineMachineProcessingHistory(6)){
-						System.out.println(" Oven has processed the glass.");
-					}
-				}
+//				//This is for testing purposes
+//				if(sensorNumber == 29){
+//					if(glassPanes.peek().getInlineMachineProcessingHistory(3)){
+//						System.out.println(" Washer has processed the glass.");
+//					}
+//					if(glassPanes.peek().getInlineMachineProcessingHistory(4)){
+//						System.out.println(" Painter has processed the glass.");
+//					}
+//					if(glassPanes.peek().getInlineMachineProcessingHistory(5)){
+//						System.out.println(" UV_Lamp has processed the glass.");
+//					}
+//					if(glassPanes.peek().getInlineMachineProcessingHistory(6)){
+//						System.out.println(" Oven has processed the glass.");
+//					}
+//				}
 				
 			}
 		}

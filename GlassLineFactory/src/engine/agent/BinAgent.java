@@ -76,12 +76,10 @@ public class BinAgent extends Agent implements ConveyorFamily {
 	public void sendingGlass(){
 		nextComponent.nextComponent.msgPassingGlass(glasses.remove(0));
 		if(transducer != null){
-			new Timer().schedule(new TimerTask(){
-			    public void run(){//this routine is like a message reception    
+//			new Timer().schedule(new TimerTask(){
+//			    public void run(){//this routine is like a message reception    
 			    	transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
-			    }
-			}, 500);
-		    
+
 			
 		}else{
 			System.out.println("transducer is null");

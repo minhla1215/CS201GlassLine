@@ -165,12 +165,25 @@ public class ConfigSelectPanel extends JPanel implements ActionListener
 				//testConfig.add(new Config(true,true,true, "Dragon"));
 				//bin.hereIsConfig(testConfig);
 				while(!configList.isEmpty()){
+<<<<<<< HEAD
+					//new Timer().schedule(new TimerTask(){
+					  //  public void run(){//this routine is like a message reception   
+					    	
+					    	bin.hereIsConfig(configList.remove(0));
+					    //}
+				//	}, 500);
+=======
+<<<<<<< HEAD
+					bin.hereIsConfig(configList.remove(0));
+=======
 					new Timer().schedule(new TimerTask(){
 					    public void run(){//this routine is like a message reception    
 					    	bin.hereIsConfig(configList.remove(0));
 					    }
 					}, feedSpeed);
+>>>>>>> 12320e282ceec1eaa29a6f19c18ee15981c58c2e
 				
+>>>>>>> branch 'master' of https://github.com/usc-csci201-spring2013/cs201GlassLine_Team08.git
 				}
 			}
 		}
