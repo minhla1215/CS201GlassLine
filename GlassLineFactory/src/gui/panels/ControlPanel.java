@@ -176,6 +176,7 @@ public class ControlPanel extends JPanel implements TReceiver
 		this();
 
 		transducer = fTransducer;
+		transducer.register(this,TChannel.CONTROL_PANEL);
 
 		parent = fPanel;
 
@@ -203,7 +204,14 @@ public class ControlPanel extends JPanel implements TReceiver
 	 */
 	public synchronized void eventFired(TChannel channel, TEvent event, Object[] args)
 	{
-		// TODO implement as needed
+		if(event == TEvent.STOP){
+			parent.getGuiParent().getTimer().stop();
+			System.out.println("you fired me! Control_Panel_STOP");
+		}
+		if(event == TEvent.START){
+			parent.getGuiParent().getTimer().start();
+			System.out.println("you fired me! Control_Panel_START");
+		}
 	}
 
 	/**
