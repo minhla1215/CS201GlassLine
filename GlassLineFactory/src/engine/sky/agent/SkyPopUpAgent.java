@@ -98,7 +98,6 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	}
 
 	public void msgLoadFinished() {
-		System.out.println("Popup received msgLoadFinished().");
 		waitAnimation.release();
 	}
 
@@ -139,13 +138,10 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 				return true;
 			}
 			if (currentGlass.gt.getConfig(myGuiIndex) && currentGlass.state == GlassState.OnBoard) {
-				System.out.println("ready to send popUpAndPass");
 				if (firstMachine.state == MachineState.Idle) {
-					System.out.println("pop up and pass to first machine");
 					popUpAndPass(currentGlass, firstMachine);
 					return true;
 				} else if (secondMachine.state == MachineState.Idle) {
-					System.out.println("pop up and pass to second machine");
 					popUpAndPass(currentGlass, secondMachine);
 					return true;
 				}
@@ -267,20 +263,26 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 		
+		System.out.println("Before waitAnimation : need loadFinished()");
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
+		
+		System.out.println("After waitAnimation: loadFinished() called");
 		postConveyor.conveyor.msgPassingGlass(mg.gt);
 
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
+		
+		System.out.println("Before waitAnimation: need popup release glass()");
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		System.out.println("After waitAnimation:  popup release glass() called");
 		currentGlass = null;
 		informed = false;
 		isBusy = false;
