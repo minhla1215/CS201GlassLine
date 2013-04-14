@@ -45,26 +45,26 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 
 	public void msgStartSensorPressed() {
 		startSensorStates=SensorStates.pressed;
-//		System.out.println("start sensor pressed");
+		//		System.out.println("start sensor pressed");
 		stateChanged();
 	}
 
 	public void msgStartSensorReleased() { 
 		startSensorStates=SensorStates.released;
-//		System.out.println("start sensor released");
+		//		System.out.println("start sensor released");
 		stateChanged();
 
 	}
 
 	public void msgEndSensorPressed(){
 		endSensorStates=SensorStates.pressed;
-//		System.out.println("end sensor pressed");
+		//		System.out.println("end sensor pressed");
 		stateChanged();
 	}
 
 	public void msgEndSensorReleased(){
 		endSensorStates=SensorStates.released;
-//		System.out.println("end sensor released");
+		//		System.out.println("end sensor released");
 		stateChanged();
 
 	}
@@ -73,7 +73,7 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public void msgPassingGlass(GlassType gt) {
 		// TODO Auto-generated method stub
 		glasses.add(gt);	
-//		System.out.println("adding a glasstype");
+		//		System.out.println("adding a glasstype");
 		stateChanged();
 
 	}
@@ -82,13 +82,13 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public void msgIAmAvailable() {
 		// TODO Auto-generated method stub
 		allowPass=true;
-//		System.out.println("glass is allowed to pass to next agent");
+		//		System.out.println("glass is allowed to pass to next agent");
 		stateChanged();
 	}
-	
+
 	public void msgIAmNotAvailable(){
 		allowPass=false;
-//		System.out.println("glass is allowed to pass to next agent");
+		//		System.out.println("glass is allowed to pass to next agent");
 		stateChanged();
 	}
 
@@ -98,7 +98,6 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 		if (startSensorStates==SensorStates.released){
 			tellingPreCFImAvailable();
 			startSensorStates=SensorStates.doingNothing;
-			return true;
 		}
 
 
@@ -108,7 +107,6 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 				if(!conveyorOn){
 					TurnOnConveyor();}
 				startSensorStates=SensorStates.doingNothing;
-				return true;
 			}
 		}
 
@@ -117,15 +115,16 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 
 			if (allowPass==true){
 				if(!conveyorOn){
-				TurnOnConveyor();}
+					TurnOnConveyor();}
 				passingGlass();
 				endSensorStates=SensorStates.doingNothing;
-				return true;
 			}else 	{
 				if(conveyorOn){
-				TurnOffConveyor();
+					TurnOffConveyor();
+
 				}
 				return true;
+
 			}
 		}
 
@@ -143,17 +142,17 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public void tellingPreCFImAvailable() {//step1 telling previous CF im available
 		preAgent.msgIAmAvailable();
 
-//		if(conveyorNumber[0]==0){
-//			System.out.println("sending msg to binAgent saying I'm ready");
-//		}else if(conveyorNumber[0]==1){
-//			System.out.println("sending msg to cutterAgent saying I'm ready");
-//		}else if(conveyorNumber[0]==2){
-//			System.out.println("sending msg to conveyor1Agent saying I'm ready");
-//		}else if(conveyorNumber[0]==3){
-//			System.out.println("sending msg to breakoutAgent saying I'm ready");
-//		}else if(conveyorNumber[0]==4){
-//			System.out.println("sending msg to manualBreakoutAgent saying I'm ready");
-/*		}/*else if(conveyorNumber[0]==5){
+		//		if(conveyorNumber[0]==0){
+		//			System.out.println("sending msg to binAgent saying I'm ready");
+		//		}else if(conveyorNumber[0]==1){
+		//			System.out.println("sending msg to cutterAgent saying I'm ready");
+		//		}else if(conveyorNumber[0]==2){
+		//			System.out.println("sending msg to conveyor1Agent saying I'm ready");
+		//		}else if(conveyorNumber[0]==3){
+		//			System.out.println("sending msg to breakoutAgent saying I'm ready");
+		//		}else if(conveyorNumber[0]==4){
+		//			System.out.println("sending msg to manualBreakoutAgent saying I'm ready");
+		/*		}/*else if(conveyorNumber[0]==5){
 		conveyor4Agent.msgIAmAvailable();	
 		System.out.println("sending msg to conveyor4Agent saying I'm ready");
 	}else if(conveyorNumber==6){
@@ -191,29 +190,31 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public void TurnOnConveyor(){
 		conveyorOn=true;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, conveyorNumber);
-//		System.out.println("Conveyor "+ conveyorNumber[0]+" is on");
+		//		System.out.println("Conveyor "+ conveyorNumber[0]+" is on");
 	}
 
 	public void TurnOffConveyor(){
 		conveyorOn=false;
+		preAgent.msgIAmNotAvailable();
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, conveyorNumber);
-//		System.out.println("Conveyor "+ conveyorNumber[0]+" is off");
+		
+		//		System.out.println("Conveyor "+ conveyorNumber[0]+" is off");
 	}
 
 	public void passingGlass(){
 		GlassType temp=glasses.remove(0);
 		nextAgent.msgPassingGlass(temp);
 		allowPass=false;
-//		if(conveyorNumber[0]==0){
-//			System.out.println("passing glass " + temp.getGlassID() + " to cutter");
-//		}else if(conveyorNumber[0]==1){
-//			System.out.println("passing glass " + temp.getGlassID() + " to conveyor2");
-//		}else if(conveyorNumber[0]==2){
-//			System.out.println("passing glass " + temp.getGlassID()+ " to breakout");
-//		}else if(conveyorNumber[0]==3){
-//			System.out.println("passing glass " + temp.getGlassID()+ " to manualBreakout");
-//		}else if(conveyorNumber[0]==4){
-//			System.out.println("passing glass " + temp.getGlassID()+ " to conveyor5");
+		//		if(conveyorNumber[0]==0){
+		//			System.out.println("passing glass " + temp.getGlassID() + " to cutter");
+		//		}else if(conveyorNumber[0]==1){
+		//			System.out.println("passing glass " + temp.getGlassID() + " to conveyor2");
+		//		}else if(conveyorNumber[0]==2){
+		//			System.out.println("passing glass " + temp.getGlassID()+ " to breakout");
+		//		}else if(conveyorNumber[0]==3){
+		//			System.out.println("passing glass " + temp.getGlassID()+ " to manualBreakout");
+		//		}else if(conveyorNumber[0]==4){
+		//			System.out.println("passing glass " + temp.getGlassID()+ " to conveyor5");
 		/*}/*else if(conveyorNumber==5){
 		drillAgent.msgPassingGlass(temp);	
 		System.out.println("passing glass " + temp.getGlassID()+ " to drill popup");

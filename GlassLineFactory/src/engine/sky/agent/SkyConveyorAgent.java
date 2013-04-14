@@ -196,4 +196,10 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 
 	}
 
+	@Override
+	public void msgIAmNotAvailable() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

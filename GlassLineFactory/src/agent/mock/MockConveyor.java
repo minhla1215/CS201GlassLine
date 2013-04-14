@@ -35,4 +35,10 @@ public class MockConveyor extends MockAgent implements SkyConveyor, ConveyorFami
 				"Received message msgGlassExiting."));
 	}
 
+	@Override
+	public void msgIAmNotAvailable() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

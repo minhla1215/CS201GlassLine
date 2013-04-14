@@ -1,5 +1,3 @@
-
-
 package gui.panels;
 
 import engine.josh.agent.JoshBackSensorAgent;
@@ -267,7 +265,7 @@ public class FactoryPanel extends JPanel
 //		ovenAgent.setPreConveyor(conveyor13);
 //		ovenAgent.setNextConveyor(conveyor14);
 //		
-		truckAgent.setPreviousComponent(sensor29);
+		
 
 		// Linking - Sky
 		conveyor5.connectAgents(conveyor4, popUp0);
@@ -350,7 +348,7 @@ public class FactoryPanel extends JPanel
 		sensor29.set_conveyor(conveyor14);
 		sensor29.set_inlineMachine(truckAgent);
 
-
+		truckAgent.setPreviousComponent(sensor29);
 
 		// **************Start Thread *****************
 
@@ -483,5 +481,5 @@ public class FactoryPanel extends JPanel
 	public BinAgent getBinAgent(){
 		return bin;
 	}
-
 }
+

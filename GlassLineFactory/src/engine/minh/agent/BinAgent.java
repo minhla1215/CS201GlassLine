@@ -56,6 +56,12 @@ public class BinAgent extends Agent implements ConveyorFamily {
 	}
 
 	@Override
+	public void msgIAmNotAvailable() {
+		// TODO Auto-generated method stub
+		nextComponent.state = ConveyorState.NOTHING;
+		stateChanged();
+	}
+	@Override
 	public boolean pickAndExecuteAnAction() {
 		// the popup is waiting for glass.
 		if(nextComponent.state == ConveyorState.WAITING && glasses.size() > 0){
@@ -112,4 +118,9 @@ public class BinAgent extends Agent implements ConveyorFamily {
 	public void setNextComponent(ConveyorFamily nextC){
 		nextComponent = new NextComponent(nextC, ConveyorState.NOTHING);
 	}
+
+
+
+
+
 }

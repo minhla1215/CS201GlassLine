@@ -364,4 +364,10 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		}
 	}
 
+	@Override
+	public void msgIAmNotAvailable() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

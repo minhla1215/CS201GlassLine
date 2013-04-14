@@ -68,6 +68,14 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 //		System.out.println("glass is allowed to pass to next conveyor");
 		stateChanged();
 	}
+	
+	@Override
+	public void msgIAmNotAvailable() {
+		// TODO Auto-generated method stub
+		allowPass=false;
+//		System.out.println("glass is allowed to pass to next conveyor");
+		stateChanged();
+	}
 
 	public void msgWorkStationGuiActionFinished(){
 		myState=States.readytopass;
@@ -216,6 +224,10 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 	public void setNextConveyor(ConveyorFamily nextConveyor) {
 		this.nextConveyor = nextConveyor;
 	}
+
+
+
+	
 
 
 

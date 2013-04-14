@@ -32,4 +32,11 @@ public class MockPopUp extends MockAgent implements ConveyorFamily {
 				+ "GlassType " + gt.getGlassID() + "."));
 	}
 
+
+	@Override
+	public void msgIAmNotAvailable() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
