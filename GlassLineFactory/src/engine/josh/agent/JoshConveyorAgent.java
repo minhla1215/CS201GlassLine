@@ -13,17 +13,18 @@ import engine.util.GlassType;
 import engine.interfaces.JoshBackSensor;
 import engine.interfaces.JoshConveyor;
 import engine.interfaces.JoshFrontSensor;
+import engine.josh.agent.JoshFrontSensorAgent.SensorState;
 
 public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConveyor{
 
-	public int glassCapacity;
 	public JoshBackSensorAgent backSensor;
 	public JoshFrontSensorAgent frontSensor;
 	public Queue<GlassType> glassPanes;
-	public Boolean atCapacity;
 	public Boolean passingGlass;
 	public int conveyorNumber;
-	
+	public int conveyorCapacity = 2;
+	enum ConveyorState{ON, OFF, DONOTHING};
+	ConveyorState conveyorState;
 	public Transducer transducer;
 	Object[] args;
 	
@@ -31,26 +32,28 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	
 	//Connections are set later.  For now, null
 	public JoshConveyorAgent(String n, int cNum, Transducer t){
-		glassCapacity = 5;
 		backSensor = null;
 		frontSensor = null;
 		glassPanes = new LinkedList<GlassType>();
-		atCapacity = false;
 		passingGlass = false;
 		name = n;
 		conveyorNumber = cNum;
-		
+		conveyorState = ConveyorState.OFF;
 		transducer = t;
 		t.register(this, TChannel.CONVEYOR);
 	}
 
 	
+
 	
-	//Messages
+	
+	
+	//Messages//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	//Conveyor recieves a piece of glass from the backSensor
 	public void msgPassingGlass(GlassType gt) {
 		glassPanes.add(gt);
+		conveyorState = ConveyorState.ON;
 		stateChanged();
 	}
 
@@ -62,95 +65,83 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 
 	
 	
-	//Scheduler
+	
+	
+	
+	
+	//Scheduler///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean pickAndExecuteAnAction() {
-		//Conveyor stops if it cannot take more glass
-		if(glassPanes.size() >= glassCapacity){
-			stopConveyor();
+		if(conveyorState == ConveyorState.OFF && glassPanes.isEmpty()){
+			callIAmAvailable();
+			conveyorState = ConveyorState.DONOTHING;
+			return true;
 		}
-		//Tell the backSensor it is available if !atCapacity;
-		if(!atCapacity){
-			runConveyor();
-		}
-		//Passes glass to frontSensor
-		if(passingGlass){
+		
+		if(passingGlass && conveyorState == ConveyorState.ON && !glassPanes.isEmpty()){
 			passGlass();
+			return true;
 		}
+		
 		return false;
-
 	}
 
 	
 	
-	//Actions
+	
+	
+	
+	
+	//Actions//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	//Stops all movement on the conveyor
 	void stopConveyor(){
-		//Backend
-		atCapacity = true;
-		
-		//FrontEnd
 		Object[] arg = new Object[1];
 		arg[0] = conveyorNumber;
-		//transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, arg);
+		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, arg);
+		conveyorState = ConveyorState.OFF;
 	}
 	
-	
-	//Tells backSensor that it can take more glass
-	void runConveyor(){
-		//Backend
-		backSensor.msgIAmAvailable();
-		atCapacity = false;
-		
-		//FrontEnd
+	void moveConveyor(){
 		Object[] arg = new Object[1];
 		arg[0] = conveyorNumber;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, arg);
+		conveyorState = ConveyorState.ON;
 	}
 	
+	//Tells backSensor that it can take more glass
+	void callIAmAvailable(){
+		backSensor.msgIAmAvailable();
+	}
 	
 	//Passes glass to frontSensor
 	void passGlass(){
 		if(!glassPanes.isEmpty()){
-			System.out.println("Glass " + glassPanes.peek().getGlassID() + " is on Conveyor " + name);
-			Reinitialize();
+			System.out.println(name + " passed glass.");
 			frontSensor.msgPassingGlass(glassPanes.remove());
 			passingGlass = false;
+			conveyorState = ConveyorState.OFF;
 		}
 	}
 	
-	void Reinitialize()
-	{
-		atCapacity = false;
-		passingGlass = false;
-	}
 	
 	
 	
 	
-	//TReciever
+	
+	
+	
+	//TReciever///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if (channel == TChannel.CONVEYOR && event == TEvent.CONVEYOR_DO_START)
-		{
-			if (((Integer)args[0]) == conveyorNumber){
-				//System.out.println("Conveyor Started: " + conveyorNumber);
-			}
-		}
-		else if (channel == TChannel.CONVEYOR && event == TEvent.CONVEYOR_DO_STOP)
-		{
-			if (((Integer)args[0]) == conveyorNumber){
-				//System.out.println("Conveyor Stopped: " + conveyorNumber);
-			}
-		}
 		
 	}
 	
 	
 	
 	
-	//Extra Functions
+	
+	//Extra Functions///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void set_backSensor(JoshBackSensorAgent bs){
 		backSensor = bs;

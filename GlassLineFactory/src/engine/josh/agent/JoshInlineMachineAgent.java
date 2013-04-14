@@ -12,6 +12,7 @@ import engine.interfaces.ConveyorFamily;
 import engine.util.GlassType;
 import engine.interfaces.JoshBackSensor;
 import engine.interfaces.JoshFrontSensor;
+import engine.josh.agent.JoshFrontSensorAgent.SensorState;
 
 public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 
@@ -19,93 +20,129 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 	public JoshBackSensorAgent backSensor;
 	public Queue<GlassType> glassPanes;
 	public Boolean passingGlass;
-	public Boolean glassInWorkstation;
-	public Boolean glassReleased;
+	public Boolean releaseGlass;
 	public Boolean glassPaneProcessed;
 	public Boolean isACorner;
+	public Boolean GUIPass;
 	public int machineNumber;
 	public TChannel myTChannel;
-	
+	public enum MachineState{LOADED, UNLOADED, DONOTHING};
+	public MachineState machineState;
 	public Transducer transducer;
 	Object[] args;
 
+	
+	
 	public JoshInlineMachineAgent(Boolean isCorner, TChannel tChannel, String n, int mNum, Transducer t){
 		isACorner = isCorner;
 		frontSensor = null;
 		backSensor = null;
 		glassPanes = new LinkedList<GlassType>();
 		passingGlass = false;
-		glassInWorkstation = false;
-		glassReleased = true;
-		glassPaneProcessed = false;
+		releaseGlass = false;
+		glassPaneProcessed = true;
+		GUIPass = false;
 		myTChannel = tChannel;
 		name = n;
 		machineNumber = mNum;
-		
+		machineState = MachineState.UNLOADED;
 		transducer = t;
 		transducer.register(this, myTChannel);
 	}
 	
 	
 	
-	//Messages
+	
+	
+	
+	
+	//Messages///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public void msgPassingGlass(GlassType gt) {
 		glassPanes.add(gt);
-		glassReleased = false;
+		machineState = MachineState.LOADED;
 		stateChanged();
 	}
 
+	
 	public void msgIAmAvailable() {
 		passingGlass = true;
 		stateChanged();	
 	}
 	
 	
-	//Scheduler
+	
+	
+	
+	
+	
+	//Scheduler///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean pickAndExecuteAnAction() {
 		if(!isACorner){
-			if(glassPanes.isEmpty()){
+			System.out.println(name + " " + machineState.toString());
+			if(	machineState == MachineState.UNLOADED && glassPanes.isEmpty()){
 				checkFrontSensor();
+				machineState = MachineState.DONOTHING;
+				return true;
 			}
-			if(!glassPanes.isEmpty() && glassInWorkstation && !glassPaneProcessed){
+			
+			if(machineState == MachineState.LOADED && !glassPaneProcessed){
 				ProcessGlass();
+				machineState = MachineState.DONOTHING;
+				return true;
 			}
-			if(glassPaneProcessed){
-				ReleaseGlass();
+			
+			if(machineState == MachineState.LOADED && releaseGlass){
+					passGlass();
+					ReleaseGlass();
+					//machineState = MachineState.UNLOADED;
+				return true;
 			}
-			if(glassReleased && passingGlass){
-				passGlass();
-			}
-			return false;
 		}
+		
 		else{
-			if(glassPanes.isEmpty()){
+			if(	machineState == MachineState.UNLOADED && glassPanes.isEmpty()){
 				checkFrontSensor();
+				machineState = MachineState.DONOTHING;
+				return true;
 			}
-			if(!glassPanes.isEmpty()){
+			
+			if(machineState == MachineState.LOADED && passingGlass){
 				passGlass();
+				ReleaseGlass();
+				machineState = MachineState.UNLOADED;
+				
+				passingGlass = false;
+				releaseGlass = false;
+				glassPaneProcessed = true;
+				
+				return true;
 			}
-			return false;
 		}
+		
+		return false;
 
 	}
 
 	
 	
-	//Actions
+	
+	
+	
+	
+	//Actions///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	void checkFrontSensor(){
 		frontSensor.msgIAmAvailable();
 	}
 	
+
 	void ProcessGlass(){
-		//BackEnd
 		if(glassPanes.peek().getinlineMachineProcessingNeeded()[machineNumber]){
 			glassPanes.peek().setInlineMachineProcessingHistory(machineNumber);
-			
-			//FrontEnd
+			glassPaneProcessed = true;
+
 			Object[] arg = new Object[1];
 			arg[0] = frontSensor.sensorNumber;
 			transducer.fireEvent(myTChannel, TEvent.WORKSTATION_DO_ACTION, arg);
@@ -115,73 +152,58 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 		}
 	}
 	
+	
 	void ReleaseGlass(){
-		glassPaneProcessed = false;
-		
+		releaseGlass = false;
+
 		Object[] arg = new Object[1];
 		arg[0] = frontSensor.sensorNumber;
 		transducer.fireEvent(myTChannel, TEvent.WORKSTATION_RELEASE_GLASS, arg);
 	}
 	
+	
 	void passGlass(){
 		if(!glassPanes.isEmpty()){
-			System.out.println("Glass " + glassPanes.peek().getGlassID() + " is in Workstation " + name);
-			Reinitialize();
+			System.out.println(name + " passed glass.");
 			backSensor.msgPassingGlass(glassPanes.remove());
-			glassReleased = false;
+			passingGlass = false;
 		}
 	}
 	
-	void Reinitialize(){
-		passingGlass = false;
-		glassInWorkstation = false;
-		glassReleased = true;
-		glassPaneProcessed = false;
-	}
 	
 	
 	
 	
-	
+	//TRECIEVER EVENTS///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
-		if (channel == myTChannel && event == TEvent.WORKSTATION_DO_ACTION)
+		if (channel == myTChannel && event == TEvent.WORKSTATION_LOAD_FINISHED)
 		{
-				//System.out.println("WORKSTATION_DO_ACTION: " + myTChannel.toString());
-		}
-		else if (channel == myTChannel && event == TEvent.WORKSTATION_RELEASE_GLASS)
-		{
-				//System.out.println("WORKSTATION_RELEASE_GLASS: " + myTChannel.toString());
-				glassReleased = true;
-				glassInWorkstation = false;
+				System.out.println("WORKSTATION_LOAD_FINISHED: " + myTChannel.toString());
+				glassPaneProcessed = false;
+				//machineState = MachineState.LOADED;
 				stateChanged();
 		}
 		else if (channel == myTChannel && event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 		{
-				//System.out.println("WORKSTATION_GUI_ACTION_FINISHED: " + myTChannel.toString());
-				glassPaneProcessed = true;
-				stateChanged();
-		}
-		else if (channel == myTChannel && event == TEvent.WORKSTATION_DO_LOAD_GLASS)
-		{
-				//System.out.println("WORKSTATION_DO_LOAD_GLASS: " + myTChannel.toString());
-		}
-		else if (channel == myTChannel && event == TEvent.WORKSTATION_LOAD_FINISHED)
-		{
-				//System.out.println("WORKSTATION_LOAD_FINISHED: " + myTChannel.toString());
-				glassInWorkstation = true;
+				System.out.println("WORKSTATION_GUI_ACTION_FINISHED: " + myTChannel.toString());
+				machineState = MachineState.LOADED;
+				releaseGlass = true;
 				stateChanged();
 		}
 		else if (channel == myTChannel && event == TEvent.WORKSTATION_RELEASE_FINISHED)
-		{
-				//System.out.println("WORKSTATION_RELEASE_FINISHED: " + myTChannel.toString());
+		{		
+				machineState = MachineState.UNLOADED;
 				stateChanged();
 		}
 
 	}
 	
 	
-	//Extra Functions
+	
+	
+	
+	//Extra Functions///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void set_frontSensor(JoshFrontSensorAgent fs){
 		frontSensor = fs;
@@ -189,6 +211,10 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 	
 	public void set_backSensor(JoshBackSensorAgent bs){
 		backSensor = bs;
+	}
+	
+	public boolean get_GUIPass(){
+		return GUIPass;
 	}
 	
 

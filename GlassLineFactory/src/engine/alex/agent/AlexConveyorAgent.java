@@ -97,7 +97,6 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 		if (startSensorStates==SensorStates.released){
 			tellingPreCFImAvailable();
 			startSensorStates=SensorStates.doingNothing;
-			return true;
 		}
 
 
@@ -106,7 +105,6 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 			if (endSensorStates==SensorStates.released){
 				TurnOnConveyor();
 				startSensorStates=SensorStates.doingNothing;
-				return true;
 			}
 		}
 
@@ -117,17 +115,14 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 				TurnOnConveyor();
 				passingGlass();
 				endSensorStates=SensorStates.doingNothing;
-				return true;
 			}else 	{
 				TurnOffConveyor();
-				return true;
 			}
 		}
 
 		if (endSensorStates==SensorStates.released){
 			TurnOnConveyor();
 			endSensorStates=SensorStates.doingNothing;
-			return true;
 		}
 
 		return false;
