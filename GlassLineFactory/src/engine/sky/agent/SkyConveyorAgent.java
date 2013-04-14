@@ -125,7 +125,6 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		myState = ConveyorState.Moving;
 		startConveyor();
 		stateChanged();
-		
 	}
 
 	private void stopConveyor() {

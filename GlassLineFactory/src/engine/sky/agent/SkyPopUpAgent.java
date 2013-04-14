@@ -128,7 +128,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		if (currentGlass != null) {
-			if (!currentGlass.gt.getConfig(myGuiIndex) && postConveyor.state == ConveyorState.Available) {
+			if (!currentGlass.gt.getConfig(myGuiIndex) && postConveyor.state == ConveyorState.Available && currentGlass.state ==GlassState.OnBoard) {
 				skipGlass(currentGlass);
 				return true;
 			}
@@ -262,6 +262,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	private void skipGlass(MyGlass mg) {
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
+		isBusy = true;
 		
 		System.out.println("Before waitAnimation : need loadFinished()");
 		try {
@@ -287,8 +288,6 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		informed = false;
 		isBusy = false;
 		stateChanged();
-
-
 	}
 
 	/** Utilities **/
@@ -336,6 +335,10 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		}
 
 		if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_DOWN && ((Integer)args[0]).equals(myGuiIndex)) {
+			waitAnimation.release();
+		}
+		
+		if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_RELEASE_FINISHED && ((Integer)args[0]).equals(myGuiIndex)) {
 			waitAnimation.release();
 		}
 
