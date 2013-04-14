@@ -136,13 +136,13 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 
 	/** Action **/
 	public void informAvailability() {
-		System.out.println("Telling popup that machine " + this + " is available");
+		System.out.println(this + " : action: informAvailability");
 		pairedPopUp.msgIAmAvailable();
 		state = MachineState.DoingNothing;
 	}
 
 	public void loadGlass() {
-		System.out.println("loadGlass called " + this);
+		System.out.println(this + " : action : loadGlass");
 		Object[] args = new Object[1];
 		args[0] = new Integer(myGuiIndex);
 		if (type==MachineType.DRILL){
@@ -159,6 +159,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 	}
 
 	public void processGlass() {
+		System.out.println(this + " : actoin : processGlass");
 		Object[] args = new Object[1];
 		args[0] = new Integer(myGuiIndex);
 		if (type==MachineType.DRILL){
@@ -174,6 +175,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 	}
 
 	public void passGlass(GlassType gt) {
+		System.out.println(this + " : actoin : passGlass");
 		((SkyPopUpAgent)pairedPopUp).msgReturningGlass(this, myGlass);
 		readyToPass = false;
 		Object[] args = new Object[1];
@@ -206,7 +208,6 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 
 			}
 			if (event == TEvent.WORKSTATION_LOAD_FINISHED ) {
-				System.out.println("I'm Called: workstation_load_finished in MachineAgent: " + this);
 				this.msgLoadFinished();
 				((SkyPopUpAgent) pairedPopUp).msgLoadFinished();
 

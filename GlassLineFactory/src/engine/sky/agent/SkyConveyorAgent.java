@@ -23,7 +23,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	
 	private int myGuiIndex;
 	
-	public enum ConveyorState {Idle, Waiting, ReadyToMove, Moving, Passing};
+	public enum ConveyorState {Idle, Stopped, ReadyToMove, Moving, ReadyToPass};
 	private boolean informed;
 	private boolean PopUpAvailable;
 	private boolean frontSensorReleased;
@@ -75,13 +75,17 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	}
 
 	public void msgGlassEntering() {
-		myState = ConveyorState.ReadyToMove;
+		if (myState != ConveyorState.ReadyToPass) {
+			myState = ConveyorState.ReadyToMove;
+		}
+		
+
 		frontSensorReleased = false;
 		stateChanged();
 	}
 	
 	public void msgGlassExiting() {
-		myState = ConveyorState.Passing;
+		myState = ConveyorState.ReadyToPass;
 		stateChanged();
 	}
 	
@@ -90,7 +94,6 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	}
 
 	/** Scheduler */
-	//TODO : Conveyor States need to be fixed.
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		if ((myGlasses.size()==0 || myState == ConveyorState.Moving) && !informed) {
@@ -104,7 +107,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 				return true;
 			}
 			
-			if (myState == ConveyorState.Passing) {
+			if (myState == ConveyorState.ReadyToPass) {
 				if (PopUpAvailable) {
 					passGlass(myGlasses.remove(0));
 					return true;
@@ -115,7 +118,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 				}
 			}
 			
-			if(myState == ConveyorState.Waiting) {
+			if(myState == ConveyorState.Stopped) {
 				if (PopUpAvailable) {
 					passGlass(myGlasses.remove(0));
 					return true;
@@ -136,7 +139,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 
 	private void stopConveyor() {
 		System.out.println(this + ": action - stopConveyor");
-		myState = ConveyorState.Waiting;
+		myState = ConveyorState.Stopped;
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
