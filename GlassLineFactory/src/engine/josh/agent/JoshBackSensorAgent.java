@@ -22,12 +22,12 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFr
 	public Queue<GlassType> glassPanes;
 	public Boolean passingGlass;
 	int sensorNumber;
+	public Boolean sensorPressed = false;
+	public Boolean conveyorMoving = false;
 	enum SensorState{PRESSED, RELEASED, DONOTHING};
 	SensorState sensorState;
 	public Transducer transducer;
 	Object[] args;
-
-	
 	
 	
 	public JoshBackSensorAgent(String n, int sNum, Transducer t){
@@ -43,10 +43,6 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFr
 	}
 	
 	
-	
-	
-	
-	
 	//Messages///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 
@@ -60,38 +56,55 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFr
 		passingGlass = true;
 		stateChanged();
 	}
+	
+	
+	public void msgIAmNotAvailable(){
+		passingGlass = false;
+		stateChanged();
+	}
 
-	
-	
-	
-	
-	
 	
 	//Scheduler///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean pickAndExecuteAnAction() {
-		int glassOnConveyor = glassPanes.size() + conveyor.glassPanes.size() + conveyor.frontSensor.glassPanes.size();
-		
-		if(sensorState == SensorState.RELEASED && glassPanes.isEmpty() && glassOnConveyor <= 2){
+		if(sensorState == SensorState.RELEASED ){
 			sendIAmAvailable();
 			sensorState = SensorState.DONOTHING;
 			return true;
 		}
 		
-//		if(conveyor.glassPanes.size() <= conveyor.conveyorCapacity){
-//			stopConveyor();
-//		}
 		
-		if(sensorState == SensorState.PRESSED && passingGlass){
-			moveConveyor();
+		if(sensorState == SensorState.PRESSED && conveyorMoving && !passingGlass){
+			stopConveyor();
 			sensorState = SensorState.DONOTHING;
 			return true;
 		}
 		
-		if(sensorState == SensorState.RELEASED && passingGlass && !glassPanes.isEmpty()){
+		
+		if(sensorState == SensorState.PRESSED && passingGlass){
+			if(!conveyorMoving){
+				moveConveyor();
+			}
 			passGlass();
+			sensorState = SensorState.RELEASED;
 			return true;
 		}
+		
+		
+		/////////////////////NEW STUFF////////////////////////////////////
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		////////////////////////////////////////////////////////////////////
 		
 		return false;
 	}
@@ -113,12 +126,13 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFr
 			System.out.println(name + " passed glass.");
 			conveyor.msgPassingGlass(glassPanes.remove());
 			passingGlass = false;
-			sensorState = SensorState.RELEASED;
 		}
 	}
 	
 	
 	void moveConveyor(){
+		conveyorMoving = true;
+		
 		Object[] arg = new Object[1];
 		arg[0] = conveyor.conveyorNumber;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, arg);
@@ -126,6 +140,8 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFr
 	
 	
 	void stopConveyor(){
+		conveyorMoving = false;
+		
 		Object[] arg = new Object[1];
 		arg[0] = conveyor.conveyorNumber;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, arg);
@@ -144,32 +160,16 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFr
 		{
 			if (((Integer)args[0]) == sensorNumber){
 				sensorState = SensorState.PRESSED;
+				sensorPressed = true;
 				stateChanged();
-				
-				
-				//This is for testing purposes
-				if(sensorNumber == 29){
-					if(glassPanes.peek().getInlineMachineProcessingHistory(3)){
-						System.out.println(" Washer has processed the glass.");
-					}
-					if(glassPanes.peek().getInlineMachineProcessingHistory(4)){
-						System.out.println(" Painter has processed the glass.");
-					}
-					if(glassPanes.peek().getInlineMachineProcessingHistory(5)){
-						System.out.println(" UV_Lamp has processed the glass.");
-					}
-					if(glassPanes.peek().getInlineMachineProcessingHistory(6)){
-						System.out.println(" Oven has processed the glass.");
-					}
-				}
 				
 			}
 		}
 		else if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED)
 		{
-			if (((Integer)args[0]) == sensorNumber){
-				//System.out.println("Sensor Released: " + sensorNumber);
+			if (((Integer)args[0]) == sensorNumber){;
 				sensorState = SensorState.RELEASED;
+				sensorPressed = false;
 				stateChanged();
 			}
 		}
@@ -193,12 +193,6 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFr
 
 
 
-
-	@Override
-	public void msgIAmNotAvailable() {
-		// TODO Auto-generated method stub
-		
-	}
 }
 
 

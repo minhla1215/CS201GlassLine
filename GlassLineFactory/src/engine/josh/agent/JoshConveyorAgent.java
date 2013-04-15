@@ -30,7 +30,6 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	
 	
 	
-	//Connections are set later.  For now, null
 	public JoshConveyorAgent(String n, int cNum, Transducer t){
 		backSensor = null;
 		frontSensor = null;
@@ -50,17 +49,22 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	
 	//Messages//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	//Conveyor recieves a piece of glass from the backSensor
 	public void msgPassingGlass(GlassType gt) {
 		glassPanes.add(gt);
 		conveyorState = ConveyorState.ON;
 		stateChanged();
 	}
 
-	//frontSensor tells conveyor that it is available.
+
 	public void msgIAmAvailable() {
 		passingGlass = true;
 		stateChanged();	
+	}
+	
+	
+	public void msgIAmNotAvailable(){
+		passingGlass = false;
+		stateChanged();
 	}
 
 	
@@ -72,16 +76,32 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	//Scheduler///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean pickAndExecuteAnAction() {
-		if(conveyorState == ConveyorState.OFF && glassPanes.isEmpty()){
+		if(conveyorState == ConveyorState.OFF){
 			callIAmAvailable();
 			conveyorState = ConveyorState.DONOTHING;
 			return true;
 		}
 		
-		if(passingGlass && conveyorState == ConveyorState.ON && !glassPanes.isEmpty()){
+		if(passingGlass && conveyorState == ConveyorState.ON){
 			passGlass();
+			conveyorState = ConveyorState.OFF;
 			return true;
 		}
+		
+		/////////////////////NEW STUFF////////////////////////////////////
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		////////////////////////////////////////////////////////////////////
 		
 		return false;
 	}
@@ -94,33 +114,17 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	
 	//Actions//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	//Stops all movement on the conveyor
-	void stopConveyor(){
-		Object[] arg = new Object[1];
-		arg[0] = conveyorNumber;
-		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, arg);
-		conveyorState = ConveyorState.OFF;
-	}
-	
-	void moveConveyor(){
-		Object[] arg = new Object[1];
-		arg[0] = conveyorNumber;
-		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, arg);
-		conveyorState = ConveyorState.ON;
-	}
-	
-	//Tells backSensor that it can take more glass
 	void callIAmAvailable(){
 		backSensor.msgIAmAvailable();
 	}
 	
-	//Passes glass to frontSensor
+	
+	
 	void passGlass(){
 		if(!glassPanes.isEmpty()){
 			System.out.println(name + " passed glass.");
 			frontSensor.msgPassingGlass(glassPanes.remove());
 			passingGlass = false;
-			conveyorState = ConveyorState.OFF;
 		}
 	}
 	
@@ -153,13 +157,5 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 
 
 
-
-
-
-	@Override
-	public void msgIAmNotAvailable() {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

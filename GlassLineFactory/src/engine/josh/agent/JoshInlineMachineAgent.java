@@ -19,14 +19,15 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 	public JoshFrontSensorAgent frontSensor;
 	public JoshBackSensorAgent backSensor;
 	public Queue<GlassType> glassPanes;
+	public GlassType theGlass;
 	public Boolean passingGlass;
 	public Boolean releaseGlass;
 	public Boolean glassPaneProcessed;
 	public Boolean isACorner;
-	public Boolean GUIPass;
+	public Boolean machineIsEmpty;
 	public int machineNumber;
 	public TChannel myTChannel;
-	public enum MachineState{LOADED, UNLOADED, DONOTHING};
+	public enum MachineState{LOADING, UNLOADING, EMPTY, DONOTHING};
 	public MachineState machineState;
 	public Transducer transducer;
 	Object[] args;
@@ -40,12 +41,12 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 		glassPanes = new LinkedList<GlassType>();
 		passingGlass = false;
 		releaseGlass = false;
-		glassPaneProcessed = true;
-		GUIPass = false;
+		glassPaneProcessed = false;
+		machineIsEmpty = true;
 		myTChannel = tChannel;
 		name = n;
 		machineNumber = mNum;
-		machineState = MachineState.UNLOADED;
+		machineState = MachineState.EMPTY;
 		transducer = t;
 		transducer.register(this, myTChannel);
 	}
@@ -60,7 +61,10 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 
 	public void msgPassingGlass(GlassType gt) {
 		glassPanes.add(gt);
-		machineState = MachineState.LOADED;
+		machineIsEmpty = false;
+		if(isACorner){
+			machineState = MachineState.LOADING;
+		}
 		stateChanged();
 	}
 
@@ -68,6 +72,12 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 	public void msgIAmAvailable() {
 		passingGlass = true;
 		stateChanged();	
+	}
+	
+	
+	public void msgIAmNotAvailable(){
+		passingGlass = false;
+		stateChanged();
 	}
 	
 	
@@ -80,42 +90,58 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 	
 	public boolean pickAndExecuteAnAction() {
 		if(!isACorner){
-			System.out.println(name + " " + machineState.toString());
-			if(	machineState == MachineState.UNLOADED && glassPanes.isEmpty()){
-				checkFrontSensor();
-				machineState = MachineState.DONOTHING;
+			
+			if(	machineState == MachineState.EMPTY && glassPanes.isEmpty() && machineIsEmpty){
+				if(!backSensor.sensorPressed){
+					checkFrontSensor();
+					machineState = MachineState.DONOTHING;
+				}				
+				else{					
+						frontSensor.msgIAmNotAvailable();
+				}
 				return true;
 			}
 			
-			if(machineState == MachineState.LOADED && !glassPaneProcessed){
-				ProcessGlass();
-				machineState = MachineState.DONOTHING;
-				return true;
-			}
 			
-			if(machineState == MachineState.LOADED && releaseGlass){
-					passGlass();
+			if(machineState == MachineState.LOADING && !glassPaneProcessed){
+				if(glassPanes.peek().getinlineMachineProcessingNeeded()[machineNumber]){
+					ProcessGlass();
+					machineState = MachineState.DONOTHING;
+				}
+				else{
 					ReleaseGlass();
-					//machineState = MachineState.UNLOADED;
+					passGlass();
+					machineState = MachineState.EMPTY;
+				}
+				return true;
+			}
+			
+			
+			if(machineState == MachineState.LOADING && releaseGlass && passingGlass){
+				ReleaseGlass();
+				passGlass();
+				machineState = MachineState.EMPTY;
 				return true;
 			}
 		}
 		
 		else{
-			if(	machineState == MachineState.UNLOADED && glassPanes.isEmpty()){
-				checkFrontSensor();
-				machineState = MachineState.DONOTHING;
+			if(	machineState == MachineState.EMPTY && glassPanes.isEmpty() && passingGlass){
+				if(!backSensor.sensorPressed){
+					checkFrontSensor();
+					System.out.println(name + " sent I am available");
+					machineState = MachineState.DONOTHING;
+				}
+				else{
+						frontSensor.msgIAmNotAvailable();
+				}
 				return true;
 			}
 			
-			if(machineState == MachineState.LOADED && passingGlass){
+			if(machineState == MachineState.LOADING && passingGlass){
 				passGlass();
 				ReleaseGlass();
-				machineState = MachineState.UNLOADED;
-				
-				passingGlass = false;
-				releaseGlass = false;
-				glassPaneProcessed = true;
+				machineState = MachineState.EMPTY;
 				
 				return true;
 			}
@@ -134,7 +160,7 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 	//Actions///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	void checkFrontSensor(){
-		frontSensor.msgIAmAvailable();
+			frontSensor.msgIAmAvailable();
 	}
 	
 
@@ -143,12 +169,7 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 			glassPanes.peek().setInlineMachineProcessingHistory(machineNumber);
 			glassPaneProcessed = true;
 
-			Object[] arg = new Object[1];
-			arg[0] = frontSensor.sensorNumber;
-			transducer.fireEvent(myTChannel, TEvent.WORKSTATION_DO_ACTION, arg);
-		}
-		else{
-			ReleaseGlass();
+			transducer.fireEvent(myTChannel, TEvent.WORKSTATION_DO_ACTION, null);
 		}
 	}
 	
@@ -179,21 +200,20 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if (channel == myTChannel && event == TEvent.WORKSTATION_LOAD_FINISHED)
 		{
-				System.out.println("WORKSTATION_LOAD_FINISHED: " + myTChannel.toString());
 				glassPaneProcessed = false;
-				//machineState = MachineState.LOADED;
+				machineState = MachineState.LOADING;
 				stateChanged();
 		}
 		else if (channel == myTChannel && event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 		{
-				System.out.println("WORKSTATION_GUI_ACTION_FINISHED: " + myTChannel.toString());
-				machineState = MachineState.LOADED;
+				machineState = MachineState.LOADING;
 				releaseGlass = true;
 				stateChanged();
 		}
 		else if (channel == myTChannel && event == TEvent.WORKSTATION_RELEASE_FINISHED)
 		{		
-				machineState = MachineState.UNLOADED;
+				machineState = MachineState.EMPTY;
+				machineIsEmpty = true;
 				stateChanged();
 		}
 
@@ -213,21 +233,9 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 		backSensor = bs;
 	}
 	
-	public boolean get_GUIPass(){
-		return GUIPass;
-	}
 
 
 
-
-
-
-
-	@Override
-	public void msgIAmNotAvailable() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 
 }
