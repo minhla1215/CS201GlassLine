@@ -22,3 +22,18 @@ Added classes:
 	- Conveyor: the interface for conveyors with message reception from sensors
 	- Machine: the interface for workstations
 	
+
+
+
+
+V.1:
+
+The goal of V.1 is to have the entire factory line up and running.  It must cover all normative
+scenarios.  Our agents are placed into separate packages.
+
+The package names:
+
+engine.josh.agent
+engine.minh.agent
+engine.sky.agent
+engine.alex.agent
