@@ -25,6 +25,7 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 
 	public AlexInlineMachineAgent(String name,Transducer t,int i){
 		super(name,t);
+		glass=null;
 		machineNumber=i;
 		allowPass=false;
 		myState=States.noparts;
@@ -58,7 +59,7 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 		// TODO Auto-generated method stub
 		glass=gt;
 
-//		System.out.println("adding a glasstype");
+		System.out.println("adding a glasstype");
 
 		stateChanged();
 	}
@@ -136,6 +137,7 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 	//action
 	public void tellingPreCFImAvailable() {
 		preConveyor.msgIAmAvailable();	
+		System.out.println(this + ": tells "+ preConveyor + " tellingPreCFImAvailable()");
 	}
 
 	public void workingStationDoAction(){
@@ -155,11 +157,13 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 			transducer.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_DO_ACTION, null );
 		}
 		//System.out.println("doing workstation animation ");
+		System.out.println(this + ": workingStationDoAction()");
 	}
 
 	public void noActionNeeded(){
 		myState=States.readytopass;
 		stateChanged();
+		System.out.println(this + ": noActionNeeded()");
 //		System.out.println("no action needed in " + this.getName());
 	}
 	
@@ -182,6 +186,8 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 		}else if(machineNumber==6){
 			transducer.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_RELEASE_GLASS, null );
 		}
+		glass=null;
+		System.out.println(this + " passingGlass()");
 	}
 
 	@Override
