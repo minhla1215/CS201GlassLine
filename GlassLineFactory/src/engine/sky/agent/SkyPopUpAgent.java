@@ -1,5 +1,7 @@
 package engine.sky.agent;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
 import engine.agent.Agent;
@@ -206,8 +208,9 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		((SkyConveyorAgent) preConveyor.conveyor).msgIAmBusy();
 		
 		
-		System.out.println(this + ": before semaphore to finish load");
+		System.out.println(this + ": before semaphore to finish load, popup value = " + waitAnimation.availablePermits());
 		
+			
 		//Wait for Popup Load Finished
 		try {
 			waitAnimation.acquire();
@@ -362,6 +365,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED &&((Integer)args[0]).equals(myGuiIndex)) {
 			waitAnimation.release();
+			((SkyConveyorAgent) preConveyor.conveyor).msgFullyLoaded();
 		}
 
 		if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_MOVED_UP && ((Integer)args[0]).equals(myGuiIndex)) {
