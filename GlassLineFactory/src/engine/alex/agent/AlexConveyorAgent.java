@@ -222,7 +222,7 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public void TurnOffConveyor(){
 		conveyorOn=false;
 		
-		//preAgent.msgIAmNotAvailable();
+		preAgent.msgIAmNotAvailable();
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, conveyorNumber);
 		
 		System.out.println(this + ": TurnOffConveyor()");
