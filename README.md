@@ -1,4 +1,4 @@
-personalGlassLine
+TEAM 8 GLASSLINE
 =================
 V.0:
 
@@ -28,12 +28,27 @@ Added classes:
 
 V.1:
 
-The goal of V.1 is to have the entire factory line up and running.  It must cover all normative
-scenarios.  Our agents are placed into separate packages.
+The goal of V.1 is to have the entire factory line up and running.  It must cover all normative scenarios.  Our agents are placed into separate packages.
 
-The package names:
+Alex worked on all conveyor families before the popups.  Sky worked on all popup conveyor families.  Josh worked on all conveyor families after the popups.  Minh worked on the GUI and converted his personal agents to make the Bin and Truck classes.
 
-engine.josh.agent
-engine.minh.agent
-engine.sky.agent
-engine.alex.agent
+THE PACKAGE NAMES:
+
+-	engine.josh.agent
+-	engine.minh.agent
+-	engine.sky.agent
+-	engine.alex.agent
+
+ADDED CLASSES:
+-	In engine.util we added classes that pertain  to Glass information.
+-	In gui.panels.subcontrolpanels we added classes to refine the GUI interface and customize the types of glass we send down the line.
+
+HOW TO USE THE GUI:
+-	Under the Glass Select tab, enter a name for the GlassType and check all of the boxes for the machines you want it to be processed by.  Press Create the Glass.
+-	Switch to the Produce Config. tab you can now view all of the GlassTypes you have created.
+-	Enter a number next to each GlassType then click Produce to have each of those GlassTypes placed onto the line.
+-	Clicking delete will erase the associated GlassType.  You will have to switch tabs to have the display refresh.
+
+NOTE:
+-	All agents are initialized inside FactoryPanel, under gui.panels
+
