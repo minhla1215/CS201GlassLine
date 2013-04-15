@@ -110,6 +110,13 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		// TODO Auto-generated method stub
+		if(glasses.isEmpty()){
+			if(!conveyorOn){
+			TurnOnConveyor();
+			}
+		}
+		
+		
 		if (startSensorStates==SensorStates.released){
 			tellingPreCFImAvailable();
 			startSensorStates=SensorStates.doingNothing;
@@ -157,6 +164,7 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 
 	public void tellingPreCFImAvailable() {//step1 telling previous CF im available
 		preAgent.msgIAmAvailable();
+		System.out.println(this +": tells "+preAgent+" tellingPreCFImAvailable() ");
 
 		//		if(conveyorNumber[0]==0){
 		//			System.out.println("sending msg to binAgent saying I'm ready");
@@ -206,6 +214,7 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public void TurnOnConveyor(){
 		conveyorOn=true;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, conveyorNumber);
+		System.out.println(this + ": TurnOnConveyor()");
 		//		System.out.println("Conveyor "+ conveyorNumber[0]+" is on");
 
 	}
@@ -215,6 +224,8 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 		
 		preAgent.msgIAmNotAvailable();
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, conveyorNumber);
+		
+		System.out.println(this + ": TurnOffConveyor()");
 
 
 		//		System.out.println("Conveyor "+ conveyorNumber[0]+" is off");
@@ -225,6 +236,8 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 		GlassType temp=glasses.remove(0);
 		nextAgent.msgPassingGlass(temp);
 		allowPass=false;
+		
+		System.out.println(this + ": passingGlass()");
 		//		if(conveyorNumber[0]==0){
 		//			System.out.println("passing glass " + temp.getGlassID() + " to cutter");
 		//		}else if(conveyorNumber[0]==1){
