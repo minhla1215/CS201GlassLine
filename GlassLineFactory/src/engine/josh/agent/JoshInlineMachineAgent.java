@@ -127,7 +127,7 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 		
 		else{
 			if(	machineState == MachineState.EMPTY && glassPanes.isEmpty() && passingGlass){
-				if(!backSensor.sensorPressed){
+				if(!backSensor.sensorPressed && !backSensor.conveyor.frontSensor.sensorPressed){
 					checkFrontSensor();
 					System.out.println(name + " sent I am available");
 					machineState = MachineState.DONOTHING;
