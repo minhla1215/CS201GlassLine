@@ -162,7 +162,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 			return true;
 		}
 
-		if ((firstMachine.state == MachineState.Idle && secondMachine.state == MachineState.Idle) &&currentGlass==null && !informed && !isBusy) {
+		if ((firstMachine.state == MachineState.Idle || secondMachine.state == MachineState.Idle) &&currentGlass==null && !informed && !isBusy) {
 			informIAmAvailable();
 			return true;
 		}
@@ -245,6 +245,8 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		
 		currentGlass = null;
 		isBusy = false;
+		//TODO: added this informed to be false
+		informed = false;
 
 	}
 

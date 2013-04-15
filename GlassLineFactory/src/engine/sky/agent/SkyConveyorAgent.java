@@ -75,7 +75,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	}
 
 	public void msgGlassEntering() {
-		if (myState != ConveyorState.ReadyToPass) {
+		if (myState != ConveyorState.Stopped ) {
 			myState = ConveyorState.ReadyToMove;
 		}
 		
