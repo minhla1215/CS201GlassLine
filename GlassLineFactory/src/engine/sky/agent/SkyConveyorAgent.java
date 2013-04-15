@@ -150,7 +150,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 			((AlexConveyorAgent) preCF).msgIAmNotAvailable();
 			informed = false;
 		}
-		//		stateChanged();
+//		stateChanged();
 
 	}
 
