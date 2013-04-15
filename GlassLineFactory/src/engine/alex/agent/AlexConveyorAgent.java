@@ -204,7 +204,6 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public void TurnOnConveyor(){
 		conveyorOn=true;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, conveyorNumber);
-
 		//		System.out.println("Conveyor "+ conveyorNumber[0]+" is on");
 
 	}
