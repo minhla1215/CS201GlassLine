@@ -92,6 +92,10 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	public void msgGlassEntered() {
 
 	}
+	
+	public void msgGlassExited() {
+		stateChanged();
+	}
 
 	/** Scheduler */
 	@Override
