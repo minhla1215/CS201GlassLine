@@ -302,6 +302,9 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 					this.msgStartSensorReleased();
 				}else if (((Integer)args[0] % 2) == 1){//when it's end sensor released
 					this.msgEndSensorReleased();
+					if (glasses.size() == 0) {
+						preAgent.msgIAmAvailable();
+					}
 				}
 			}
 		}

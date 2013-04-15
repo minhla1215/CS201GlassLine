@@ -25,6 +25,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 
 	public enum ConveyorState {Idle, Stopped, ReadyToMove, Moving, ReadyToPass};
 	private boolean informed;
+	private boolean popUpLoaded;
 	private boolean PopUpAvailable;
 	private boolean frontSensorReleased;
 	private ArrayList<GlassType> myGlasses;
@@ -73,6 +74,11 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		PopUpAvailable = false;
 		stateChanged();
 	}
+	
+	public void msgFullyLoaded() {
+		popUpLoaded = true;
+		stateChanged();
+	}
 
 	public void msgGlassEntering() {
 		if (myState != ConveyorState.Stopped ) {
@@ -118,7 +124,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 					passGlass(myGlasses.remove(0));
 					return true;
 				}
-				else {
+				else if (popUpLoaded){
 					stopConveyor();
 					return true;
 				}
@@ -140,6 +146,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		System.out.println(this + ": action - passGlass");
 		postCF.msgPassingGlass(gt);
 		myState = ConveyorState.ReadyToMove;
+		popUpLoaded = false;
 		//		stateChanged();
 	}
 

@@ -211,6 +211,7 @@ public class GUIPopUp extends GuiComponent implements Serializable
 			Object[] args = new Object[1];
 			args[0] = index;
 			transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_GUI_LOAD_FINISHED, args);
+			System.out.println("GuiPopup: Popup_GUI_LOAD_FINISHED at index" + index);
 		}
 	}
 	
