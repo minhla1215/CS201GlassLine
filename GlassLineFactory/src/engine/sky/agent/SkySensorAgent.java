@@ -55,6 +55,7 @@ public class SkySensorAgent extends Agent {
 	
 	public void msgGlassExited() {
 		state = SensorState.Exited;
+		stateChanged();
 	}
 
 	/** Scheduler **/
@@ -74,13 +75,16 @@ public class SkySensorAgent extends Agent {
 			informConveyorEntered();
 			return true;
 		}
+		
+		if (state == SensorState.Exited && pos == Position.Second) {
+			informConveyorExited();
+		}
 
 		return false;
 	}
 
 	/** Actions **/
 	private void informConveyorEntering() {
-		System.out.println(this.name+" telling conveyor " + myConveyor.toString() + " glass entering");
 		myConveyor.msgGlassEntering();
 
 		state = SensorState.Informed;
@@ -94,12 +98,16 @@ public class SkySensorAgent extends Agent {
 	}
 
 	private void informConveyorExiting() {
-		System.out.println(this.name+" telling conveyor " + myConveyor.toString() + " glass exiting");
 		myConveyor.msgGlassExiting();
 		
 		state = SensorState.Informed;
 //		stateChanged();
 
+	}
+	
+	private void informConveyorExited() {
+		((SkyConveyorAgent) myConveyor).msgGlassExited();
+		
 	}
 
 	/** Utilities **/
@@ -128,6 +136,9 @@ public class SkySensorAgent extends Agent {
 		if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED &&((Integer)args[0]).equals(myGuiIndex)) {
 			if (myGuiIndex%2==0) {
 				msgGlassEntered();
+			}
+			else {
+				msgGlassExited();
 			}
 		}
 

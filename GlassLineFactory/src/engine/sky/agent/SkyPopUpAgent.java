@@ -179,7 +179,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	}
 
 	private void popUpAndSayReady(MyMachine mm) {
-		System.out.println(this +"Action: popUpAndSayReady");
+		System.out.println(this +"Action: popUpAndSayReady to " + mm.machine);
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 
@@ -198,12 +198,15 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	}
 
 	private void popUpAndPass(MyGlass mg, MyMachine mm) {
-		System.out.println(this + "Action: popUpAndPass");
+		System.out.println(this + "Action: popUpAndPass to " + mm.machine);
 
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 		
 		((SkyConveyorAgent) preConveyor.conveyor).msgIAmBusy();
+		
+		
+		System.out.println(this + ": before semaphore to finish load");
 		
 		//Wait for Popup Load Finished
 		try {
@@ -211,6 +214,8 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		System.out.println(this + ": after semaphore to finish load");
 
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
 		
@@ -306,13 +311,11 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
 
 		//Wait for release to finish
-		System.out.println(this + " before sempahore for pop up release ");
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println(this + " after semaphore for pop up release");
 
 		currentGlass = null;
 		informed = false;
@@ -376,7 +379,6 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 	@Override
 	public void msgIAmNotAvailable() {
-		// TODO Auto-generated method stub
 		
 	}
 
