@@ -52,9 +52,9 @@ public class BinAgent extends Agent implements ConveyorFamily {
 
 	@Override
 	public void msgIAmNotAvailable() {
-		// TODO Auto-generated method stub
-		nextComponent.state = ConveyorState.NOTHING;
-		stateChanged();
+		//// TODO Auto-generated method stub
+		//nextComponent.state = ConveyorState.NOTHING;
+		//stateChanged();
 	}
 	@Override
 	public boolean pickAndExecuteAnAction() {

@@ -24,6 +24,7 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 
 	boolean allowPass;
 	boolean conveyorOn;
+	
 
 
 	ConveyorFamily preAgent,nextAgent;
@@ -112,6 +113,7 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 		if (startSensorStates==SensorStates.released){
 			tellingPreCFImAvailable();
 			startSensorStates=SensorStates.doingNothing;
+			return true;
 		}
 
 
@@ -119,8 +121,9 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 		if (startSensorStates==SensorStates.pressed){
 			if (endSensorStates==SensorStates.released){
 				if(!conveyorOn){
-					TurnOnConveyor();}
+				TurnOnConveyor();}
 				startSensorStates=SensorStates.doingNothing;
+				return true;
 			}
 		}
 
@@ -129,14 +132,13 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 
 			if (allowPass==true){
 				if(!conveyorOn){
-					TurnOnConveyor();}
+				TurnOnConveyor();}
 				passingGlass();
 				endSensorStates=SensorStates.doingNothing;
+				return true;
 			}else 	{
 				if(conveyorOn){
-					TurnOffConveyor();
-
-				}
+				TurnOffConveyor();}
 				return true;
 
 			}
@@ -144,7 +146,7 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 
 		if (endSensorStates==SensorStates.released){
 			if(!conveyorOn){
-				TurnOnConveyor();}
+			TurnOnConveyor();}
 			endSensorStates=SensorStates.doingNothing;
 			return true;
 		}
@@ -204,17 +206,17 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public void TurnOnConveyor(){
 		conveyorOn=true;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, conveyorNumber);
-
 		//		System.out.println("Conveyor "+ conveyorNumber[0]+" is on");
 
 	}
 
 	public void TurnOffConveyor(){
 		conveyorOn=false;
+		
 		preAgent.msgIAmNotAvailable();
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, conveyorNumber);
 
-		
+
 		//		System.out.println("Conveyor "+ conveyorNumber[0]+" is off");
 
 	}
