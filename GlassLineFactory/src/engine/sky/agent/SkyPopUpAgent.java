@@ -245,7 +245,6 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		
 		currentGlass = null;
 		isBusy = false;
-		//TODO: added this informed to be false
 		informed = false;
 
 	}
@@ -288,10 +287,13 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	}
 
 	private void skipGlass(MyGlass mg) {
+		System.out.println(this + " : action: skipGlass");
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 		isBusy = true;
-
+		
+		((SkyConveyorAgent) preConveyor.conveyor).msgIAmBusy(); 
+		
 		//Wait for load to finish
 		try {
 			waitAnimation.acquire();
@@ -304,14 +306,16 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
 
 		//Wait for release to finish
+		System.out.println(this + " before sempahore for pop up release ");
 		try {
 			waitAnimation.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		System.out.println(this + " after semaphore for pop up release");
 
 		currentGlass = null;
-//		informed = false;
+		informed = false;
 		isBusy = false;
 //		postConveyor.state = ConveyorState.UnAvailable;
 //		stateChanged();
