@@ -1,5 +1,6 @@
 package gui.panels;
 
+import engine.interfaces.ConveyorFamily;
 import engine.josh.agent.JoshBackSensorAgent;
 import engine.josh.agent.JoshConveyorAgent;
 import engine.josh.agent.JoshFrontSensorAgent;
@@ -36,6 +37,13 @@ public class FactoryPanel extends JPanel
 	public JoshConveyorAgent conveyor8, conveyor9, conveyor10, conveyor11, conveyor12, conveyor13, conveyor14;
 	public JoshBackSensorAgent sensor16, sensor18, sensor20, sensor22, sensor24, sensor26, sensor28;
 	public JoshInlineMachineAgent washer, painter, uvLamp, oven, corner3, corner4;
+	
+	// Array of agents
+	ConveyorFamily [] conveyorAgents = new ConveyorFamily[15];
+	ConveyorFamily [] inlineAgents = new ConveyorFamily[7];
+	ConveyorFamily [] offlineAgents = new ConveyorFamily[6];
+	ConveyorFamily [] popupAgents = new ConveyorFamily[3];
+	
 	
 	
 	
@@ -128,11 +136,20 @@ public class FactoryPanel extends JPanel
 		AlexConveyorAgent conveyor2=new AlexConveyorAgent("Conveyor2",transducer,2);
 		AlexConveyorAgent conveyor3=new AlexConveyorAgent("Conveyor3",transducer,3);
 		AlexConveyorAgent conveyor4=new AlexConveyorAgent("Conveyor4",transducer,4);
+		conveyorAgents[0] = conveyor0;
+		conveyorAgents[1] = conveyor1;
+		conveyorAgents[2] = conveyor2;
+		conveyorAgents[3] = conveyor3;
+		conveyorAgents[4] = conveyor4;
+		
 		
 		
 		AlexInlineMachineAgent cutterAgent=new AlexInlineMachineAgent("Cutter",transducer,0);
 		AlexInlineMachineAgent breakoutAgent=new AlexInlineMachineAgent("Breakout",transducer,1);
 		AlexInlineMachineAgent manualBreakoutAgent=new AlexInlineMachineAgent("ManualBreakout",transducer,2);
+		inlineAgents[0] = cutterAgent;
+		inlineAgents[1] = breakoutAgent;
+		inlineAgents[2] = manualBreakoutAgent;
 		
 		//test run
 //		AlexConveyorAgent conveyor8=new AlexConveyorAgent("Conveyor8",transducer,8);
@@ -154,22 +171,34 @@ public class FactoryPanel extends JPanel
 		SkyPopUpAgent popUp0 = new SkyPopUpAgent(0, "PopUp0", transducer);
 		SkyPopUpAgent popUp1 = new SkyPopUpAgent(1, "PopUp1", transducer);
 		SkyPopUpAgent popUp2 = new SkyPopUpAgent(2, "PopUp2", transducer);
+		popupAgents[0] = popUp0;
+		popupAgents[1] = popUp1;
+		popupAgents[2] = popUp2;
 
 		//Initializing Sky's Conveyors 5 - 7
 		SkyConveyorAgent conveyor5 = new SkyConveyorAgent(5, "Conveyor5", transducer);
 		SkyConveyorAgent conveyor6 = new SkyConveyorAgent(6, "Conveyor6", transducer);
 		SkyConveyorAgent conveyor7 = new SkyConveyorAgent(7, "Conveyor7", transducer);
+		conveyorAgents[5] = conveyor5;
+		conveyorAgents[6] = conveyor6;
+		conveyorAgents[7] = conveyor7;
 
 		//Initializing Sky's Machines : Drill, Cross_Seamer, Grinder
 		SkyMachineAgent drill0 = new SkyMachineAgent(0, "Drill0", transducer);
 		SkyMachineAgent drill1 = new SkyMachineAgent(1, "Drill1", transducer);
+		offlineAgents[0] = drill0;
+		offlineAgents[1] = drill1;
 
 		SkyMachineAgent cross_seamer0 = new SkyMachineAgent(0, "Cross_Seamer0", transducer);
 		SkyMachineAgent cross_seamer1 = new SkyMachineAgent(1, "Cross_Seamer1", transducer);
-
+		offlineAgents[2] = cross_seamer0;
+		offlineAgents[3] = cross_seamer1;
+		
 		SkyMachineAgent grinder0 = new SkyMachineAgent(0, "Grinder0", transducer);
 		SkyMachineAgent grinder1 = new SkyMachineAgent(1, "Grinder1", transducer);
-
+		offlineAgents[4] = grinder0;
+		offlineAgents[5] = grinder1;
+		
 		//Initializing Sky's Sensors 10 - 15
 		SkySensorAgent sensor10 = new SkySensorAgent(Position.First, 10, "Sensor10", transducer);
 		SkySensorAgent sensor11 = new SkySensorAgent(Position.Second, 11, "Sensor11", transducer);
@@ -201,6 +230,13 @@ public class FactoryPanel extends JPanel
 		conveyor12 = new JoshConveyorAgent("conveyor12", 12, transducer);
 		conveyor13 = new JoshConveyorAgent("conveyor13", 13, transducer);
 		conveyor14 = new JoshConveyorAgent("conveyor14", 14, transducer);
+		conveyorAgents[8] = conveyor8;
+		conveyorAgents[9] = conveyor9;
+		conveyorAgents[10] = conveyor10;
+		conveyorAgents[11] = conveyor11;
+		conveyorAgents[12] = conveyor12;
+		conveyorAgents[13] = conveyor13;
+		conveyorAgents[14] = conveyor14;
 		
 		washer = new JoshInlineMachineAgent(false, TChannel.WASHER, "washer", 3, transducer);
 		painter = new JoshInlineMachineAgent(false, TChannel.PAINTER, "painter", 4, transducer);
@@ -208,6 +244,10 @@ public class FactoryPanel extends JPanel
 		oven = new JoshInlineMachineAgent(false, TChannel.OVEN, "oven", 6, transducer);
 		corner3 = new JoshInlineMachineAgent(true, TChannel.CORNER, "corner3", 100, transducer);
 		corner4 = new JoshInlineMachineAgent(true, TChannel.CORNER, "corner4", 100, transducer);
+		inlineAgents[3] = washer;
+		inlineAgents[4] = painter;
+		inlineAgents[5] = uvLamp;
+		inlineAgents[6] = oven;
 		
 		//TODO:Sky made this hack for his linking, can be deleted later
 
@@ -482,6 +522,22 @@ public class FactoryPanel extends JPanel
 
 	public BinAgent getBinAgent(){
 		return bin;
+	}
+	
+	public ConveyorFamily[] getConveyorList(){
+		return conveyorAgents;
+	}
+	
+	public ConveyorFamily[] getPopUpList(){
+		return popupAgents;
+	}
+	
+	public ConveyorFamily[] getInlineList(){
+		return inlineAgents;
+	}
+	
+	public ConveyorFamily[] getOfflineList(){
+		return offlineAgents;
 	}
 }
 
