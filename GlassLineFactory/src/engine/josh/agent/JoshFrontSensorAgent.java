@@ -62,11 +62,47 @@ public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshF
 		passingGlass = false;
 		stateChanged();
 	}
+	
+	
+	public void msgConveyorChangedState(){
+		stateChanged();
+	}
+	
+	
 
 	
 	//Scheduler///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean pickAndExecuteAnAction() {
+		
+		//This part of the scheduler is reserved for corners
+//		if(sensorNumber == 19 || sensorNumber == 25){
+//			if(!passingGlass){
+//				if(conveyor.isMoving){
+//					stopConveyor();
+//					return true;
+//				}
+//			}
+//		}
+		
+		////////////////////////////////////////////////////
+		
+		
+		
+//		if(passingGlass){
+//			try {
+//				Thread.sleep(50);
+//			} catch(InterruptedException ex) {
+//				Thread.currentThread().interrupt();
+//			}
+//			if(passingGlass){
+//				if(!conveyor.isMoving){
+//					moveConveyor();
+//					return true;
+//				}
+//			}
+//		}
+		
 		if(sensorState == SensorState.RELEASED ){
 			sendIAmAvailable();
 			sensorState = SensorState.DONOTHING;
@@ -75,36 +111,28 @@ public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshF
 		
 		
 		if(sensorState == SensorState.PRESSED && passingGlass){
-			if(!conveyorMoving){
-				moveConveyor();
+			try {
+				Thread.sleep(50);
+			} catch(InterruptedException ex) {
+				Thread.currentThread().interrupt();
 			}
-			
-			passGlass();
-			sensorState = SensorState.RELEASED;
-			return true;
+			if(passingGlass){
+				if(!conveyorMoving){
+					moveConveyor();
+				}
+
+				passGlass();
+				sensorState = SensorState.RELEASED;
+				return true;
+			}
 		}
 		
-		/////////////////////NEW STUFF////////////////////////////////////
 		
 		if(sensorState == SensorState.PRESSED && conveyorMoving && !passingGlass){
 			stopConveyor();
-			//sensorState = SensorState.DONOTHING;
 			return true;
 		}
 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		////////////////////////////////////////////////////////////////////
-		
-		
-		
 		return false;
 	}
 
@@ -116,13 +144,14 @@ public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshF
 	//Actions///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	void sendIAmAvailable(){
+		System.out.println(name + " sendIAmAvailable");
 		conveyor.msgIAmAvailable();
 	}
 	
 	
 	void passGlass(){
 		if(!glassPanes.isEmpty()){
-			System.out.println(name + " passed glass.");
+			System.out.println(name + " passGlass");
 			inlineMachine.msgPassingGlass(glassPanes.remove());
 			passingGlass = false;
 			sensorState = SensorState.RELEASED;
@@ -131,20 +160,26 @@ public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshF
 	
 	
 	void moveConveyor(){
+		System.out.println(name + " moveConveyor");
 		conveyorMoving = true;
 		
 		Object[] arg = new Object[1];
 		arg[0] = conveyor.conveyorNumber;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, arg);
+		
+		conveyor.set_isMoving(true);
 	}
 	
 	
 	void stopConveyor(){
+		System.out.println(name + " stopConveyor");
 		conveyorMoving = false;
 		
 		Object[] arg = new Object[1];
 		arg[0] = conveyor.conveyorNumber;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, arg);
+		
+		conveyor.set_isMoving(false);
 	}
 
 	
@@ -170,6 +205,7 @@ public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshF
 			if (((Integer)args[0]) == sensorNumber){;
 				sensorState = SensorState.RELEASED;
 				sensorPressed = false;
+				conveyor.backSensor.msgFrontSensorReleased();
 				stateChanged();
 			}
 		}

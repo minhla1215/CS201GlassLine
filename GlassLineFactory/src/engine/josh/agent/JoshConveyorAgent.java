@@ -21,6 +21,7 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	public JoshFrontSensorAgent frontSensor;
 	public Queue<GlassType> glassPanes;
 	public Boolean passingGlass;
+	public Boolean isMoving;
 	public int conveyorNumber;
 	public int conveyorCapacity = 2;
 	enum ConveyorState{ON, OFF, DONOTHING};
@@ -35,11 +36,16 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 		frontSensor = null;
 		glassPanes = new LinkedList<GlassType>();
 		passingGlass = false;
+		isMoving = true;
 		name = n;
 		conveyorNumber = cNum;
 		conveyorState = ConveyorState.OFF;
 		transducer = t;
 		t.register(this, TChannel.CONVEYOR);
+		
+		Object[] arg = new Object[1];
+		arg[0] = conveyorNumber;
+		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, arg);
 	}
 
 	
@@ -77,7 +83,7 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	
 	public boolean pickAndExecuteAnAction() {
 		if(conveyorState == ConveyorState.OFF){
-			callIAmAvailable();
+			sendIAmAvailable();
 			conveyorState = ConveyorState.DONOTHING;
 			return true;
 		}
@@ -114,15 +120,17 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	
 	//Actions//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	void callIAmAvailable(){
+	void sendIAmAvailable(){
+		System.out.println(name + " sendIAmAvailable");
 		backSensor.msgIAmAvailable();
+	
 	}
 	
 	
 	
 	void passGlass(){
 		if(!glassPanes.isEmpty()){
-			System.out.println(name + " passed glass.");
+			System.out.println(name + " passGlass");
 			frontSensor.msgPassingGlass(glassPanes.remove());
 			passingGlass = false;
 		}
@@ -153,6 +161,12 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	
 	public void set_frontSensor(JoshFrontSensorAgent fs){
 		frontSensor = fs;
+	}
+	
+	public void set_isMoving(Boolean b){
+		isMoving = b;
+		frontSensor.msgConveyorChangedState();
+		backSensor.msgConveyorChangedState();
 	}
 
 

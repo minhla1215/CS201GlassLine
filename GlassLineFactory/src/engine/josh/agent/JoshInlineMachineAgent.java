@@ -89,11 +89,11 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 	//Scheduler///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean pickAndExecuteAnAction() {
-		if(!isACorner){
+//		if(!isACorner){
 			
 			if(	machineState == MachineState.EMPTY && glassPanes.isEmpty() && machineIsEmpty){
 				if(!backSensor.sensorPressed){
-					checkFrontSensor();
+					sendIAmAvailable();
 					machineState = MachineState.DONOTHING;
 				}				
 				else{					
@@ -104,16 +104,16 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 			
 			
 			if(machineState == MachineState.LOADING && !glassPaneProcessed){
-				if(glassPanes.peek().getinlineMachineProcessingNeeded()[machineNumber]){
-					ProcessGlass();
-					machineState = MachineState.DONOTHING;
-				}
-				else{
-					ReleaseGlass();
-					passGlass();
-					machineState = MachineState.EMPTY;
-				}
-				return true;
+					if(glassPanes.peek().getinlineMachineProcessingNeeded()[machineNumber]){
+						ProcessGlass();
+						machineState = MachineState.DONOTHING;
+					}
+					else{
+						ReleaseGlass();
+						passGlass();
+						machineState = MachineState.EMPTY;
+					}
+					return true;
 			}
 			
 			
@@ -123,29 +123,41 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 				machineState = MachineState.EMPTY;
 				return true;
 			}
-		}
-		
-		else{
-			if(	machineState == MachineState.EMPTY && glassPanes.isEmpty() && passingGlass){
-				if(!backSensor.sensorPressed && !backSensor.conveyor.frontSensor.sensorPressed){
-					checkFrontSensor();
-					System.out.println(name + " sent I am available");
-					machineState = MachineState.DONOTHING;
-				}
-				else{
-						frontSensor.msgIAmNotAvailable();
-				}
-				return true;
-			}
+//		}
+//		
+//		else{
+//			if(	machineState == MachineState.EMPTY && glassPanes.isEmpty() && passingGlass){
+//				if(/*!backSensor.sensorPressed &&*/ !backSensor.conveyor.frontSensor.sensorPressed){
+//					checkFrontSensor();
+//					System.out.println(name + " sent I am available");
+//					machineState = MachineState.DONOTHING;
+//				}
+//				else{
+//						frontSensor.msgIAmNotAvailable();
+//				}
+//				return true;
+//			}
+//			
+//			if(machineState == MachineState.LOADING && passingGlass){
+//				passGlass();
+//				ReleaseGlass();
+//				machineState = MachineState.EMPTY;
+//				
+//				return true;
+//			}
+//			if(machineState == MachineState.EMPTY && !backSensor.sensorPressed){
+//				checkFrontSensor();
+//				machineState = MachineState.UNLOADING;
+//				return true;
+//			}
+//			
+//			if(machineState == MachineState.UNLOADING && passingGlass){
+//				passGlass();
+//				machineState = MachineState.EMPTY;
+//				return true;
+//			}
 			
-			if(machineState == MachineState.LOADING && passingGlass){
-				passGlass();
-				ReleaseGlass();
-				machineState = MachineState.EMPTY;
-				
-				return true;
-			}
-		}
+//		}
 		
 		return false;
 
@@ -159,8 +171,10 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 	
 	//Actions///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	void checkFrontSensor(){
+	void sendIAmAvailable(){
 			frontSensor.msgIAmAvailable();
+			
+			System.out.println(name + " sendIAmAvailable");
 	}
 	
 
@@ -170,6 +184,8 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 			glassPaneProcessed = true;
 
 			transducer.fireEvent(myTChannel, TEvent.WORKSTATION_DO_ACTION, null);
+			
+			System.out.println(name + " ProcessGlass");
 		}
 	}
 	
@@ -180,14 +196,17 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 		Object[] arg = new Object[1];
 		arg[0] = frontSensor.sensorNumber;
 		transducer.fireEvent(myTChannel, TEvent.WORKSTATION_RELEASE_GLASS, arg);
+		
+		System.out.println(name + " ReleaseGlass");
 	}
 	
 	
 	void passGlass(){
 		if(!glassPanes.isEmpty()){
-			System.out.println(name + " passed glass.");
 			backSensor.msgPassingGlass(glassPanes.remove());
 			passingGlass = false;
+			
+			System.out.println(name + " passGlass");
 		}
 	}
 	
