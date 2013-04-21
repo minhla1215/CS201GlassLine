@@ -21,7 +21,7 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 	// the size of the truck
 	int glassSize = 1;
 
-	enum TruckState{LOADING,LEAVING,DOINGNOTHING,LOADED};
+	enum TruckState{LOADING,LEAVING,DOINGNOTHING,LOADED, DISAPPEAR, REAPPEAR};
 	
 	List <GlassType> glasses = Collections.synchronizedList(new ArrayList<GlassType>());
 	//List <GlassType> currentGlass = Collections.synchronizedList(new ArrayList<GlassType>());
@@ -93,9 +93,28 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 		state = TruckState.LOADING;
 		stateChanged();
 	}
+	
+	public void msgTruckLeave(){
+		state = TruckState.DISAPPEAR;
+	}
 
+	public void msgTruckReturn(){
+		state = TruckState.REAPPEAR;
+	}
 	@Override
 	public boolean pickAndExecuteAnAction() {
+		
+		if(state == TruckState.DISAPPEAR){
+			transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_LEAVE, null);
+			state = TruckState.DOINGNOTHING;
+			return true;
+		}
+		
+		if(state == TruckState.REAPPEAR){
+			transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_RETURN, null);
+			state = TruckState.DOINGNOTHING;
+			return true;
+		}
 		
 		if(state == TruckState.LOADED){
 			transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_EMPTY, null);
@@ -109,6 +128,7 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 			state = TruckState.DOINGNOTHING;
 			return true;
 		}
+		
 		
 //		if(state == TruckState.RETURNING){
 //			state = TruckState.LOADING;
@@ -134,6 +154,9 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 				//System.out.println("u fired me! TRUCK_GUI_LOAD_FINISHED");
 			//}else
 				//System.out.println("Loading error");
+		}
+		if(event == TEvent.TRUCK_GUI_RETURN_FINISHED){
+			this.msgTruckIsBack();
 		}
 
 	}

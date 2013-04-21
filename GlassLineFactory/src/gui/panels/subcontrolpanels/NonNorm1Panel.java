@@ -443,15 +443,15 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		else if(ae.getSource() == truckLeaveButton){
 			truckLeaveButton.setEnabled(false);
 			truckReturnButton.setEnabled(true);
-			
+			System.out.println("Truck Leave");
 			// Call message
-			//fp.getTruck().msgTruckLeave();
+			fp.getTruck().msgTruckLeave();
 		}else if(ae.getSource() == truckReturnButton){
 			truckLeaveButton.setEnabled(true);
 			truckReturnButton.setEnabled(false);
 			
 			// Call message
-			//fp.getTruck().msgTruckLeave();
+			fp.getTruck().msgTruckLeave();
 		}
 		
 	}
