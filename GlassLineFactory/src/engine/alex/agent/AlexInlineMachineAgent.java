@@ -12,7 +12,7 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 
 	//data
 
-	enum States {noparts,doingnothing,partsloaded,readytopass};
+	enum States {noparts,doingnothing,partsloaded,readytopass,machinebreak};
 
 	ConveyorFamily preConveyor,nextConveyor;
 
@@ -22,12 +22,15 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 	GlassType glass;
 	States myState;
 
+	private boolean machineBreak;
+
 
 	public AlexInlineMachineAgent(String name,Transducer t,int i){
 		super(name,t);
 		glass=null;
 		machineNumber=i;
 		allowPass=false;
+		machineBreak=false;
 		myState=States.noparts;
 		if(machineNumber==0){
 			t.register(this, TChannel.CUTTER);
@@ -54,6 +57,18 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 
 
 	//message
+	
+	public void msgInlineMachineBreak(){
+		machineBreak=true;
+		myState=States.machinebreak;
+		stateChanged();
+	}
+	public void msgInlineMachineUnbreak(){
+		machineBreak=false;
+		
+		stateChanged();
+	}
+	
 	@Override
 	public void msgPassingGlass(GlassType gt) {
 		// TODO Auto-generated method stub
@@ -77,6 +92,7 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 	public void msgIAmNotAvailable() {
 		// TODO Auto-generated method stub
 		allowPass=false;
+
 //		System.out.println("glass is allowed to pass to next conveyor");
 
 		stateChanged();
@@ -101,7 +117,7 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		// TODO Auto-generated method stub
-
+		if(!machineBreak){
 		if (myState==States.noparts){
 			tellingPreCFImAvailable();
 			myState=States.doingnothing;
@@ -130,6 +146,13 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 			}
 
 		}
+		}else {
+			if(myState==States.machinebreak){
+			tellingPreCFImNotAvailable();
+			myState=States.doingnothing;
+			return true;
+			}
+		}
 
 		return false;
 	}
@@ -138,6 +161,12 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 	public void tellingPreCFImAvailable() {
 		preConveyor.msgIAmAvailable();	
 		System.out.println(this + ": tells "+ preConveyor + " tellingPreCFImAvailable()");
+	}
+	
+	public void tellingPreCFImNotAvailable(){
+		preConveyor.msgIAmNotAvailable();	
+		System.out.println(this + ": tells "+ preConveyor + " tellingPreCFImNotAvailable()");
+		
 	}
 
 	public void workingStationDoAction(){
@@ -162,8 +191,9 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 
 	public void noActionNeeded(){
 		myState=States.readytopass;
-		stateChanged();
 		System.out.println(this + ": noActionNeeded()");
+		stateChanged();
+		
 //		System.out.println("no action needed in " + this.getName());
 	}
 	

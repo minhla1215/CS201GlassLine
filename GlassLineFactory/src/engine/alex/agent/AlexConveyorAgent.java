@@ -20,11 +20,12 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	enum SensorStates {pressed,doingNothing,released};//,waitToPass};
 	SensorStates startSensorStates=SensorStates.released;
 	SensorStates endSensorStates=SensorStates.released;
+	
 
 
 	boolean allowPass;
 	boolean conveyorOn;
-	
+	boolean conveyorJammed;
 
 
 	ConveyorFamily preAgent,nextAgent;
@@ -38,11 +39,25 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 		conveyorNumber[0]=i;
 		allowPass=false;
 		conveyorOn=false;
+		conveyorJammed=false;
 		stateChanged();//to run the scheduler for the first time so it can send message to preCF
 	}
 
 	//message
 
+	public void msgConveyorJammed(){
+		conveyorJammed=true;
+		System.out.println(this+": I am jammed!");
+		stateChanged();
+		
+	}
+	
+	public void msgConveyorUnjammed(){
+		conveyorJammed=false;
+		System.out.println(this+": I am Unjammed!");
+		stateChanged();
+		
+	}
 
 	public void msgStartSensorPressed() {
 		startSensorStates=SensorStates.pressed;
@@ -93,9 +108,7 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public void msgIAmAvailable() {
 		// TODO Auto-generated method stub
 		allowPass=true;
-
 		//		System.out.println("glass is allowed to pass to next agent");
-
 		stateChanged();
 	}
 
@@ -110,54 +123,63 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		// TODO Auto-generated method stub
-		if(glasses.isEmpty()){
-			if(!conveyorOn){
-			TurnOnConveyor();
-			}
-		}
-		
-		
-		if (startSensorStates==SensorStates.released){
-			tellingPreCFImAvailable();
-			startSensorStates=SensorStates.doingNothing;
-			return true;
-		}
-
-
-
-		if (startSensorStates==SensorStates.pressed){
-			if (endSensorStates==SensorStates.released){
+		if(!conveyorJammed){
+			if(glasses.isEmpty()){
 				if(!conveyorOn){
-				TurnOnConveyor();}
+					TurnOnConveyor();
+				}
+			}
+
+
+			if (startSensorStates==SensorStates.released){
+				tellingPreCFImAvailable();
 				startSensorStates=SensorStates.doingNothing;
 				return true;
 			}
-		}
 
 
-		if (endSensorStates==SensorStates.pressed){
 
-			if (allowPass==true){
+			if (startSensorStates==SensorStates.pressed){
+				if (endSensorStates==SensorStates.released){
+					if(!conveyorOn){
+						System.out.println(this +" turn on the conveyor");
+						TurnOnConveyor();}
+					startSensorStates=SensorStates.doingNothing;
+					return true;
+				}
+			}
+
+
+			if (endSensorStates==SensorStates.pressed){
+
+				if (allowPass==true){
+					if(!conveyorOn){
+						TurnOnConveyor();}
+					passingGlass();
+					endSensorStates=SensorStates.doingNothing;
+					return true;
+				}else 	{
+					if(conveyorOn){
+						TurnOffConveyor();}
+					return true;
+
+				}
+			}
+
+			if (endSensorStates==SensorStates.released){
 				if(!conveyorOn){
-				TurnOnConveyor();}
-				passingGlass();
+					TurnOnConveyor();}
 				endSensorStates=SensorStates.doingNothing;
 				return true;
-			}else 	{
-				if(conveyorOn){
-				TurnOffConveyor();}
-				return true;
-
 			}
 		}
 
-		if (endSensorStates==SensorStates.released){
-			if(!conveyorOn){
-			TurnOnConveyor();}
-			endSensorStates=SensorStates.doingNothing;
+		else{ //conveyor Jammed
+
+			if(conveyorOn){
+				TurnOffConveyor();}
 			return true;
 		}
-
 		return false;
 	}
 
