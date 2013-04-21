@@ -24,6 +24,7 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFr
 	int sensorNumber;
 	public Boolean sensorPressed = false;
 	public Boolean conveyorMoving = false;
+	public Boolean sentIAmAvailable = false;
 	enum SensorState{PRESSED, RELEASED, DONOTHING};
 	SensorState sensorState;
 	public Transducer transducer;
@@ -62,15 +63,46 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFr
 		passingGlass = false;
 		stateChanged();
 	}
+	
+	public void msgFrontSensorReleased(){
+		stateChanged();
+	}
+	
+	public void msgConveyorChangedState(){
+		stateChanged();
+	}
 
 	
 	//Scheduler///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean pickAndExecuteAnAction() {
+		
+		//This part of the Scheduler is specific to corners.////////////////
+		if(sensorNumber == 20 || sensorNumber == 26){
+			if(!conveyor.isMoving){// && conveyor.frontSensor.sensorPressed){
+				if(sentIAmAvailable){
+					sendIAmNotAvailable();
+					return true;
+				}
+			}
+
+			if(conveyor.isMoving && !conveyor.frontSensor.sensorPressed){
+				if(!sentIAmAvailable){
+					sendIAmAvailable();
+					return true;
+				}
+			}
+		}
+		////////////////////////////////////////////////////////////////////	
+		
+		
+		
+		
+		
 		if(sensorState == SensorState.RELEASED ){
-			sendIAmAvailable();
-			sensorState = SensorState.DONOTHING;
-			return true;
+				sendIAmAvailable();
+				sensorState = SensorState.DONOTHING;
+				return true;
 		}
 		
 		
@@ -90,22 +122,6 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFr
 			return true;
 		}
 		
-		
-		/////////////////////NEW STUFF////////////////////////////////////
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		////////////////////////////////////////////////////////////////////
-		
 		return false;
 	}
 
@@ -117,34 +133,56 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFr
 	//Actions///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	void sendIAmAvailable(){
+		System.out.println(name + " sendIAmAvailable");
 		inlineMachine.msgIAmAvailable();
+		sentIAmAvailable = true;
+
+	}
+	
+	void sendIAmNotAvailable(){
+		System.out.println(name + " sendIAmNotAvailable");
+		inlineMachine.msgIAmNotAvailable();
+		sentIAmAvailable = false;
+		
+
 	}
 	
 	
 	void passGlass(){
 		if(!glassPanes.isEmpty()){
-			System.out.println(name + " passed glass.");
+				System.out.println(name + " passGlass");
 			conveyor.msgPassingGlass(glassPanes.remove());
 			passingGlass = false;
+			
+
 		}
 	}
 	
 	
 	void moveConveyor(){
+		System.out.println(name + " moveConveyor");
 		conveyorMoving = true;
 		
 		Object[] arg = new Object[1];
 		arg[0] = conveyor.conveyorNumber;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, arg);
+		
+		conveyor.set_isMoving(true);
+		
+
 	}
 	
 	
 	void stopConveyor(){
+		System.out.println(name + " stopConveyor");
+		
 		conveyorMoving = false;
 		
 		Object[] arg = new Object[1];
 		arg[0] = conveyor.conveyorNumber;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, arg);
+		
+		conveyor.set_isMoving(false);
 	}
 
 	

@@ -36,7 +36,7 @@ public class FactoryPanel extends JPanel
 	public JoshFrontSensorAgent sensor17, sensor19, sensor21, sensor23, sensor25, sensor27, sensor29;
 	public JoshConveyorAgent conveyor8, conveyor9, conveyor10, conveyor11, conveyor12, conveyor13, conveyor14;
 	public JoshBackSensorAgent sensor16, sensor18, sensor20, sensor22, sensor24, sensor26, sensor28;
-	public JoshInlineMachineAgent washer, painter, uvLamp, oven, corner3, corner4;
+	public JoshInlineMachineAgent washer, painter, uvLamp, oven;
 	
 	// Array of agents
 	ConveyorFamily [] conveyorAgents = new ConveyorFamily[15];
@@ -44,7 +44,7 @@ public class FactoryPanel extends JPanel
 	ConveyorFamily [] offlineAgents = new ConveyorFamily[6];
 	ConveyorFamily [] popupAgents = new ConveyorFamily[3];
 	
-	
+	TruckAgent truckAgent;
 	
 	
 	
@@ -165,7 +165,7 @@ public class FactoryPanel extends JPanel
 //		AlexInlineMachineAgent uvLampAgent=new AlexInlineMachineAgent("Uv_Lamp",transducer,5);
 //		AlexInlineMachineAgent ovenAgent=new AlexInlineMachineAgent("Oven",transducer,6);
 //////		
-		TruckAgent truckAgent=new TruckAgent(transducer,"Truck");
+		truckAgent=new TruckAgent(transducer,"Truck");
 
 		//Initializing Sky's PopUps 0 - 2
 		SkyPopUpAgent popUp0 = new SkyPopUpAgent(0, "PopUp0", transducer);
@@ -242,8 +242,6 @@ public class FactoryPanel extends JPanel
 		painter = new JoshInlineMachineAgent(false, TChannel.PAINTER, "painter", 4, transducer);
 		uvLamp= new JoshInlineMachineAgent(false, TChannel.UV_LAMP, "uvLamp", 5, transducer);
 		oven = new JoshInlineMachineAgent(false, TChannel.OVEN, "oven", 6, transducer);
-		corner3 = new JoshInlineMachineAgent(true, TChannel.CORNER, "corner3", 100, transducer);
-		corner4 = new JoshInlineMachineAgent(true, TChannel.CORNER, "corner4", 100, transducer);
 		inlineAgents[3] = washer;
 		inlineAgents[4] = painter;
 		inlineAgents[5] = uvLamp;
@@ -347,10 +345,8 @@ public class FactoryPanel extends JPanel
 		conveyor9.set_backSensor(sensor18);
 		conveyor9.set_frontSensor(sensor19);
 		sensor19.set_conveyor(conveyor9);
-		sensor19.set_inlineMachine(corner3);
-		corner3.set_frontSensor(sensor19);
-		corner3.set_backSensor(sensor20);
-		sensor20.set_inlineMachine(corner3);
+		sensor19.set_inlineMachine(sensor20);
+		sensor20.set_inlineMachine(sensor19);
 		sensor20.set_conveyor(conveyor10);
 		conveyor10.set_backSensor(sensor20);
 		conveyor10.set_frontSensor(sensor21);
@@ -371,10 +367,8 @@ public class FactoryPanel extends JPanel
 		conveyor12.set_backSensor(sensor24);
 		conveyor12.set_frontSensor(sensor25);
 		sensor25.set_conveyor(conveyor12);
-		sensor25.set_inlineMachine(corner4);
-		corner4.set_frontSensor(sensor25);
-		corner4.set_backSensor(sensor26);
-		sensor26.set_inlineMachine(corner4);
+		sensor25.set_inlineMachine(sensor26);
+		sensor26.set_inlineMachine(sensor25);
 		sensor26.set_conveyor(conveyor13);
 		conveyor13.set_backSensor(sensor26);
 		conveyor13.set_frontSensor(sensor27);
@@ -477,8 +471,6 @@ public class FactoryPanel extends JPanel
 		painter.startThread();
 		uvLamp.startThread();
 		oven.startThread();
-		corner3.startThread();
-		corner4.startThread();
 
 
 
@@ -538,6 +530,10 @@ public class FactoryPanel extends JPanel
 	
 	public ConveyorFamily[] getOfflineList(){
 		return offlineAgents;
+	}
+	
+	public TruckAgent getTruck(){
+		return truckAgent;
 	}
 }
 

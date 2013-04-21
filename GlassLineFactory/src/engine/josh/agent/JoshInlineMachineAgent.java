@@ -25,6 +25,7 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 	public Boolean glassPaneProcessed;
 	public Boolean isACorner;
 	public Boolean machineIsEmpty;
+	public Boolean isJammed;
 	public int machineNumber;
 	public TChannel myTChannel;
 	public enum MachineState{LOADING, UNLOADING, EMPTY, DONOTHING};
@@ -32,8 +33,8 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 	public Transducer transducer;
 	Object[] args;
 
-	
-	
+
+
 	public JoshInlineMachineAgent(Boolean isCorner, TChannel tChannel, String n, int mNum, Transducer t){
 		isACorner = isCorner;
 		frontSensor = null;
@@ -43,6 +44,7 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 		releaseGlass = false;
 		glassPaneProcessed = false;
 		machineIsEmpty = true;
+		isJammed = false;
 		myTChannel = tChannel;
 		name = n;
 		machineNumber = mNum;
@@ -50,15 +52,15 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 		transducer = t;
 		transducer.register(this, myTChannel);
 	}
-	
-	
-	
-	
-	
-	
-	
-	//Messages///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+
+
+
+
+	//Messages///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//NORMATIVE
 	public void msgPassingGlass(GlassType gt) {
 		glassPanes.add(gt);
 		machineIsEmpty = false;
@@ -68,41 +70,65 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 		stateChanged();
 	}
 
-	
+
 	public void msgIAmAvailable() {
 		passingGlass = true;
 		stateChanged();	
 	}
-	
-	
+
+
 	public void msgIAmNotAvailable(){
 		passingGlass = false;
 		stateChanged();
 	}
-	
-	
-	
-	
-	
-	
-	
+
+	//NONNORMATIVE
+	public void msgInlineMachineBreak(){
+		System.out.println("BREAK THE MACHINE: " + name);
+		isJammed = true;
+		stateChanged();
+	}
+
+
+	public void msgInlineMachineUnbreak(){
+		System.out.println("UNBREAK THE MACHINE: " + name);
+		isJammed = false;
+		
+		//REINITIALIZING
+		passingGlass = false;
+		releaseGlass = false;
+		glassPaneProcessed = false;
+		machineIsEmpty = true;
+		isJammed = false;
+		machineState = MachineState.EMPTY;
+		
+		stateChanged();
+	}
+
+
+
+
+
 	//Scheduler///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	public boolean pickAndExecuteAnAction() {
-		if(!isACorner){
-			
+
+		if(isJammed){
+			frontSensor.msgIAmNotAvailable();
+		}
+		else{
 			if(	machineState == MachineState.EMPTY && glassPanes.isEmpty() && machineIsEmpty){
 				if(!backSensor.sensorPressed){
-					checkFrontSensor();
+					sendIAmAvailable();
 					machineState = MachineState.DONOTHING;
 				}				
 				else{					
-						frontSensor.msgIAmNotAvailable();
+					frontSensor.msgIAmNotAvailable();
 				}
 				return true;
 			}
-			
-			
+
+
 			if(machineState == MachineState.LOADING && !glassPaneProcessed){
 				if(glassPanes.peek().getinlineMachineProcessingNeeded()[machineNumber]){
 					ProcessGlass();
@@ -115,8 +141,8 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 				}
 				return true;
 			}
-			
-			
+
+
 			if(machineState == MachineState.LOADING && releaseGlass && passingGlass){
 				ReleaseGlass();
 				passGlass();
@@ -125,44 +151,24 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 			}
 		}
 		
-		else{
-			if(	machineState == MachineState.EMPTY && glassPanes.isEmpty() && passingGlass){
-				if(!backSensor.sensorPressed && !backSensor.conveyor.frontSensor.sensorPressed){
-					checkFrontSensor();
-					System.out.println(name + " sent I am available");
-					machineState = MachineState.DONOTHING;
-				}
-				else{
-						frontSensor.msgIAmNotAvailable();
-				}
-				return true;
-			}
-			
-			if(machineState == MachineState.LOADING && passingGlass){
-				passGlass();
-				ReleaseGlass();
-				machineState = MachineState.EMPTY;
-				
-				return true;
-			}
-		}
-		
 		return false;
 
 	}
 
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	//Actions///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	void checkFrontSensor(){
-			frontSensor.msgIAmAvailable();
+
+	void sendIAmAvailable(){
+		frontSensor.msgIAmAvailable();
+
+		System.out.println(name + " sendIAmAvailable");
 	}
-	
+
 
 	void ProcessGlass(){
 		if(glassPanes.peek().getinlineMachineProcessingNeeded()[machineNumber]){
@@ -170,72 +176,77 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 			glassPaneProcessed = true;
 
 			transducer.fireEvent(myTChannel, TEvent.WORKSTATION_DO_ACTION, null);
+
+			System.out.println(name + " ProcessGlass");
 		}
 	}
-	
-	
+
+
 	void ReleaseGlass(){
 		releaseGlass = false;
 
 		Object[] arg = new Object[1];
 		arg[0] = frontSensor.sensorNumber;
 		transducer.fireEvent(myTChannel, TEvent.WORKSTATION_RELEASE_GLASS, arg);
+
+		System.out.println(name + " ReleaseGlass");
 	}
-	
-	
+
+
 	void passGlass(){
 		if(!glassPanes.isEmpty()){
-			System.out.println(name + " passed glass.");
 			backSensor.msgPassingGlass(glassPanes.remove());
 			passingGlass = false;
+
+			System.out.println(name + " passGlass");
 		}
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	//TRECIEVER EVENTS///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if (channel == myTChannel && event == TEvent.WORKSTATION_LOAD_FINISHED)
 		{
-				glassPaneProcessed = false;
-				machineState = MachineState.LOADING;
-				stateChanged();
+			glassPaneProcessed = false;
+			machineState = MachineState.LOADING;
+			stateChanged();
 		}
 		else if (channel == myTChannel && event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 		{
-				machineState = MachineState.LOADING;
-				releaseGlass = true;
-				stateChanged();
+			machineState = MachineState.LOADING;
+			releaseGlass = true;
+			stateChanged();
 		}
 		else if (channel == myTChannel && event == TEvent.WORKSTATION_RELEASE_FINISHED)
 		{		
-				machineState = MachineState.EMPTY;
-				machineIsEmpty = true;
-				stateChanged();
+			machineState = MachineState.EMPTY;
+			machineIsEmpty = true;
+			stateChanged();
 		}
 
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	//Extra Functions///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	public void set_frontSensor(JoshFrontSensorAgent fs){
 		frontSensor = fs;
 	}
-	
+
 	public void set_backSensor(JoshBackSensorAgent bs){
 		backSensor = bs;
 	}
-	
 
 
 
-	
+
+
 
 }

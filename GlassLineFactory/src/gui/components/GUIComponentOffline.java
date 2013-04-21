@@ -38,6 +38,16 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	 * Frame counter
 	 */
 	int counter = 0;
+	
+	//timerCounter
+	int timerCounter=0;
+	
+	//change the timer by set the value here
+	int timerForAnimation=0;
+
+	public void msgChangeProcessingTime(int timerForAnimation) {
+		this.timerForAnimation = timerForAnimation;
+	}
 
 	/**
 	 * List of icons for animations
@@ -91,22 +101,31 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	 */
 	public void doAnimate()
 	{
+		
 		if (counter < imageicons.size())
 		{
 			setIcon(imageicons.get(counter));
 			counter++;
+		
 		}
-		else
-		{
-
-			setIcon(imageicons.get(0));
-			counter = 0;
-
-			Object[] args = new Object[1];
-			args[0] = index;
-			animationState = GuiAnimationComponent.AnimationState.DONE;
-			transducer.fireEvent(channel, TEvent.WORKSTATION_GUI_ACTION_FINISHED, args);
+		else {
+			//change the timer here by changing the number below 
+			if(timerCounter<timerForAnimation){
+			timerCounter++;
+			counter=0;}
+			else
+			{
+				timerCounter=0;
+				setIcon(imageicons.get(0));
+				counter = 0;
+				Object[] args = new Object[1];
+				args[0] = index;
+				animationState = GuiAnimationComponent.AnimationState.DONE;
+				if(part != null){
+				transducer.fireEvent(channel, TEvent.WORKSTATION_GUI_ACTION_FINISHED, args);}
+			}
 		}
+		
 	}
 
 	@Override
@@ -129,6 +148,15 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	public void addPart(GUIGlass part)
 	{
 		this.part = part;
+		//show glass image
+		part.showImage();
+	}
+	
+	//remove glass part
+	public void removePart(){
+		part.removeImage();
+		this.part=null;
+		
 	}
 
 	public void setIndex(Integer index)

@@ -111,6 +111,9 @@ public class GUIGlass extends GuiComponent implements Serializable
 	 */
 	ArrayList<ComponentOperations> operationsOnPart;
 	
+	//boolean to show/remove image
+	private boolean showImage;
+	
 	/**
 	 * Public constructor for GUIPart
 	 */
@@ -243,6 +246,19 @@ public class GUIGlass extends GuiComponent implements Serializable
 	{
 		glassRect.setRect(getX(), getY(), getIcon().getIconWidth(), getIcon().getIconHeight());
 	}
+	
+	
+	//function to remove the glass
+	public void removeImage(){
+		showImage=false;
+		setIcon(new ImageIcon());
+	}
+	//function to show the glass
+	public void showImage(){
+		showImage=true;
+		setIcon(new ImageIcon(filePathNONE));
+	}
+	
 	
 	/**
 	 * Repaints, calls setupRect(), and calls changeState()
