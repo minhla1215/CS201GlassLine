@@ -96,17 +96,18 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	}
 
 	public void msgGlassEntered() {
-
+		frontSensorReleased = true;
+		stateChanged();
 	}
 
 	public void msgGlassExited() {
-		stateChanged();
+
 	}
 
 	/** Scheduler */
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		if ((myGlasses.size()==0 || myState == ConveyorState.Moving) && !informed) {
+		if ((myGlasses.size()==0 || myState == ConveyorState.Moving) && frontSensorReleased && !informed) {
 			informAvailability();
 			return true;
 		}
@@ -159,6 +160,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 
 		//		if (preCF instanceof AlexConveyorAgent) {
 		//			((AlexConveyorAgent) preCF).msgIAmNotAvailable();
+		System.out.println(this + " telling " + preCF + " IAmNotAvailable");
 		preCF.msgIAmNotAvailable();
 		informed = false;
 		//		}

@@ -111,10 +111,10 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 	/** Scheduler **/
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		if (state == MachineState.Idle) {
-			informAvailability();
-			return true;
-		}
+//		if (state == MachineState.Idle) {
+////			informAvailability();
+//			return true;
+//		}
 
 		if (state == MachineState.Loading) {
 			loadGlass();
