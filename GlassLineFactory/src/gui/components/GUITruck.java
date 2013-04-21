@@ -71,7 +71,7 @@ public class GUITruck extends GuiComponent
 
 	enum TruckState
 	{
-		LOADING, LEAVING, RETURNING
+		LOADING, LEAVING, RETURNING, DISAPPEAR, REAPPEAR
 	};
 
 	TruckState state;
@@ -148,6 +148,12 @@ public class GUITruck extends GuiComponent
 		{
 			moveTruckIn();
 		}
+		if (state == TruckState.DISAPPEAR){
+			disappearTruck();
+		}
+		if (state == TruckState.REAPPEAR){
+			reappearTruck();
+		}
 	}
 
 	private void moveTruckOut()
@@ -176,6 +182,25 @@ public class GUITruck extends GuiComponent
 			transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_GUI_EMPTY_FINISHED, null);
 		}
 	}
+	
+	private void disappearTruck(){
+		setCenterLocation(getCenterX() + TRUCK_SPEED, getCenterY());
+		synchronized( parts ) {
+			for( MyGUIGlass part : parts ) {
+				part.part.setLocation((int)part.part.getLocation().getX() + TRUCK_SPEED, (int)part.part.getLocation().getY());//added by monroe to show part leaving on truck
+			}
+		}
+		if (getCenterX() > (parent./*getParent().getGuiParent().*/getWidth() + this.getWidth()*3/4))//changed from < to > by monroe and added math to make truck actually leave the right panel
+		{
+			//part.setVisible(false);//moved here by monroe
+			//part = null;//moved here by monroe
+		}
+	}
+	
+	private void reappearTruck(){
+		state = TruckState.RETURNING;
+		
+	}
 
 	@Override
 	public void addPart(GUIGlass part)
@@ -189,6 +214,12 @@ public class GUITruck extends GuiComponent
 		if (event == TEvent.TRUCK_DO_EMPTY)
 		{
 			state = TruckState.LEAVING;
+		}
+		if (event == TEvent.TRUCK_DO_LEAVE){
+			state = TruckState.DISAPPEAR;
+		}
+		if (event == TEvent.TRUCK_DO_RETURN){
+			state = TruckState.REAPPEAR;
 		}
 	}
 }
