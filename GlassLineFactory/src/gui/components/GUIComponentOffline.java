@@ -43,7 +43,7 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 	int timerCounter=0;
 	
 	//change the timer by set the value here
-	int timerForAnimation=2;
+	int timerForAnimation=0;
 
 	public void msgChangeProcessingTime(int timerForAnimation) {
 		this.timerForAnimation = timerForAnimation;
