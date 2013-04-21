@@ -26,7 +26,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	private GlassType currentGlass;
 	private Target target;
 	private State myState;
-	private boolean loadFinished;
+	private boolean glassLoaded;
 	private boolean informed = false;
 
 
@@ -75,7 +75,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		transducer.register(this, TChannel.POPUP);
 		target = Target.None;
 		myState = State.Down;
-		loadFinished = false;
+		glassLoaded = false;
 
 	}
 
@@ -84,7 +84,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	@Override
 	public void msgPassingGlass(GlassType gt) {
 		currentGlass = gt;
-		loadFinished = false;
+		glassLoaded = false;
 		target = Target.PreConveyor;
 		stateChanged();
 	}
@@ -108,7 +108,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 			System.out.println("CurrentGlass != null");
 		}
 
-		if (loadFinished == true) {
+		if (glassLoaded == true) {
 			System.out.println("Load finished");
 		}
 		else {
@@ -142,7 +142,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 	public void msgReturningGlass(SkyMachine machine, GlassType gt) {
 		currentGlass = gt;
-		loadFinished = false;
+		glassLoaded = false;
 
 		if (machine == firstMachine.machine) {
 			firstMachine.state = MachineState.Idle;
@@ -156,7 +156,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	}
 
 	private void msgGlassLoaded() {
-		loadFinished = true;
+		glassLoaded = true;
 		if (target == Target.None || target == Target.PostConveyor || target == Target.PreConveyor) {
 			myState = State.Down;
 			target = Target.None;
@@ -226,16 +226,12 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 			}
 		}
 
-		if (currentGlass != null && target == Target.None && myState == State.Down && loadFinished) {
+		if (currentGlass != null && target == Target.None && myState == State.Down && glassLoaded) {
 			if (currentGlass.getConfig(myGuiIndex)) {
 				target = Target.None;
 				popUp(); // pop up to give to machine
 				return true;
 			}
-			//			else if (postConveyor.state == ConveyorState.Available){
-			//				passToConveyor();
-			//				return true;
-			//			}
 		}
 
 
@@ -258,7 +254,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 			return true;
 		}
 
-		if (currentGlass !=null && myState == State.Down && loadFinished) {
+		if (currentGlass !=null && myState == State.Down && glassLoaded) {
 			if (postConveyor.state == ConveyorState.Available) {
 				passToConveyor();
 				return true;
@@ -293,6 +289,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
+		
 		myState = State.Animating;
 	}
 

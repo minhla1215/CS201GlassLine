@@ -147,7 +147,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		System.out.println(this + ": action - passGlass");
 		postCF.msgPassingGlass(gt);
 		myState = ConveyorState.ReadyToMove;
-		popUpLoaded = false;
+		PopUpAvailable = false;
 		//		stateChanged();
 	}
 
