@@ -22,6 +22,7 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	public Queue<GlassType> glassPanes;
 	public Boolean passingGlass;
 	public Boolean isMoving;
+	public Boolean isJammed;
 	public int conveyorNumber;
 	public int conveyorCapacity = 2;
 	enum ConveyorState{ON, OFF, DONOTHING};
@@ -37,6 +38,7 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 		glassPanes = new LinkedList<GlassType>();
 		passingGlass = false;
 		isMoving = true;
+		isJammed = false;
 		name = n;
 		conveyorNumber = cNum;
 		conveyorState = ConveyorState.OFF;
@@ -54,7 +56,7 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	
 	
 	//Messages//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+	//NORMATIVE
 	public void msgPassingGlass(GlassType gt) {
 		glassPanes.add(gt);
 		conveyorState = ConveyorState.ON;
@@ -74,6 +76,25 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	}
 
 	
+	//NONNORMATIVE
+	public void msgConveyorJammed(){
+		isJammed = true;
+		stateChanged();
+	}
+	
+	
+	public void msgConveyorUnjammed(){
+		isJammed = false;
+		moveConveyor();
+		
+		//REINITIALIZING
+		passingGlass = false;
+		isMoving = true;
+		isJammed = false;
+		conveyorState = ConveyorState.OFF;
+		
+		stateChanged();
+	}
 	
 	
 	
@@ -82,33 +103,24 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	//Scheduler///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean pickAndExecuteAnAction() {
-		if(conveyorState == ConveyorState.OFF){
-			sendIAmAvailable();
-			conveyorState = ConveyorState.DONOTHING;
-			return true;
+		if(isJammed){
+			stopConveyor();
 		}
-		
-		if(passingGlass && conveyorState == ConveyorState.ON){
-			passGlass();
-			conveyorState = ConveyorState.OFF;
-			return true;
+		else{
+			if(conveyorState == ConveyorState.OFF){
+				sendIAmAvailable();
+				conveyorState = ConveyorState.DONOTHING;
+				return true;
+			}
+
+			if(passingGlass && conveyorState == ConveyorState.ON){
+				passGlass();
+				conveyorState = ConveyorState.OFF;
+				return true;
+			}
+
 		}
-		
-		/////////////////////NEW STUFF////////////////////////////////////
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		////////////////////////////////////////////////////////////////////
-		
+
 		return false;
 	}
 
@@ -134,6 +146,31 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 			frontSensor.msgPassingGlass(glassPanes.remove());
 			passingGlass = false;
 		}
+	}
+	
+	
+	
+	void moveConveyor(){
+		System.out.println(name + " moveConveyor");
+		
+		Object[] arg = new Object[1];
+		arg[0] = conveyorNumber;
+		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, arg);
+		
+		set_isMoving(true);
+		
+
+	}
+	
+	
+	void stopConveyor(){
+		System.out.println(name + " stopConveyor");
+		
+		Object[] arg = new Object[1];
+		arg[0] = conveyorNumber;
+		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, arg);
+		
+		set_isMoving(false);
 	}
 	
 	
