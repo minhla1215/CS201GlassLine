@@ -44,6 +44,8 @@ public class FactoryPanel extends JPanel
 	ConveyorFamily [] offlineAgents = new ConveyorFamily[6];
 	ConveyorFamily [] popupAgents = new ConveyorFamily[3];
 	
+	TruckAgent truckAgent;
+	
 	
 	
 	/** The frame connected to the FactoryPanel */
@@ -163,7 +165,7 @@ public class FactoryPanel extends JPanel
 //		AlexInlineMachineAgent uvLampAgent=new AlexInlineMachineAgent("Uv_Lamp",transducer,5);
 //		AlexInlineMachineAgent ovenAgent=new AlexInlineMachineAgent("Oven",transducer,6);
 //////		
-		TruckAgent truckAgent=new TruckAgent(transducer,"Truck");
+		truckAgent=new TruckAgent(transducer,"Truck");
 
 		//Initializing Sky's PopUps 0 - 2
 		SkyPopUpAgent popUp0 = new SkyPopUpAgent(0, "PopUp0", transducer);
@@ -240,7 +242,6 @@ public class FactoryPanel extends JPanel
 		painter = new JoshInlineMachineAgent(false, TChannel.PAINTER, "painter", 4, transducer);
 		uvLamp= new JoshInlineMachineAgent(false, TChannel.UV_LAMP, "uvLamp", 5, transducer);
 		oven = new JoshInlineMachineAgent(false, TChannel.OVEN, "oven", 6, transducer);
-
 		inlineAgents[3] = washer;
 		inlineAgents[4] = painter;
 		inlineAgents[5] = uvLamp;
@@ -530,5 +531,8 @@ public class FactoryPanel extends JPanel
 	public ConveyorFamily[] getOfflineList(){
 		return offlineAgents;
 	}
+	
+	public TruckAgent getTruck(){
+		return truckAgent;
+	}
 }
-
