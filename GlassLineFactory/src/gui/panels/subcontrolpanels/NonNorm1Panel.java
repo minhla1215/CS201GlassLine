@@ -350,7 +350,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			inlineUnBreakButton.setEnabled(true);
 			
 			// Call message
-			if(fp.getConveyorList()[index] instanceof AlexInlineMachineAgent){
+			if(fp.getInlineList()[index] instanceof AlexInlineMachineAgent){
 				((AlexInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineBreak();}
 			//fp.getInlineList()[index].msgInlineMachineBreak();
 		}
@@ -361,7 +361,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			inlineUnBreakButton.setEnabled(false);
 			
 			// Call message
-			if(fp.getConveyorList()[index] instanceof AlexInlineMachineAgent){
+			if(fp.getInlineList()[index] instanceof AlexInlineMachineAgent){
 				((AlexInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineUnbreak();}
 			//fp.getInlineList()[index].msgInlineMachineUnbreak();
 		}

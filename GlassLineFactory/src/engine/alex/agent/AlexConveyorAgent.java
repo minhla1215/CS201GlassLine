@@ -20,12 +20,13 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	enum SensorStates {pressed,doingNothing,released};//,waitToPass};
 	SensorStates startSensorStates=SensorStates.released;
 	SensorStates endSensorStates=SensorStates.released;
-	
+	enum JamStates{jammed,unjammed,nothing}
+	JamStates jState=JamStates.unjammed;
 
 
 	boolean allowPass;
 	boolean conveyorOn;
-	boolean conveyorJammed;
+	boolean tempConveyorState;
 
 
 	ConveyorFamily preAgent,nextAgent;
@@ -39,21 +40,24 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 		conveyorNumber[0]=i;
 		allowPass=false;
 		conveyorOn=false;
-		conveyorJammed=false;
+		tempConveyorState=false;
 		stateChanged();//to run the scheduler for the first time so it can send message to preCF
 	}
 
 	//message
 
 	public void msgConveyorJammed(){
-		conveyorJammed=true;
+		jState=JamStates.jammed;
 		System.out.println(this+": I am jammed!");
 		stateChanged();
 		
 	}
 	
 	public void msgConveyorUnjammed(){
-		conveyorJammed=false;
+		if(tempConveyorState){
+			TurnOnConveyor();
+		}else{TurnOffConveyor();}
+		jState=JamStates.unjammed;
 		System.out.println(this+": I am Unjammed!");
 		stateChanged();
 		
@@ -123,15 +127,19 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		// TODO Auto-generated method stub
-		if(!conveyorJammed){
+		if(jState==JamStates.unjammed){
 			if(glasses.isEmpty()){
 				if(!conveyorOn){
 					TurnOnConveyor();
+					return true;
 				}
 			}
 
+			if(glasses.size()==0){
+				tellingPreCFImAvailable();
+			}
 
-			if (startSensorStates==SensorStates.released){
+			if (startSensorStates==SensorStates.released&&conveyorOn){
 				tellingPreCFImAvailable();
 				startSensorStates=SensorStates.doingNothing;
 				return true;
@@ -139,19 +147,15 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 
 
 
-			if (startSensorStates==SensorStates.pressed){
-				if (endSensorStates==SensorStates.released){
-					if(!conveyorOn){
-						System.out.println(this +" turn on the conveyor");
-						TurnOnConveyor();}
-					startSensorStates=SensorStates.doingNothing;
-					return true;
-				}
+			if (startSensorStates==SensorStates.pressed&&endSensorStates==SensorStates.released&&!conveyorOn){
+				TurnOnConveyor();
+				startSensorStates=SensorStates.doingNothing;
+				return true;
+
 			}
 
 
 			if (endSensorStates==SensorStates.pressed){
-
 				if (allowPass==true){
 					if(!conveyorOn){
 						TurnOnConveyor();}
@@ -166,18 +170,18 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 				}
 			}
 
-			if (endSensorStates==SensorStates.released){
-				if(!conveyorOn){
-					TurnOnConveyor();}
+			if (endSensorStates==SensorStates.released&&!conveyorOn){
+				TurnOnConveyor();
 				endSensorStates=SensorStates.doingNothing;
 				return true;
 			}
 		}
 
-		else{ //conveyor Jammed
-
-			if(conveyorOn){
-				TurnOffConveyor();}
+		if(jState==JamStates.jammed&&conveyorOn){ //conveyor Jammed
+			
+			tempConveyorState=conveyorOn;
+			TurnOffConveyor();
+			jState=JamStates.nothing;
 			return true;
 		}
 		return false;
@@ -312,8 +316,10 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 			if (conveyorNumber[0]==(Integer)newArgs[0]){
 				if (((Integer)args[0] % 2) == 0 ){//when it's start sensor pressed
 					this.msgStartSensorPressed();
+					System.out.println(this + ": start pressed");
 				}else if (((Integer)args[0] % 2) == 1){//when it's end sensor pressed
 					this.msgEndSensorPressed();
+					System.out.println(this + ": end pressed");
 				}
 			}
 		}else if (event == TEvent.SENSOR_GUI_RELEASED){
@@ -322,11 +328,10 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 			if (conveyorNumber[0]==(Integer)newArgs[0]){
 				if (((Integer)args[0] % 2) == 0){//when it's start sensor released	
 					this.msgStartSensorReleased();
+					System.out.println(this + ": start released");
 				}else if (((Integer)args[0] % 2) == 1){//when it's end sensor released
 					this.msgEndSensorReleased();
-					if (glasses.size() == 0) {
-						preAgent.msgIAmAvailable();
-					}
+					System.out.println(this + ": end released");
 				}
 			}
 		}
