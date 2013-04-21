@@ -47,12 +47,14 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 
 	public void msgConveyorJammed(){
 		conveyorJammed=true;
+		System.out.println(this+": I am jammed!");
 		stateChanged();
 		
 	}
 	
 	public void msgConveyorUnjammed(){
 		conveyorJammed=false;
+		System.out.println(this+": I am Unjammed!");
 		stateChanged();
 		
 	}
@@ -122,60 +124,61 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public boolean pickAndExecuteAnAction() {
 		// TODO Auto-generated method stub
 		if(!conveyorJammed){
-		if(glasses.isEmpty()){
-			if(!conveyorOn){
-			TurnOnConveyor();
-			}
-		}
-		
-		
-		if (startSensorStates==SensorStates.released){
-			tellingPreCFImAvailable();
-			startSensorStates=SensorStates.doingNothing;
-			return true;
-		}
-
-
-
-		if (startSensorStates==SensorStates.pressed){
-			if (endSensorStates==SensorStates.released){
+			if(glasses.isEmpty()){
 				if(!conveyorOn){
-				TurnOnConveyor();}
+					TurnOnConveyor();
+				}
+			}
+
+
+			if (startSensorStates==SensorStates.released){
+				tellingPreCFImAvailable();
 				startSensorStates=SensorStates.doingNothing;
 				return true;
 			}
-		}
 
 
-		if (endSensorStates==SensorStates.pressed){
 
-			if (allowPass==true){
+			if (startSensorStates==SensorStates.pressed){
+				if (endSensorStates==SensorStates.released){
+					if(!conveyorOn){
+						System.out.println(this +" turn on the conveyor");
+						TurnOnConveyor();}
+					startSensorStates=SensorStates.doingNothing;
+					return true;
+				}
+			}
+
+
+			if (endSensorStates==SensorStates.pressed){
+
+				if (allowPass==true){
+					if(!conveyorOn){
+						TurnOnConveyor();}
+					passingGlass();
+					endSensorStates=SensorStates.doingNothing;
+					return true;
+				}else 	{
+					if(conveyorOn){
+						TurnOffConveyor();}
+					return true;
+
+				}
+			}
+
+			if (endSensorStates==SensorStates.released){
 				if(!conveyorOn){
-				TurnOnConveyor();}
-				passingGlass();
+					TurnOnConveyor();}
 				endSensorStates=SensorStates.doingNothing;
 				return true;
-			}else 	{
-				if(conveyorOn){
-				TurnOffConveyor();}
-				return true;
-
 			}
 		}
 
-		if (endSensorStates==SensorStates.released){
-			if(!conveyorOn){
-			TurnOnConveyor();}
-			endSensorStates=SensorStates.doingNothing;
-			return true;
-		}
-		}
-		
 		else{ //conveyor Jammed
-		
+
 			if(conveyorOn){
 				TurnOffConveyor();}
-		
+			return true;
 		}
 		return false;
 	}

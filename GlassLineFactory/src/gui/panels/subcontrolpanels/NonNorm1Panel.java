@@ -1,5 +1,9 @@
 package gui.panels.subcontrolpanels;
 
+import engine.alex.agent.AlexConveyorAgent;
+import engine.alex.agent.AlexInlineMachineAgent;
+import engine.interfaces.ConveyorFamily;
+import engine.josh.agent.JoshConveyorAgent;
 import gui.panels.ControlPanel;
 import gui.panels.FactoryPanel;
 
@@ -35,10 +39,10 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 	// Declaration of Swing Box container
 	JPanel conveyorContainer, popupContainer, inlineContainer, offlineContainer, offlineProcessingTimeContainer;
 	
+	boolean started = false;
 	public NonNorm1Panel(ControlPanel cp)
 	{
 		parent = cp;
-		fp = parent.getGuiParent();
 
 		this.setBackground(Color.gray);
 		this.setForeground(Color.black);
@@ -124,7 +128,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		
 		// Set initial states of buttons
 		conveyorJamButton.setEnabled(true);
-		conveyorUnJamButton.setEnabled(false);
+		//conveyorUnJamButton.setEnabled(false);
 		inlineBreakButton.setEnabled(true);
 		inlineUnBreakButton.setEnabled(false);
 		popupBreakButton.setEnabled(true);
@@ -202,36 +206,56 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		int index = 0;
+		if(!started){
+			fp = parent.getGuiParent();
+			started = true;
+		}
 		if(ae.getSource() == conveyorJamButton){
+
 			index = conveyorDropList.getSelectedIndex();
-			conveyorJamButton.setEnabled(false);
-			conveyorUnJamButton.setEnabled(true);
-			
+
+			//conveyorJamButton.setEnabled(false);
+			//conveyorUnJamButton.setEnabled(true);
+
 			// Call message
-			//fp.getConveyorList()[index].msgConveyorJammed();
+			if(fp.getConveyorList()[index] instanceof AlexConveyorAgent){
+				((AlexConveyorAgent) fp.getConveyorList()[index]).msgConveyorJammed();}
+			//			else if(fp.getConveyorList()[index] instanceof JoshConveyorAgent){
+			//				((JoshConveyorAgent) fp.getConveyorList()[index]).msgConveyorJammed();}
+			//			else if(fp.getConveyorList()[index] instanceof SkyConveyorAgent){
+			//				((SkyConveyorAgent) fp.getConveyorList()[index]).msgConveyorJammed();}
+
+
+
 		}
 		else if(ae.getSource() == conveyorUnJamButton){
 			index = conveyorDropList.getSelectedIndex();
-			conveyorJamButton.setEnabled(true);
-			conveyorUnJamButton.setEnabled(false);
+			//conveyorJamButton.setEnabled(true);
+			//conveyorUnJamButton.setEnabled(false);
 			
 			// Call message
+			if(fp.getConveyorList()[index] instanceof AlexConveyorAgent){
+				((AlexConveyorAgent) fp.getConveyorList()[index]).msgConveyorUnjammed();}
 			//fp.getConveyorList()[index].msgConveyorUnjammed();
 		}
 		else if(ae.getSource() == inlineBreakButton){
 			index = inlineDropList.getSelectedIndex();
-			inlineBreakButton.setEnabled(false);
-			inlineUnBreakButton.setEnabled(true);
+			//inlineBreakButton.setEnabled(false);
+			//inlineUnBreakButton.setEnabled(true);
 			
 			// Call message
+			if(fp.getConveyorList()[index] instanceof AlexInlineMachineAgent){
+				((AlexInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineBreak();}
 			//fp.getInlineList()[index].msgInlineMachineBreak();
 		}
 		else if(ae.getSource() == inlineUnBreakButton){
 			index = inlineDropList.getSelectedIndex();
-			inlineBreakButton.setEnabled(true);
-			inlineUnBreakButton.setEnabled(false);
+			//inlineBreakButton.setEnabled(true);
+			//inlineUnBreakButton.setEnabled(false);
 			
 			// Call message
+			if(fp.getConveyorList()[index] instanceof AlexInlineMachineAgent){
+				((AlexInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineUnbreak();}
 			//fp.getInlineList()[index].msgInlineMachineUnbreak();
 		}
 		else if(ae.getSource() == popupBreakButton){

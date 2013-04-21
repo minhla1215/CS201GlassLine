@@ -137,6 +137,10 @@ public class FactoryPanel extends JPanel
 		AlexConveyorAgent conveyor3=new AlexConveyorAgent("Conveyor3",transducer,3);
 		AlexConveyorAgent conveyor4=new AlexConveyorAgent("Conveyor4",transducer,4);
 		conveyorAgents[0] = conveyor0;
+//		if(conveyorAgents[0] == null)
+//			System.out.println("agent is null");
+//		else
+//			System.out.println("NOT NULL HOMIE");
 		conveyorAgents[1] = conveyor1;
 		conveyorAgents[2] = conveyor2;
 		conveyorAgents[3] = conveyor3;
@@ -237,6 +241,13 @@ public class FactoryPanel extends JPanel
 		conveyorAgents[12] = conveyor12;
 		conveyorAgents[13] = conveyor13;
 		conveyorAgents[14] = conveyor14;
+		
+//		if(conveyorAgents == null){
+//			System.out.println("IS NULL");
+//		}
+//		else
+//			System.out.println("NOT NULL");
+//		ConveyorFamily[] bleh = getConveyorList();
 		
 		washer = new JoshInlineMachineAgent(false, TChannel.WASHER, "washer", 3, transducer);
 		painter = new JoshInlineMachineAgent(false, TChannel.PAINTER, "painter", 4, transducer);
@@ -525,6 +536,7 @@ public class FactoryPanel extends JPanel
 	}
 	
 	public ConveyorFamily[] getConveyorList(){
+		System.out.println("I got the conveyor list");
 		return conveyorAgents;
 	}
 	
