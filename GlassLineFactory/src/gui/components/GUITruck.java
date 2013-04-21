@@ -71,7 +71,7 @@ public class GUITruck extends GuiComponent
 
 	enum TruckState
 	{
-		LOADING, LEAVING, RETURNING, DISAPPEAR, REAPPEAR
+		LOADING, LEAVING, RETURNING, DISAPPEAR, REAPPEAR,DOINGNOTHING
 	};
 
 	TruckState state;
@@ -192,6 +192,7 @@ public class GUITruck extends GuiComponent
 		}
 		if (getCenterX() > (parent./*getParent().getGuiParent().*/getWidth() + this.getWidth()*3/4))//changed from < to > by monroe and added math to make truck actually leave the right panel
 		{
+			state = TruckState.DOINGNOTHING;
 			//part.setVisible(false);//moved here by monroe
 			//part = null;//moved here by monroe
 		}

@@ -96,16 +96,19 @@ public class TruckAgent extends Agent implements ConveyorFamily {
 	
 	public void msgTruckLeave(){
 		state = TruckState.DISAPPEAR;
+		stateChanged();
 	}
 
 	public void msgTruckReturn(){
 		state = TruckState.REAPPEAR;
+		stateChanged();
 	}
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		
 		if(state == TruckState.DISAPPEAR){
 			transducer.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_LEAVE, null);
+			previousComponent.msgIAmNotAvailable();
 			state = TruckState.DOINGNOTHING;
 			return true;
 		}
