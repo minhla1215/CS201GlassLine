@@ -20,11 +20,12 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	enum SensorStates {pressed,doingNothing,released};//,waitToPass};
 	SensorStates startSensorStates=SensorStates.released;
 	SensorStates endSensorStates=SensorStates.released;
+	
 
 
 	boolean allowPass;
 	boolean conveyorOn;
-	
+	boolean conveyorJammed;
 
 
 	ConveyorFamily preAgent,nextAgent;
@@ -38,11 +39,23 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 		conveyorNumber[0]=i;
 		allowPass=false;
 		conveyorOn=false;
+		conveyorJammed=false;
 		stateChanged();//to run the scheduler for the first time so it can send message to preCF
 	}
 
 	//message
 
+	public void msgConveyorJammed(){
+		conveyorJammed=true;
+		stateChanged();
+		
+	}
+	
+	public void msgConveyorUnjammed(){
+		conveyorJammed=false;
+		stateChanged();
+		
+	}
 
 	public void msgStartSensorPressed() {
 		startSensorStates=SensorStates.pressed;
@@ -93,9 +106,7 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	public void msgIAmAvailable() {
 		// TODO Auto-generated method stub
 		allowPass=true;
-
 		//		System.out.println("glass is allowed to pass to next agent");
-
 		stateChanged();
 	}
 
@@ -110,6 +121,7 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		// TODO Auto-generated method stub
+		if(!conveyorJammed){
 		if(glasses.isEmpty()){
 			if(!conveyorOn){
 			TurnOnConveyor();
@@ -157,7 +169,14 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 			endSensorStates=SensorStates.doingNothing;
 			return true;
 		}
-
+		}
+		
+		else{ //conveyor Jammed
+		
+			if(conveyorOn){
+				TurnOffConveyor();}
+		
+		}
 		return false;
 	}
 

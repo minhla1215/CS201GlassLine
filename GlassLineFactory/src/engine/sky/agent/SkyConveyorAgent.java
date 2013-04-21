@@ -106,6 +106,11 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	/** Scheduler */
 	@Override
 	public boolean pickAndExecuteAnAction() {
+		if (preCF instanceof AlexConveyorAgent&& myGlasses.isEmpty()) {
+			((AlexConveyorAgent) preCF).msgIAmAvailable();
+			informed = true;
+		}
+		
 		if ((myGlasses.size()==0 || myState == ConveyorState.Moving) && !informed) {
 			informAvailability();
 			return true;
