@@ -107,7 +107,7 @@ public class SkySensorAgent extends Agent {
 	
 	private void informConveyorExited() {
 		((SkyConveyorAgent) myConveyor).msgGlassExited();
-		
+		state = SensorState.Informed;
 	}
 
 	/** Utilities **/

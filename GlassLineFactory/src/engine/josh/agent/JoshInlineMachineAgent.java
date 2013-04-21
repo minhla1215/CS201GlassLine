@@ -84,12 +84,14 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 
 	//NONNORMATIVE
 	public void msgInlineMachineBreak(){
+		System.out.println("BREAK THE MACHINE: " + name);
 		isJammed = true;
 		stateChanged();
 	}
 
 
-	public void msgInlinemMachineUnBreak(){
+	public void msgInlineMachineUnbreak(){
+		System.out.println("UNBREAK THE MACHINE: " + name);
 		isJammed = false;
 		
 		//REINITIALIZING

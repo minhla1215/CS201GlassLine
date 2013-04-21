@@ -4,6 +4,7 @@ import engine.alex.agent.AlexConveyorAgent;
 import engine.alex.agent.AlexInlineMachineAgent;
 import engine.interfaces.ConveyorFamily;
 import engine.josh.agent.JoshConveyorAgent;
+import engine.josh.agent.JoshInlineMachineAgent;
 import gui.panels.ControlPanel;
 import gui.panels.FactoryPanel;
 
@@ -323,9 +324,12 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			
 			// Call message
 			if(fp.getConveyorList()[index] instanceof AlexConveyorAgent){
-				((AlexConveyorAgent) fp.getConveyorList()[index]).msgConveyorJammed();}
-			//			else if(fp.getConveyorList()[index] instanceof JoshConveyorAgent){
-			//				((JoshConveyorAgent) fp.getConveyorList()[index]).msgConveyorJammed();}
+				((AlexConveyorAgent) fp.getConveyorList()[index]).msgConveyorJammed();
+			}
+			else if(fp.getConveyorList()[index] instanceof JoshConveyorAgent){
+				System.out.println("NON NORM JAM THE CONVEYOR");
+				((JoshConveyorAgent) fp.getConveyorList()[index]).msgConveyorJammed();
+			}
 			//			else if(fp.getConveyorList()[index] instanceof SkyConveyorAgent){
 			//				((SkyConveyorAgent) fp.getConveyorList()[index]).msgConveyorJammed();}
 
@@ -340,7 +344,12 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			
 			// Call message
 			if(fp.getConveyorList()[index] instanceof AlexConveyorAgent){
-				((AlexConveyorAgent) fp.getConveyorList()[index]).msgConveyorUnjammed();}
+				((AlexConveyorAgent) fp.getConveyorList()[index]).msgConveyorUnjammed();
+			}
+			if(fp.getConveyorList()[index] instanceof JoshConveyorAgent){
+				System.out.println("NON NORM UNJAM THE CONVEYOR");
+				((JoshConveyorAgent) fp.getConveyorList()[index]).msgConveyorUnjammed();
+			}
 			//fp.getConveyorList()[index].msgConveyorUnjammed();
 		}
 		else if(ae.getSource() == inlineBreakButton){
@@ -350,8 +359,14 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			inlineUnBreakButton.setEnabled(true);
 			
 			// Call message
+
 			if(fp.getInlineList()[index] instanceof AlexInlineMachineAgent){
 				((AlexInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineBreak();}
+
+			else if(fp.getInlineList()[index] instanceof JoshInlineMachineAgent){
+				System.out.println("NON NORM BREAK THE MACHINE");
+				((JoshInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineBreak();
+			}
 			//fp.getInlineList()[index].msgInlineMachineBreak();
 		}
 		else if(ae.getSource() == inlineUnBreakButton){
@@ -359,10 +374,16 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			inlineBreakBool[index] = false;
 			inlineBreakButton.setEnabled(true);
 			inlineUnBreakButton.setEnabled(false);
-			
+
 			// Call message
+
 			if(fp.getInlineList()[index] instanceof AlexInlineMachineAgent){
 				((AlexInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineUnbreak();}
+
+			else if(fp.getInlineList()[index] instanceof JoshInlineMachineAgent){
+				System.out.println("NON NORM UNBREAK THE MACHINE");
+				((JoshInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineUnbreak();
+			}
 			//fp.getInlineList()[index].msgInlineMachineUnbreak();
 		}
 		else if(ae.getSource() == popupBreakButton){
@@ -443,15 +464,14 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		else if(ae.getSource() == truckLeaveButton){
 			truckLeaveButton.setEnabled(false);
 			truckReturnButton.setEnabled(true);
-			
 			// Call message
-			//fp.getTruck().msgTruckLeave();
+			fp.getTruck().msgTruckLeave();
 		}else if(ae.getSource() == truckReturnButton){
 			truckLeaveButton.setEnabled(true);
 			truckReturnButton.setEnabled(false);
 			
 			// Call message
-			//fp.getTruck().msgTruckLeave();
+			fp.getTruck().msgTruckReturn();
 		}
 		
 	}
