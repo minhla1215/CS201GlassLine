@@ -159,7 +159,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 	}
 
 	public void processGlass() {
-		System.out.println(this + " : actoin : processGlass");
+		System.out.println(this + " : action : processGlass");
 		Object[] args = new Object[1];
 		args[0] = new Integer(myGuiIndex);
 		if (type==MachineType.DRILL){
@@ -175,7 +175,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 	}
 
 	public void passGlass(GlassType gt) {
-		System.out.println(this + " : actoin : passGlass");
+		System.out.println(this + " : action : passGlass");
 		((SkyPopUpAgent)pairedPopUp).msgReturningGlass(this, myGlass);
 		readyToPass = false;
 		Object[] args = new Object[1];

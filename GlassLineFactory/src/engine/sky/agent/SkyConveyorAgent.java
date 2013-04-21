@@ -74,7 +74,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		PopUpAvailable = false;
 		stateChanged();
 	}
-	
+
 	public void msgFullyLoaded() {
 		popUpLoaded = true;
 		stateChanged();
@@ -98,7 +98,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	public void msgGlassEntered() {
 
 	}
-	
+
 	public void msgGlassExited() {
 		stateChanged();
 	}
@@ -124,7 +124,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 					passGlass(myGlasses.remove(0));
 					return true;
 				}
-				else if (popUpLoaded){
+				else {
 					stopConveyor();
 					return true;
 				}
@@ -157,11 +157,12 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		args[0] = myGuiIndex;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, args);
 
-		if (preCF instanceof AlexConveyorAgent) {
-			((AlexConveyorAgent) preCF).msgIAmNotAvailable();
-			informed = false;
-		}
-//		stateChanged();
+		//		if (preCF instanceof AlexConveyorAgent) {
+		//			((AlexConveyorAgent) preCF).msgIAmNotAvailable();
+		preCF.msgIAmNotAvailable();
+		informed = false;
+		//		}
+		//		stateChanged();
 
 	}
 
@@ -211,7 +212,8 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 
 	@Override
 	public void msgIAmNotAvailable() {
-		// TODO Auto-generated method stub
+		PopUpAvailable = false;
+		stateChanged();
 
 	}
 
