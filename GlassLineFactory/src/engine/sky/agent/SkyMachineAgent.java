@@ -85,8 +85,9 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 	}
 
 	public void msgChangeProcessingTime(int i){//to change the timer
-		Object[] args = new Object[1];
+		Object[] args = new Object[2];
 		args[0] = new Integer(myGuiIndex);
+		args[1] = i;
 		if (type==MachineType.DRILL){
 			transducer.fireEvent(TChannel.DRILL, TEvent.WORKSTATION_DO_CHANGE_ANIMATION_TIME, args);
 		}

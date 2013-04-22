@@ -221,11 +221,7 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			}
 			if (event == TEvent.WORKSTATION_DO_CHANGE_ANIMATION_TIME)
 			{
-				if (timerForAnimation==0){
-					msgChangeProcessingTime(2);
-				}else if (timerForAnimation==2){
-					msgChangeProcessingTime(0);
-				}
+					msgChangeProcessingTime((Integer)args[1]);	
 				return;
 			}
 			
