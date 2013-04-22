@@ -128,7 +128,7 @@ public class ControlPanel extends JPanel implements TReceiver
 		JTabbedPane selectTabbedPanel = new JTabbedPane(JTabbedPane.TOP);
 		selectTabbedPanel.add("Glass Select", glassSelectPanel);
 		selectTabbedPanel.add("Produce Config", configSelectPanel);
-		selectTabbedPanel.add("Non Norms", nonNormPanel);
+		//selectTabbedPanel.add("Non Norms", nonNormPanel);
 		selectTabbedPanel.add("Non Norms 1", nonNorm1Panel);
 		selectTabbedPanel.setBackground(Color.black);
 		selectTabbedPanel.setForeground(Color.white);
