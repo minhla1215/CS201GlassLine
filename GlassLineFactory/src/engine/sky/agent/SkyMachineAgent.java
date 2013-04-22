@@ -116,6 +116,9 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		//TO DO 
 		//NEED TO NOTICE POPUP I AM READY
 		((SkyPopUpAgent) pairedPopUp).msgGlassRemoved(this);
+		if(myGlass!=null){
+			myGlass=null;
+		}
 		
 	}
 
