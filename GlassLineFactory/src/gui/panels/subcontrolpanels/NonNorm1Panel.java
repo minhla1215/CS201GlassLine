@@ -5,6 +5,7 @@ import engine.alex.agent.AlexInlineMachineAgent;
 import engine.interfaces.ConveyorFamily;
 import engine.josh.agent.JoshConveyorAgent;
 import engine.josh.agent.JoshInlineMachineAgent;
+import engine.sky.agent.SkyMachineAgent;
 import gui.panels.ControlPanel;
 import gui.panels.FactoryPanel;
 
@@ -151,7 +152,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		offlineUnBreakButton = new JButton("Fix");
 		offlineOnButton = new JButton("On");
 		offlineOffButton = new JButton("Off");
-		offlineRemoveGlassButton = new JButton("Remove Glass");
+		offlineRemoveGlassButton = new JButton("Remove Glass(Caution!)");
 		offlineProcessingTimeButton = new JButton("Set");
 		truckLeaveButton = new JButton("Leave");
 		truckReturnButton = new JButton("Return");
@@ -363,7 +364,6 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			else if(fp.getInlineList()[index] instanceof JoshInlineMachineAgent){
 				((JoshInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineBreak();
 			}
-			//fp.getInlineList()[index].msgInlineMachineBreak();
 		}
 		else if(ae.getSource() == inlineUnBreakButton){
 			index = inlineDropList.getSelectedIndex();
@@ -378,7 +378,6 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			else if(fp.getInlineList()[index] instanceof JoshInlineMachineAgent){
 				((JoshInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineUnbreak();
 			}
-			//fp.getInlineList()[index].msgInlineMachineUnbreak();
 		}
 		else if(ae.getSource() == popupBreakButton){
 			index = popupDropList.getSelectedIndex();
@@ -447,13 +446,13 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			}
 			offlineTimeInt[index] = pTime;
 			// Call message
-			//fp.getOfflineList()[index].msgChangeProcessingTime((int) pTime);
+			((SkyMachineAgent) fp.getOfflineList()[index]).msgChangeProcessingTime((int) pTime);
 		}
 		else if(ae.getSource() == offlineRemoveGlassButton){
 			index = offlineDropList.getSelectedIndex();
 			System.out.println(index);
 			// Call message
-			//fp.getOfflineList()[index].msgRemoveGlass();
+			((SkyMachineAgent) fp.getOfflineList()[index]).msgRemoveGlass();
 		}
 		else if(ae.getSource() == truckLeaveButton){
 			truckLeaveButton.setEnabled(false);

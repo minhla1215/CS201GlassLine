@@ -17,10 +17,11 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 	ConveyorFamily preConveyor,nextConveyor;
 
 	boolean allowPass;
+	boolean tempallow;
 
 	int machineNumber;
 	GlassType glass;
-	States myState;
+	States myState,tempState;
 
 	private boolean machineBreak;
 
@@ -32,6 +33,7 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 		allowPass=false;
 		machineBreak=false;
 		myState=States.noparts;
+		tempState=States.noparts;
 		if(machineNumber==0){
 			t.register(this, TChannel.CUTTER);
 		}else if(machineNumber==1){
@@ -60,12 +62,17 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 	
 	public void msgInlineMachineBreak(){
 		machineBreak=true;
+		
+		System.out.println(this + " : is break and tempState is " +tempState);
+		
 		myState=States.machinebreak;
 		stateChanged();
 	}
 	public void msgInlineMachineUnbreak(){
-		machineBreak=false;
 		
+		machineBreak=false;
+		myState=tempState;
+		System.out.println(this + " : is unbreak and myState is " +myState);
 		stateChanged();
 	}
 	
@@ -100,16 +107,19 @@ public class AlexInlineMachineAgent extends Agent implements ConveyorFamily{
 
 	public void msgWorkStationGuiActionFinished(){
 		myState=States.readytopass;
+		tempState=myState;
 		stateChanged();
 	}
 
 	public void msgWorkStationLoadFinished(){
 		myState=States.partsloaded;
+		tempState=myState;
 		stateChanged();
 	}
 
 	public void msgWorkStationReleaseFinished(){
 		myState=States.noparts;
+		tempState=myState;
 		stateChanged();
 	}
 

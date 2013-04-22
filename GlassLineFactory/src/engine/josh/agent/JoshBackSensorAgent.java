@@ -78,7 +78,7 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFr
 	public boolean pickAndExecuteAnAction() {
 		
 		//This part of the Scheduler is specific to corners.////////////////
-		if(sensorNumber == 20 || sensorNumber == 26){
+		if(sensorNumber == 20 || sensorNumber == 26 || sensorNumber == 16){
 			if(!conveyor.isMoving){// && conveyor.frontSensor.sensorPressed){
 				if(sentIAmAvailable){
 					sendIAmNotAvailable();
