@@ -25,7 +25,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 
 	public enum ConveyorState {Idle, Stopped, ReadyToMove, Moving, ReadyToPass};
 	private boolean informed;
-	private boolean popUpLoaded;
+	private boolean okToSkip;
 	private boolean PopUpAvailable;
 	private boolean frontSensorReleased;
 	private ArrayList<GlassType> myGlasses;
@@ -39,6 +39,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		myState = ConveyorState.Idle;
 		informed = false;
 		PopUpAvailable = false;
+		okToSkip = false;
 		myGlasses = new ArrayList<GlassType>();
 		myGuiIndex = guiIndex;
 
@@ -50,6 +51,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		myState = ConveyorState.Idle;
 		informed = false;
 		PopUpAvailable = false;
+		okToSkip = false;
 		myGlasses = new ArrayList<GlassType>();
 		myGuiIndex = guiIndex;
 		frontSensorReleased = true;
@@ -69,16 +71,21 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		PopUpAvailable = true;
 		stateChanged();
 	}
-
-	public void msgIAmBusy() {
-		PopUpAvailable = false;
+	
+	public void msgOkToSkip() {
+		okToSkip = true;
 		stateChanged();
 	}
 
-	public void msgFullyLoaded() {
-		popUpLoaded = true;
-		stateChanged();
-	}
+//	public void msgIAmBusy() {
+//		PopUpAvailable = false;
+//		stateChanged();
+//	}
+
+//	public void msgFullyLoaded() {
+//		popUpLoaded = true;
+//		stateChanged();
+//	}
 
 	public void msgGlassEntering() {
 		if (myState != ConveyorState.Stopped ) {
@@ -87,6 +94,10 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 
 
 		frontSensorReleased = false;
+		
+		preCF.msgIAmNotAvailable();
+		informed = false;
+		
 		stateChanged();
 	}
 
@@ -121,7 +132,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 
 
 			if (myState == ConveyorState.ReadyToPass) {
-				if (PopUpAvailable) {
+				if (PopUpAvailable || (!myGlasses.get(0).getConfig(myGuiIndex-5) && okToSkip)) {
 					passGlass(myGlasses.remove(0));
 					return true;
 				}
@@ -148,6 +159,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		postCF.msgPassingGlass(gt);
 		myState = ConveyorState.ReadyToMove;
 		PopUpAvailable = false;
+		okToSkip = false;
 		//		stateChanged();
 	}
 
@@ -215,6 +227,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	@Override
 	public void msgIAmNotAvailable() {
 		PopUpAvailable = false;
+		okToSkip = false;
 		stateChanged();
 
 	}
