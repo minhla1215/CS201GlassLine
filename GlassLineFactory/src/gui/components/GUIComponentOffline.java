@@ -152,11 +152,11 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 		part.showImage();
 	}
 	
-	//remove glass part
+	//remove glass part be careful! only use when glass break in the machine
 	public void removePart(){
+		if(part!=null){
 		part.removeImage();
-		this.part=null;
-		
+		this.part=null;}
 	}
 
 	public void setIndex(Integer index)
@@ -214,6 +214,21 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 				nextComponent.addPart(part);
 				return;
 			}
+			if (event == TEvent.WORKSTATION_DO_REMOVE_GLASS)
+			{
+				removePart();
+				return;
+			}
+			if (event == TEvent.WORKSTATION_DO_CHANGE_ANIMATION_TIME)
+			{
+				if (timerForAnimation==0){
+					msgChangeProcessingTime(2);
+				}else if (timerForAnimation==2){
+					msgChangeProcessingTime(0);
+				}
+				return;
+			}
+			
 
 		}
 	}

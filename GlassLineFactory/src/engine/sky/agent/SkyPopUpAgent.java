@@ -80,6 +80,17 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	}
 
 	/** Messages **/
+	public void msgGlassRemoved(SkyMachine machine){
+		if (machine == firstMachine.machine) {
+			firstMachine.state = MachineState.Idle;
+			target = Target.Machine1;
+		} else if (machine == secondMachine.machine) {
+			secondMachine.state =MachineState.Idle;
+			target = Target.Machine2;
+		}
+		stateChanged();
+	}
+	
 
 	@Override
 	public void msgPassingGlass(GlassType gt) {

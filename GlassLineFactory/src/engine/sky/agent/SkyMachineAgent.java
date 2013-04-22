@@ -84,6 +84,39 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 
 	}
 
+	public void msgChangeProcessingTime(int i){//to change the timer
+		Object[] args = new Object[1];
+		args[0] = new Integer(myGuiIndex);
+		if (type==MachineType.DRILL){
+			transducer.fireEvent(TChannel.DRILL, TEvent.WORKSTATION_DO_CHANGE_ANIMATION_TIME, args);
+		}
+		else if (type == MachineType.CROSS_SEAMER) {
+			transducer.fireEvent(TChannel.CROSS_SEAMER, TEvent.WORKSTATION_DO_CHANGE_ANIMATION_TIME, args);
+		}
+		else if (type == MachineType.GRINDER) {
+			transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_DO_CHANGE_ANIMATION_TIME, args);
+		}
+		
+	}
+	
+	public void msgRemoveGlass(){
+		
+		Object[] args = new Object[1];
+		args[0] = new Integer(myGuiIndex);
+		if (type==MachineType.DRILL){
+			transducer.fireEvent(TChannel.DRILL, TEvent.WORKSTATION_DO_REMOVE_GLASS, args);
+		}
+		else if (type == MachineType.CROSS_SEAMER) {
+			transducer.fireEvent(TChannel.CROSS_SEAMER, TEvent.WORKSTATION_DO_REMOVE_GLASS, args);
+		}
+		else if (type == MachineType.GRINDER) {
+			transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_DO_REMOVE_GLASS, args);
+		}
+		//TO DO 
+		//NEED TO NOTICE POPUP I AM READY
+		((SkyPopUpAgent) pairedPopUp).msgGlassRemoved(this);
+		
+	}
 
 	@Override
 	public void msgIAmReady() {
