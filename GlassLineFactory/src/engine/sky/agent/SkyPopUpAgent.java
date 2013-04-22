@@ -231,8 +231,12 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 				popUp(); // pop up to say ready
 				return true;
 			}
-			else if (!informed){
+			else if (!informed && (firstMachine.state == MachineState.Idle || secondMachine.state == MachineState.Idle)){
 				informIAmAvailable();
+				return true;
+			}
+			else if (!informed) {
+				informOkToSkip();
 				return true;
 			}
 		}
@@ -289,6 +293,12 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		System.out.println(this +" Action: informIAmAvailable");
 		preConveyor.conveyor.msgIAmAvailable();
 		//		myState = State.Animating;
+		informed = true;
+	}
+	
+	private void informOkToSkip() {
+		System.out.println(this +" Action: informOkToPass");
+		((SkyConveyorAgent) preConveyor.conveyor).msgOkToSkip();
 		informed = true;
 	}
 
