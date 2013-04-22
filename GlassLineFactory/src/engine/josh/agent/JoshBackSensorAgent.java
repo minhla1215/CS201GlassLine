@@ -79,7 +79,7 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFr
 		
 		//This part of the Scheduler is specific to corners.////////////////
 		if(sensorNumber == 20 || sensorNumber == 26 || sensorNumber == 16){
-			if(!conveyor.isMoving){// && conveyor.frontSensor.sensorPressed){
+			if(!conveyor.isMoving){
 				if(sentIAmAvailable){
 					sendIAmNotAvailable();
 					return true;
@@ -92,6 +92,16 @@ public class JoshBackSensorAgent extends Agent implements ConveyorFamily, JoshFr
 					return true;
 				}
 			}
+			
+//			if(glassPanes.isEmpty() && conveyor.glassPanes.isEmpty() && conveyor.frontSensor.glassPanes.isEmpty()){
+//				if(!sentIAmAvailable){
+//					sendIAmAvailable();
+//					if(!conveyor.isMoving){
+//						moveConveyor();
+//					}
+//					return true;
+//				}
+//			}
 		}
 		////////////////////////////////////////////////////////////////////	
 		
