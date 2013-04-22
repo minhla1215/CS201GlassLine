@@ -58,7 +58,6 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	//Messages//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//NORMATIVE
 	public void msgPassingGlass(GlassType gt) {
-		System.out.println("I RECIEVED THE GLASS");
 		glassPanes.add(gt);
 		conveyorState = ConveyorState.ON;
 		stateChanged();
