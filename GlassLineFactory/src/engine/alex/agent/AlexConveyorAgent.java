@@ -3,6 +3,8 @@ package engine.alex.agent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import transducer.TChannel;
 import transducer.TEvent;
@@ -65,6 +67,7 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 
 	public void msgStartSensorPressed() {
 		startSensorStates=SensorStates.pressed;
+		preAgent.msgIAmNotAvailable();
 
 		//		System.out.println("start sensor pressed");
 
@@ -189,7 +192,12 @@ public class AlexConveyorAgent extends Agent implements ConveyorFamily{
 
 
 	public void tellingPreCFImAvailable() {//step1 telling previous CF im available
-		preAgent.msgIAmAvailable();
+		new Timer().schedule(new TimerTask(){
+		    public void run(){//this routine is like a message reception    
+		    	preAgent.msgIAmAvailable();
+			    }
+			}, 100);
+		
 		System.out.println(this +": tells "+preAgent+" tellingPreCFImAvailable() ");
 
 		//		if(conveyorNumber[0]==0){
