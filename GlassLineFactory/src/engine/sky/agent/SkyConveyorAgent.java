@@ -97,7 +97,7 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		
 		preCF.msgIAmNotAvailable();
 		informed = false;
-		
+
 		stateChanged();
 	}
 
@@ -194,7 +194,11 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	private void informAvailability() {
 		System.out.println(this + ": action - informAvailability");
 		informed = true;
-		preCF.msgIAmAvailable();
+		new Timer().schedule(new TimerTask(){
+		    public void run(){//this routine is like a message reception    
+		    	preCF.msgIAmAvailable();
+			    }
+			}, 100);
 		//		stateChanged();
 	}
 
