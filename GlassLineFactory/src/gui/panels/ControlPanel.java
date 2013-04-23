@@ -5,6 +5,7 @@ import gui.panels.subcontrolpanels.ConfigSelectPanel;
 import gui.panels.subcontrolpanels.GlassInfoPanel;
 import gui.panels.subcontrolpanels.GlassSelectPanel;
 import gui.panels.subcontrolpanels.LogoPanel;
+import gui.panels.subcontrolpanels.NonNorm1Panel;
 import gui.panels.subcontrolpanels.NonNormPanel;
 import gui.panels.subcontrolpanels.StatePanel;
 import gui.panels.subcontrolpanels.TitlePanel;
@@ -73,7 +74,7 @@ public class ControlPanel extends JPanel implements TReceiver
 	/**
 	 * The panel handling non-normative events
 	 */
-	NonNormPanel nonNormPanel;
+	NonNorm1Panel nonNormPanel;
 
 	/**
 	 * Panel holding logo
@@ -109,7 +110,7 @@ public class ControlPanel extends JPanel implements TReceiver
 		configSelectPanel = new ConfigSelectPanel(this);
 		glassSelectPanel = new GlassSelectPanel(this);
 		glassInfoPanel = new GlassInfoPanel(this);
-		nonNormPanel = new NonNormPanel(this);
+		nonNormPanel = new NonNorm1Panel(this);
 		tracePanel = new TracePanel(this, "Begin");
 		logoPanel = new LogoPanel(this);
 
@@ -273,7 +274,7 @@ public class ControlPanel extends JPanel implements TReceiver
 	 * Returns the non-norm panel
 	 * @return the NonNormPanel
 	 */
-	public NonNormPanel getNonNormPanel()
+	public NonNorm1Panel getNonNormPanel()
 	{
 		return nonNormPanel;
 	}
