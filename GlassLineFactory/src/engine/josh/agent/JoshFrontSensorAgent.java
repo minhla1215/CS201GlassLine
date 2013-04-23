@@ -75,33 +75,6 @@ public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshF
 	
 	public boolean pickAndExecuteAnAction() {
 		
-		//This part of the scheduler is reserved for corners
-//		if(sensorNumber == 19 || sensorNumber == 25){
-//			if(!passingGlass){
-//				if(conveyor.isMoving){
-//					stopConveyor();
-//					return true;
-//				}
-//			}
-//		}
-		
-		////////////////////////////////////////////////////
-		
-		
-		
-//		if(passingGlass){
-//			try {
-//				Thread.sleep(50);
-//			} catch(InterruptedException ex) {
-//				Thread.currentThread().interrupt();
-//			}
-//			if(passingGlass){
-//				if(!conveyor.isMoving){
-//					moveConveyor();
-//					return true;
-//				}
-//			}
-//		}
 		
 		if(sensorState == SensorState.RELEASED ){
 			sendIAmAvailable();
@@ -128,7 +101,7 @@ public class JoshFrontSensorAgent extends Agent implements ConveyorFamily, JoshF
 		}
 		
 		
-		if(sensorState == SensorState.PRESSED && conveyorMoving && !passingGlass){
+		if(sensorState == SensorState.PRESSED && conveyor.isMoving && !passingGlass){
 			stopConveyor();
 			return true;
 		}

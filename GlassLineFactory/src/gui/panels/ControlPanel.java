@@ -74,13 +74,7 @@ public class ControlPanel extends JPanel implements TReceiver
 	/**
 	 * The panel handling non-normative events
 	 */
-	NonNormPanel nonNormPanel;
-
-
-	/**
-	 * The panel handling non-normative events
-	 */
-	NonNorm1Panel nonNorm1Panel;
+	NonNorm1Panel nonNormPanel;
 
 	/**
 	 * Panel holding logo
@@ -116,8 +110,7 @@ public class ControlPanel extends JPanel implements TReceiver
 		configSelectPanel = new ConfigSelectPanel(this);
 		glassSelectPanel = new GlassSelectPanel(this);
 		glassInfoPanel = new GlassInfoPanel(this);
-		nonNormPanel = new NonNormPanel(this);
-		nonNorm1Panel = new NonNorm1Panel(this);
+		nonNormPanel = new NonNorm1Panel(this);
 		tracePanel = new TracePanel(this, "Begin");
 		logoPanel = new LogoPanel(this);
 
@@ -128,8 +121,7 @@ public class ControlPanel extends JPanel implements TReceiver
 		JTabbedPane selectTabbedPanel = new JTabbedPane(JTabbedPane.TOP);
 		selectTabbedPanel.add("Glass Select", glassSelectPanel);
 		selectTabbedPanel.add("Produce Config", configSelectPanel);
-		//selectTabbedPanel.add("Non Norms", nonNormPanel);
-		selectTabbedPanel.add("Non Norms 1", nonNorm1Panel);
+		selectTabbedPanel.add("Non Norms", nonNormPanel);
 		selectTabbedPanel.setBackground(Color.black);
 		selectTabbedPanel.setForeground(Color.white);
 		selectTabbedPanel.setBorder(BorderFactory.createEmptyBorder());
@@ -282,7 +274,7 @@ public class ControlPanel extends JPanel implements TReceiver
 	 * Returns the non-norm panel
 	 * @return the NonNormPanel
 	 */
-	public NonNormPanel getNonNormPanel()
+	public NonNorm1Panel getNonNormPanel()
 	{
 		return nonNormPanel;
 	}
