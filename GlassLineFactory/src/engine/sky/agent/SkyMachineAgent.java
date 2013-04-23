@@ -19,6 +19,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 	private ConveyorFamily pairedPopUp;
 	private GlassType myGlass;
 	boolean readyToPass;
+	boolean machineBreak;
 	private enum MachineState {Idle, Loading, Loaded, Finished,DoingNothing}
 	private MachineState state;
 	private MachineType type;
@@ -27,6 +28,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		pairedPopUp = popUp;
 		myGuiIndex = in;
 		readyToPass = false;
+		machineBreak=false;
 		state = MachineState.Idle;
 
 		if (n.equals("Drill0") || n.equals("Drill1")) {
@@ -49,6 +51,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		super(n,tr);
 		myGuiIndex = index;
 		readyToPass = false;
+		machineBreak=false;
 		state = MachineState.Idle;
 
 		if (n.equals("Drill0") || n.equals("Drill1")) {
@@ -82,6 +85,19 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 	@Override
 	public void msgIAmAvailable() {
 
+	}
+	
+
+	public void msgOfflineMachineBreak() {
+		// TODO Auto-generated method stub
+		machineBreak=true;
+		stateChanged();
+	}
+	
+	public void msgOfflineMachineUnbreak() {
+		// TODO Auto-generated method stub
+		machineBreak=false;
+		stateChanged();
 	}
 
 	public void msgChangeProcessingTime(int i){//to change the timer
@@ -261,6 +277,9 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		// TODO Auto-generated method stub
 		
 	}
+
+	
+
 
 
 
