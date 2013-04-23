@@ -329,7 +329,6 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 				((AlexConveyorAgent) fp.getConveyorList()[index]).msgConveyorJammed();
 			}
 			else if(fp.getConveyorList()[index] instanceof JoshConveyorAgent){
-				System.out.println("NON NORM JAM THE CONVEYOR");
 				((JoshConveyorAgent) fp.getConveyorList()[index]).msgConveyorJammed();
 			}
 			//			else if(fp.getConveyorList()[index] instanceof SkyConveyorAgent){
@@ -349,7 +348,6 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 				((AlexConveyorAgent) fp.getConveyorList()[index]).msgConveyorUnjammed();
 			}
 			if(fp.getConveyorList()[index] instanceof JoshConveyorAgent){
-				System.out.println("NON NORM UNJAM THE CONVEYOR");
 				((JoshConveyorAgent) fp.getConveyorList()[index]).msgConveyorUnjammed();
 			}
 			//fp.getConveyorList()[index].msgConveyorUnjammed();
@@ -361,15 +359,12 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			inlineUnBreakButton.setEnabled(true);
 			
 			// Call message
-
 			if(fp.getInlineList()[index] instanceof AlexInlineMachineAgent){
-				((AlexInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineBreak();}
-
+				((AlexInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineBreak();
+			}
 			else if(fp.getInlineList()[index] instanceof JoshInlineMachineAgent){
-				System.out.println("NON NORM BREAK THE MACHINE");
 				((JoshInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineBreak();
 			}
-			//fp.getInlineList()[index].msgInlineMachineBreak();
 		}
 		else if(ae.getSource() == inlineUnBreakButton){
 			index = inlineDropList.getSelectedIndex();
@@ -378,15 +373,12 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			inlineUnBreakButton.setEnabled(false);
 
 			// Call message
-
 			if(fp.getInlineList()[index] instanceof AlexInlineMachineAgent){
-				((AlexInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineUnbreak();}
-
+				((AlexInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineUnbreak();
+			}
 			else if(fp.getInlineList()[index] instanceof JoshInlineMachineAgent){
-				System.out.println("NON NORM UNBREAK THE MACHINE");
 				((JoshInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineUnbreak();
 			}
-			//fp.getInlineList()[index].msgInlineMachineUnbreak();
 		}
 		else if(ae.getSource() == popupBreakButton){
 			index = popupDropList.getSelectedIndex();
