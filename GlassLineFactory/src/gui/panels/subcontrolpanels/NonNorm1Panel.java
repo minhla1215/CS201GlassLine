@@ -6,6 +6,7 @@ import engine.interfaces.ConveyorFamily;
 import engine.josh.agent.JoshConveyorAgent;
 import engine.josh.agent.JoshInlineMachineAgent;
 import engine.sky.agent.SkyMachineAgent;
+import engine.sky.agent.SkyPopUpAgent;
 import gui.panels.ControlPanel;
 import gui.panels.FactoryPanel;
 
@@ -394,7 +395,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			popupUnBreakButton.setEnabled(true);
 			
 			// Call message
-			//fp.getPopupList()[index].msgPopupBreak();
+			((SkyPopUpAgent) fp.getPopUpList()[index]).msgPopUpBreak();
 		}
 		else if(ae.getSource() == popupUnBreakButton){
 			index = popupDropList.getSelectedIndex();
@@ -403,7 +404,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			popupUnBreakButton.setEnabled(false);
 			
 			// Call message
-			//fp.getPopupList()[index].msgPopupUnbreak();
+			((SkyPopUpAgent) fp.getPopUpList()[index]).msgPopUpUnbreak();
 		}
 		else if(ae.getSource() == offlineBreakButton){
 			index = offlineDropList.getSelectedIndex();

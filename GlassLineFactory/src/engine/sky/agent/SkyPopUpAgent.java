@@ -25,7 +25,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	private int myGuiIndex;
 	private GlassType currentGlass;
 	private Target target;
-	private State myState;
+	private State myState, savedState;
 	private boolean glassLoaded;
 	private boolean informed = false;
 
@@ -33,7 +33,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	public enum MachineState {Idle, Processing, Done};
 	public enum ConveyorState {Available, UnAvailable};
 	public enum Target {None, PreConveyor, PostConveyor, Machine1, Machine2, Animating};
-	public enum State { Down, Up, Animating};
+	public enum State { Down, Up, Animating, Broken};
 
 	private class MyConveyor {
 		ConveyorFamily conveyor;
@@ -83,14 +83,14 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	public void msgGlassRemoved(SkyMachine machine){
 		if (machine == firstMachine.machine) {
 			firstMachine.state = MachineState.Idle;
-//			target = Target.Machine1;
+			//			target = Target.Machine1;
 		} else if (machine == secondMachine.machine) {
 			secondMachine.state =MachineState.Idle;
-//			target = Target.Machine2;
+			//			target = Target.Machine2;
 		}
 		stateChanged();
 	}
-	
+
 
 	@Override
 	public void msgPassingGlass(GlassType gt) {
@@ -166,44 +166,89 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 	}
 
+	public void msgPopUpBreak() {
+		if (myState == State.Up) {
+			savedState = State.Up;
+		}
+		else if (myState == State.Down) {
+			savedState = State.Down;
+		}
+		else if (myState == State.Animating) {
+			savedState = State.Animating;
+		}
+
+		preConveyor.conveyor.msgIAmNotAvailable();
+		informed = false;
+		myState = State.Broken;
+		System.out.println(this+" breaking the pop up");
+	}
+
+	public void msgPopUpUnbreak() {
+		myState = savedState;
+		System.out.println(this+" fixing the pop up with state = ");
+		stateChanged();
+	}
+
+	// Animation messages
 	private void msgGlassLoaded() {
 		glassLoaded = true;
 		if (target == Target.None || target == Target.PostConveyor || target == Target.PreConveyor) {
-			myState = State.Down;
+			if (myState!=State.Broken)
+				myState = State.Down;
+			else {
+				savedState = State.Down;
+			}
 			target = Target.None;
 		}
 		else{
-			myState = State.Up;
+			if (myState!=State.Broken)
+				myState = State.Up;
+			else {
+				savedState = State.Up;
+			}
 			target = Target.PostConveyor;
 		}
-
-
-
 		stateChanged();
 	}
 
 	private void msgMovedUp() {
-		myState = State.Up;
+		if (myState!=State.Broken)
+			myState = State.Up;
+		else {
+			savedState = State.Up;
+		}
 		stateChanged();
 	}
 
 	private void msgMovedDown() {
-		myState = State.Down;
+		if (myState!=State.Broken)
+			myState = State.Down;
+		else {
+			savedState = State.Down;
+		}
 		stateChanged();
 	}
 
 	private void msgGlassReleased() {
 		currentGlass = null;
-		myState = State.Down;
+		if (myState!=State.Broken)
+			myState = State.Down;
+		else {
+			savedState = State.Down;
+		}
 		target = Target.None;
 		stateChanged();
 	}
+
+
 
 	/** Scheduler **/
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		
+
+		System.out.println(this + " Scheduler with state = " +myState);
+
 		if (currentGlass != null && target == Target.None && myState == State.Up) {
 			if (firstMachine.state == MachineState.Idle) {
 				target = Target.Machine1;
@@ -218,7 +263,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 			}
 		}
-		
+
 		if (currentGlass == null && target == Target.None && myState == State.Down) {
 			if (firstMachine.state == MachineState.Done) {
 				target = Target.Machine1;
@@ -295,7 +340,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		//		myState = State.Animating;
 		informed = true;
 	}
-	
+
 	private void informOkToSkip() {
 		System.out.println(this +" Action: informOkToPass");
 		((SkyConveyorAgent) preConveyor.conveyor).msgOkToSkip();
@@ -310,7 +355,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		Object[] args = new Object[1];
 		args[0] = myGuiIndex;
 		transducer.fireEvent(TChannel.POPUP, TEvent.POPUP_DO_MOVE_UP, args);
-		
+
 		myState = State.Animating;
 	}
 
