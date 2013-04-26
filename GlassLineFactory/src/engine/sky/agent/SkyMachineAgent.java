@@ -19,7 +19,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 	private ConveyorFamily pairedPopUp;
 	private GlassType myGlass;
 	boolean readyToPass;
-	boolean machineBreak;
+	boolean machineBreak,machineOn;
 	private enum MachineState {Idle, Loading, Loaded, Finished,DoingNothing}
 	private MachineState state;
 	private MachineType type;
@@ -29,6 +29,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		myGuiIndex = in;
 		readyToPass = false;
 		machineBreak=false;
+		machineOn=true;
 		state = MachineState.Idle;
 
 		if (n.equals("Drill0") || n.equals("Drill1")) {
@@ -52,6 +53,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		myGuiIndex = index;
 		readyToPass = false;
 		machineBreak=false;
+		machineOn=true;
 		state = MachineState.Idle;
 
 		if (n.equals("Drill0") || n.equals("Drill1")) {
@@ -87,6 +89,23 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 
 	}
 	
+	@Override
+	public void msgIAmNotAvailable() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void msgOfflineMachineOn() {
+		// TODO Auto-generated method stub
+		machineOn=true;
+		stateChanged();
+	}
+
+	public void msgOfflineMachineOff() {
+		// TODO Auto-generated method stub
+		machineOn=false;
+		stateChanged();
+	}
 
 	public void msgOfflineMachineBreak() {
 		// TODO Auto-generated method stub
@@ -285,11 +304,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		}
 	}
 
-	@Override
-	public void msgIAmNotAvailable() {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 	
 
