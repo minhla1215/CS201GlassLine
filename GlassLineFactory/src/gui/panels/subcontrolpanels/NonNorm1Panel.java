@@ -77,7 +77,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			popupBreakBool[i] = false;
 		for(int i = 0; i < 6; i++){
 			offlineBreakBool[i] = false;
-			offlineOnBool[i] = false;
+			offlineOnBool[i] = true;
 			offlineTimeInt[i] = 1;
 		}
 
@@ -173,6 +173,10 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		popupUnBreakButton.setEnabled(false);
 		truckLeaveButton.setEnabled(true);
 		truckReturnButton.setEnabled(false);
+		offlineOnButton.setEnabled(false);
+		offlineOffButton.setEnabled(true);
+		offlineBreakButton.setEnabled(true);
+		offlineUnBreakButton.setEnabled(false);
 
 		// adding action listeners to buttons
 		conveyorJamButton.addActionListener(this);
@@ -227,8 +231,8 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		offlineContainer.add(offlineDropList);
 		offlineContainer.add(offlineBreakButton);
 		offlineContainer.add(offlineUnBreakButton);
-		offlineContainer.add(offlineOnButton);
 		offlineContainer.add(offlineOffButton);
+		offlineContainer.add(offlineOnButton);
 
 		// Adding elements to offline Processing Time container
 		offlineProcessingTimeContainer.add(offlineProcessingTimeLabel);
