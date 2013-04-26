@@ -225,6 +225,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 			secondMachine.state = secondMachine.savedState;
 		}
+		stateChanged();
 
 	}
 
