@@ -224,7 +224,12 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 					msgChangeProcessingTime((Integer)args[1]);	
 				return;
 			}
-			
+			if(event==TEvent.WORKSTATION_MACHINE_BREAK)
+			{
+				if(part!=null){
+				part.msgPartBroken();
+				}
+			}
 
 		}
 	}
