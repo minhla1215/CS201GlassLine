@@ -30,7 +30,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	private boolean informed = false;
 
 
-	public enum MachineState {Idle, Processing, Done};
+	public enum MachineState {Idle, Processing, Done, Off};
 	public enum ConveyorState {Available, UnAvailable};
 	public enum Target {None, PreConveyor, PostConveyor, Machine1, Machine2, Animating};
 	public enum State { Down, Up, Animating, Broken};
@@ -47,7 +47,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 	private class MyMachine {
 		SkyMachine machine;
-		MachineState state;
+		MachineState state, savedState;
 
 		public MyMachine(SkyMachine m, MachineState s) {
 			machine = m;
@@ -82,11 +82,20 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	/** Messages **/
 	public void msgGlassRemoved(SkyMachine machine){
 		if (machine == firstMachine.machine) {
-			firstMachine.state = MachineState.Idle;
-			//			target = Target.Machine1;
-		} else if (machine == secondMachine.machine) {
-			secondMachine.state =MachineState.Idle;
-			//			target = Target.Machine2;
+			if (firstMachine.state != MachineState.Off) {
+				firstMachine.state = MachineState.Idle;
+			}
+			else {
+				firstMachine.savedState = MachineState.Idle;
+			}
+		}
+		else if (machine == secondMachine.machine) {
+			if (secondMachine.state != MachineState.Off) {
+				secondMachine.state =MachineState.Idle;
+			}
+			else {
+				secondMachine.savedState = MachineState.Idle;
+			}
 		}
 		stateChanged();
 	}
@@ -146,13 +155,22 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
 	public void msgGlassDone(SkyMachine machine, GlassType gt) {
 		if (machine == firstMachine.machine) {
-			firstMachine.state = MachineState.Done;
+			if (firstMachine.state != MachineState.Off) {
+				firstMachine.state = MachineState.Done;
+			}
+			else {
+				firstMachine.savedState = MachineState.Done;
+			}
 
 		} else if (machine == secondMachine.machine) {
-			secondMachine.state =MachineState.Done;
+			if (secondMachine.state != MachineState.Off) {
+				secondMachine.state =MachineState.Done;
+			}
+			else {
+				secondMachine.savedState = MachineState.Done;
+			}
 
 		}
-
 		stateChanged();
 	}
 
@@ -192,6 +210,29 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		myState = savedState;
 		System.out.println(this+" fixing the pop up with state = ");
 		stateChanged();
+	}
+
+	public void msgOfflineMachineOn(int machineIndex) {
+		if (machineIndex%2 ==0) {
+
+			firstMachine.state = firstMachine.savedState;
+		}
+		else {
+
+			secondMachine.state = secondMachine.savedState;
+		}
+
+	}
+
+	public void msgOfflineMachineOff(int machineIndex) {
+		if (machineIndex%2 ==0) {
+			firstMachine.savedState = firstMachine.state;
+			firstMachine.state = MachineState.Off;
+		}
+		else {
+			secondMachine.savedState = secondMachine.state;
+			secondMachine.state = MachineState.Off;
+		}
 	}
 
 	// Animation messages
@@ -324,8 +365,9 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 				passToConveyor();
 				return true;
 			}
-			else {
+			else if (!informed){
 				preConveyor.conveyor.msgIAmNotAvailable();
+				informed = true;
 				return true;
 			}
 
