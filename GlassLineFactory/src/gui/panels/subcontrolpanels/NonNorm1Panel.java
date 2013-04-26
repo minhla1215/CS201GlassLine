@@ -430,7 +430,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			offlineOffButton.setEnabled(true);
 
 			// Call message
-			//fp.getOfflineList()[index].msgOfflineMachineBreak();
+			((SkyPopUpAgent) fp.getPopUpList()[index/2]).msgOfflineMachineOn(index);
 		}
 		else if(ae.getSource() == offlineOffButton){
 			index = offlineDropList.getSelectedIndex();
@@ -439,7 +439,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			offlineOffButton.setEnabled(false);
 
 			// Call message
-			//fp.getOfflineList()[index].msgOfflineMachineBreak();
+			((SkyPopUpAgent) fp.getPopUpList()[index/2]).msgOfflineMachineOff(index);
 		}
 		else if(ae.getSource() == offlineProcessingTimeButton){
 			index = offlineDropList.getSelectedIndex();
