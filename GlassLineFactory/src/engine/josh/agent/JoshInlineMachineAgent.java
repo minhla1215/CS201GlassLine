@@ -91,7 +91,9 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 
 	public void msgInlineMachineUnbreak(){
 		isJammed = false;
-		frontSensor.msgIAmAvailable();
+		if(glassPanes.isEmpty()){
+			frontSensor.msgIAmAvailable();
+		}
 		//machineState = MachineState.EMPTY;
 		
 		stateChanged();
@@ -121,6 +123,27 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 			}
 
 
+//			if(machineState == MachineState.LOADING && !glassPaneProcessed){
+//				if(glassPanes.peek().getinlineMachineProcessingNeeded()[machineNumber]){
+//					ProcessGlass();
+//					machineState = MachineState.DONOTHING;
+//				}
+//				else{
+//					ReleaseGlass();
+//					passGlass();
+//					machineState = MachineState.EMPTY;
+//				}
+//				return true;
+//			}
+
+
+			if(machineState == MachineState.LOADING && releaseGlass && passingGlass){
+				ReleaseGlass();
+				passGlass();
+				machineState = MachineState.EMPTY;
+				return true;
+			}
+			
 			if(machineState == MachineState.LOADING && !glassPaneProcessed){
 				if(glassPanes.peek().getinlineMachineProcessingNeeded()[machineNumber]){
 					ProcessGlass();
@@ -131,14 +154,6 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 					passGlass();
 					machineState = MachineState.EMPTY;
 				}
-				return true;
-			}
-
-
-			if(machineState == MachineState.LOADING && releaseGlass && passingGlass){
-				ReleaseGlass();
-				passGlass();
-				machineState = MachineState.EMPTY;
 				return true;
 			}
 		}
@@ -217,6 +232,7 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 		{		
 			machineState = MachineState.EMPTY;
 			machineIsEmpty = true;
+			frontSensor.msgIAmAvailable();
 			stateChanged();
 		}
 
