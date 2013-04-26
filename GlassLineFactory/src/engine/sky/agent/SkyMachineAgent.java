@@ -92,6 +92,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		// TODO Auto-generated method stub
 		machineBreak=true;
 		stateChanged();
+		
 	}
 	
 	public void msgOfflineMachineUnbreak() {
@@ -168,7 +169,6 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 ////			informAvailability();
 //			return true;
 //		}
-
 		if (state == MachineState.Loading) {
 			loadGlass();
 			return true;
@@ -256,8 +256,21 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {
 		if ((Integer)args[0] == myGuiIndex) {
 			if (event == TEvent.WORKSTATION_GUI_ACTION_FINISHED) {
+				if(machineBreak){
+					if (type==MachineType.DRILL){
+						transducer.fireEvent(TChannel.DRILL, TEvent.WORKSTATION_MACHINE_BREAK, args);
+					}
+					else if (type == MachineType.CROSS_SEAMER) {
+						transducer.fireEvent(TChannel.CROSS_SEAMER, TEvent.WORKSTATION_MACHINE_BREAK, args);
+					}
+					else if (type == MachineType.GRINDER) {
+						transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_MACHINE_BREAK, args);
+					}
+				}
+				else{
 				this.msgActionFinished();
 				((SkyPopUpAgent) pairedPopUp).msgGlassDone(this,myGlass);
+				}
 
 			}
 			if (event == TEvent.WORKSTATION_LOAD_FINISHED ) {
