@@ -202,6 +202,13 @@ public class JoshConveyorAgent extends Agent implements ConveyorFamily, JoshConv
 	
 	public void set_isMoving(Boolean b){
 		isMoving = b;
+		
+		if(isMoving)
+		System.out.println(name + " is Moving");
+		
+		if(!isMoving)
+		System.out.println(name + " is not Moving");
+		
 		frontSensor.msgConveyorChangedState();
 		backSensor.msgConveyorChangedState();
 	}
