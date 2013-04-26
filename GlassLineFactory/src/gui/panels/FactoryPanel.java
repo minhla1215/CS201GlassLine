@@ -475,8 +475,11 @@ public class FactoryPanel extends JPanel
 
 
 		truckAgent.startThread();
-
-
+		
+		popUp0.setControlPanel(this.getControlPanel());
+		popUp1.setControlPanel(this.getControlPanel());
+		popUp2.setControlPanel(this.getControlPanel());
+		
 		System.out.println("Back end initialization finished.");
 
 	}

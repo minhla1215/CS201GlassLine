@@ -1,20 +1,17 @@
 package engine.sky.agent;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Semaphore;
-
+import transducer.TChannel;
+import transducer.TEvent;
+import transducer.Transducer;
 import engine.agent.Agent;
 import engine.interfaces.ConveyorFamily;
 import engine.interfaces.SkyMachine;
 import engine.util.GlassType;
-
-import transducer.TChannel;
-import transducer.TEvent;
-import transducer.Transducer;
+import gui.panels.ControlPanel;
 
 public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 
+	
 	/** Data **/
 
 	private MyConveyor postConveyor;
@@ -29,6 +26,8 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	private boolean glassLoaded;
 	private boolean informed = false;
 
+	
+	private ControlPanel cp;
 
 	public enum MachineState {Idle, Processing, Done, Off};
 	public enum ConveyorState {Available, UnAvailable};
@@ -492,6 +491,8 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		}
 	}
 
-
+	public void setControlPanel(ControlPanel cp){
+		this.cp = cp;
+	}
 
 }
