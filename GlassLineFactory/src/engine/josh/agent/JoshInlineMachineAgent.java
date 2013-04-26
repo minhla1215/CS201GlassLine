@@ -91,7 +91,8 @@ public class JoshInlineMachineAgent extends Agent implements ConveyorFamily{
 
 	public void msgInlineMachineUnbreak(){
 		isJammed = false;
-		machineState = MachineState.EMPTY;
+		frontSensor.msgIAmAvailable();
+		//machineState = MachineState.EMPTY;
 		
 		stateChanged();
 	}
