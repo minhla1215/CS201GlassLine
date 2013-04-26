@@ -136,7 +136,7 @@ public class TracePanel extends JPanel implements ActionListener
 		{
 			for (TracePanelMessage m : tracePanelMessages)
 			{
-				updatedText.append('\n' + m.returnMessage());
+				updatedText.append(m.returnMessage() + '\n');
 			}
 		}
 
