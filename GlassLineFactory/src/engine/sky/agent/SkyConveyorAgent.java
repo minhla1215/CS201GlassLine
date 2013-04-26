@@ -20,10 +20,11 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	private ConveyorFamily postCF;
 	private ConveyorFamily preCF;
 	public ConveyorState myState;
+	private ConveyorState savedState;
 
 	private int myGuiIndex;
 
-	public enum ConveyorState {Idle, Stopped, ReadyToMove, Moving, ReadyToPass};
+	public enum ConveyorState {Idle, Stopped, ReadyToMove, Moving, ReadyToPass, Broken};
 	private boolean informed;
 	private boolean okToSkip;
 	private boolean PopUpAvailable;
@@ -71,30 +72,35 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		PopUpAvailable = true;
 		stateChanged();
 	}
-	
+
 	public void msgOkToSkip() {
 		okToSkip = true;
 		stateChanged();
 	}
 
-//	public void msgIAmBusy() {
-//		PopUpAvailable = false;
-//		stateChanged();
-//	}
+	//	public void msgIAmBusy() {
+	//		PopUpAvailable = false;
+	//		stateChanged();
+	//	}
 
-//	public void msgFullyLoaded() {
-//		popUpLoaded = true;
-//		stateChanged();
-//	}
+	//	public void msgFullyLoaded() {
+	//		popUpLoaded = true;
+	//		stateChanged();
+	//	}
 
 	public void msgGlassEntering() {
 		if (myState != ConveyorState.Stopped ) {
-			myState = ConveyorState.ReadyToMove;
+			if (myState != ConveyorState.Broken) {
+				myState = ConveyorState.ReadyToMove;
+			}
+			else {
+				savedState = ConveyorState.ReadyToMove;
+			}
 		}
 
 
 		frontSensorReleased = false;
-		
+
 		preCF.msgIAmNotAvailable();
 		informed = false;
 
@@ -102,7 +108,12 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 	}
 
 	public void msgGlassExiting() {
-		myState = ConveyorState.ReadyToPass;
+		if (myState != ConveyorState.Broken) {
+			myState = ConveyorState.ReadyToPass;
+		}
+		else {
+			savedState = ConveyorState.ReadyToPass;
+		}
 		stateChanged();
 	}
 
@@ -113,6 +124,30 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 
 	public void msgGlassExited() {
 
+		// this is not used
+	}
+
+	public void msgConveyorJammed() {
+		savedState = myState;
+		
+		stopConveyor();
+		
+		myState = ConveyorState.Broken;
+		System.out.println("myState = " + myState + " && savedState = " + savedState);
+	}
+
+	public void msgConveyorUnjammed() {
+//		if (savedState == ConveyorState.Stopped) {
+//			myState = ConveyorState.ReadyToMove;
+//		}
+//		else {
+//			myState = savedState;
+//		}
+		myState = savedState;
+		if (myState == ConveyorState.Moving) {
+			startConveyor();
+		}
+		stateChanged();
 	}
 
 	/** Scheduler */
@@ -195,10 +230,10 @@ public class SkyConveyorAgent extends Agent implements ConveyorFamily,SkyConveyo
 		System.out.println(this + ": action - informAvailability");
 		informed = true;
 		new Timer().schedule(new TimerTask(){
-		    public void run(){//this routine is like a message reception    
-		    	preCF.msgIAmAvailable();
-			    }
-			}, 100);
+			public void run(){//this routine is like a message reception    
+				preCF.msgIAmAvailable();
+			}
+		}, 100);
 		//		stateChanged();
 	}
 
