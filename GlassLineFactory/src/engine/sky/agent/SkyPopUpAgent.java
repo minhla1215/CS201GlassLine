@@ -1,5 +1,8 @@
 package engine.sky.agent;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -47,10 +50,12 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	private class MyMachine {
 		SkyMachine machine;
 		MachineState state, savedState;
+		int processTime;
 
 		public MyMachine(SkyMachine m, MachineState s) {
 			machine = m;
 			state = s;
+			processTime = 1;
 		}
 	}
 
@@ -231,6 +236,15 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 		else {
 			secondMachine.savedState = secondMachine.state;
 			secondMachine.state = MachineState.Off;
+		}
+	}
+	
+	public void msgProcessingTimeChanged(int time, SkyMachine machine) {
+		if (machine == firstMachine) {
+			firstMachine.processTime = time + 1;
+		}
+		else if (machine == secondMachine) {
+			secondMachine.processTime = time + 1;
 		}
 	}
 
@@ -422,11 +436,23 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	}
 
 	private void passToMachine(MyMachine mm) {
+		final MyMachine mm1 = mm;
 		System.out.println(this +" Action: passToMachine");
 		mm.machine.msgPassingGlass(currentGlass);
 		mm.state = MachineState.Processing;
 		myState = State.Animating;
 		currentGlass = null;
+		
+		new Timer().schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				if (mm1.state ==MachineState.Off) {
+					cp.getTracePanel().print("Glass not coming back. Please turn machine " + mm1.machine.getName() +" back on", null);
+				}
+			}
+			
+		}, 5000*(mm.processTime));
 	}
 
 	private void passToConveyor() {

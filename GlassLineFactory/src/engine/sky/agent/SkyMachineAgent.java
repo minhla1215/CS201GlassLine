@@ -133,6 +133,7 @@ public class SkyMachineAgent extends Agent implements ConveyorFamily, SkyMachine
 		else if (type == MachineType.GRINDER) {
 			transducer.fireEvent(TChannel.GRINDER, TEvent.WORKSTATION_DO_CHANGE_ANIMATION_TIME, args);
 		}
+		((SkyPopUpAgent) pairedPopUp).msgProcessingTimeChanged(i,this);
 		
 	}
 	
