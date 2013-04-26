@@ -84,12 +84,12 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 
 		// initialization of labels
 		conveyorLabel = new JLabel("CONVEYORS");
-		conveyorLabel.setOpaque(true);
-		conveyorLabel.setBackground(Color.red);
+		//conveyorLabel.setOpaque(true);
+		//conveyorLabel.setBackground(Color.red);
 		conveyorLabel.setForeground(Color.blue);
 		conveyorLabel.setPreferredSize(new Dimension(400,15));
 		conveyorLabel.setMaximumSize(new Dimension(400,15));
-		conveyorLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		//conveyorLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		inlineLabel = new JLabel("INLINE MACHINSE");
 		inlineLabel.setForeground(Color.blue);
 		//inlineLabel.setHorizontalAlignment(SwingConstants.LEFT);
