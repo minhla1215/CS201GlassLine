@@ -5,6 +5,7 @@ import engine.alex.agent.AlexInlineMachineAgent;
 import engine.interfaces.ConveyorFamily;
 import engine.josh.agent.JoshConveyorAgent;
 import engine.josh.agent.JoshInlineMachineAgent;
+import engine.sky.agent.SkyConveyorAgent;
 import engine.sky.agent.SkyMachineAgent;
 import engine.sky.agent.SkyPopUpAgent;
 import gui.panels.ControlPanel;
@@ -28,7 +29,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 
 	ControlPanel parent;
 	FactoryPanel fp;
-	
+
 	// Declaration of Swing
 	JComboBox conveyorDropList, popupDropList, offlineDropList, inlineDropList;
 	JButton conveyorJamButton, conveyorUnJamButton;
@@ -39,10 +40,10 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 	JTextField offlineProcessingTimeField;
 	JLabel offlineProcessingTimeLabel;
 	JLabel conveyorLabel, popupLabel, inlineLabel, offlineLabel, truckLabel;
-	
+
 	// Declaration of Swing Box container
 	JPanel conveyorContainer, popupContainer, inlineContainer, offlineContainer, offlineProcessingTimeContainer, truckContainer;
-	
+
 	// Booleans for the states of agents
 	boolean [] conveyorBreakBool;
 	boolean [] inlineBreakBool;
@@ -50,7 +51,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 	boolean [] offlineBreakBool;
 	boolean [] offlineOnBool;
 	int [] offlineTimeInt;
-	
+
 	boolean started = false;
 	public NonNorm1Panel(ControlPanel cp)
 	{
@@ -67,7 +68,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		offlineBreakBool = new boolean[6];
 		offlineOnBool = new boolean[6];
 		offlineTimeInt = new int[6];
-		
+
 		for(int i = 0; i < 15; i++)
 			conveyorBreakBool[i] = false;
 		for(int i = 0; i < 7; i++)
@@ -79,8 +80,8 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			offlineOnBool[i] = false;
 			offlineTimeInt[i] = 1;
 		}
-		
-		
+
+
 		// initialization of labels
 		conveyorLabel = new JLabel("CONVEYORS");
 		conveyorLabel.setOpaque(true);
@@ -99,13 +100,13 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		offlineProcessingTimeLabel = new JLabel("Processing Time");
 		truckLabel = new JLabel("TRUCK");
 		truckLabel.setForeground(Color.blue);
-		
+
 		// initialization of drop downs
 		conveyorDropList = new JComboBox();
 		popupDropList = new JComboBox();
 		offlineDropList = new JComboBox();
 		inlineDropList = new JComboBox();
-		
+
 		// setting size for drop list
 		conveyorDropList.setPreferredSize(new Dimension(200,25));
 		conveyorDropList.setMaximumSize(new Dimension(300,25));
@@ -115,8 +116,8 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		inlineDropList.setMaximumSize(new Dimension(300,25));
 		offlineDropList.setPreferredSize(new Dimension(200,25));
 		offlineDropList.setMaximumSize(new Dimension(200,25));
-		
-	
+
+
 		// Adding the drop down for the Combo Box
 		for(int i = 1; i <= 15; i++){
 			conveyorDropList.addItem("Conveyor " + i);
@@ -124,7 +125,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		for(int i = 1; i <= 3; i++){
 			popupDropList.addItem("Popup " + i);
 		}
-		
+
 		// Adding specific drop down for offline
 		offlineDropList.addItem("Driller 1");
 		offlineDropList.addItem("Driller 2");
@@ -132,7 +133,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		offlineDropList.addItem("Cross-seamer 2");
 		offlineDropList.addItem("Grinder 1");
 		offlineDropList.addItem("Grinder 2");
-		
+
 		// Adding specific drop down for inline
 		inlineDropList.addItem("Cutter");
 		inlineDropList.addItem("Breakout");
@@ -141,7 +142,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		inlineDropList.addItem("Painter");
 		inlineDropList.addItem("UV Lamp");
 		inlineDropList.addItem("Oven");
-		
+
 		// Initialization of Buttons
 		conveyorJamButton = new JButton("Jam");
 		conveyorUnJamButton = new JButton("Unjam");
@@ -157,12 +158,12 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		offlineProcessingTimeButton = new JButton("Set");
 		truckLeaveButton = new JButton("Leave");
 		truckReturnButton = new JButton("Return");
-		
+
 		// offline Text Field Container
 		offlineProcessingTimeField = new JTextField(4);
 		offlineProcessingTimeField.setPreferredSize(new Dimension(40,25));
 		offlineProcessingTimeField.setMaximumSize(new Dimension(40,25));
-		
+
 		// Set initial states of buttons
 		conveyorJamButton.setEnabled(true);
 		conveyorUnJamButton.setEnabled(false);
@@ -172,7 +173,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		popupUnBreakButton.setEnabled(false);
 		truckLeaveButton.setEnabled(true);
 		truckReturnButton.setEnabled(false);
-		
+
 		// adding action listeners to buttons
 		conveyorJamButton.addActionListener(this);
 		conveyorUnJamButton.addActionListener(this);
@@ -192,7 +193,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		conveyorDropList.addActionListener(this);
 		truckLeaveButton.addActionListener(this);
 		truckReturnButton.addActionListener(this);
-		
+
 		// Initialization of containers
 		conveyorContainer = new JPanel();
 		inlineContainer = new JPanel();
@@ -206,39 +207,39 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		popupContainer.setLayout(new BoxLayout(popupContainer,BoxLayout.X_AXIS));
 		offlineProcessingTimeContainer.setLayout(new BoxLayout(offlineProcessingTimeContainer,BoxLayout.X_AXIS));
 		truckContainer.setLayout(new BoxLayout(truckContainer,BoxLayout.X_AXIS));
-		
+
 		// Adding elements to Conveyor Container
 		conveyorContainer.add(conveyorDropList);
 		conveyorContainer.add(conveyorJamButton);
 		conveyorContainer.add(conveyorUnJamButton);
-		
+
 		// Adding elements to inline container
 		inlineContainer.add(inlineDropList);
 		inlineContainer.add(inlineBreakButton);
 		inlineContainer.add(inlineUnBreakButton);
-		
+
 		// Adding elements to popup container
 		popupContainer.add(popupDropList);
 		popupContainer.add(popupBreakButton);
 		popupContainer.add(popupUnBreakButton);
-		
+
 		// Adding elements to offline container
 		offlineContainer.add(offlineDropList);
 		offlineContainer.add(offlineBreakButton);
 		offlineContainer.add(offlineUnBreakButton);
 		offlineContainer.add(offlineOnButton);
 		offlineContainer.add(offlineOffButton);
-		
+
 		// Adding elements to offline Processing Time container
 		offlineProcessingTimeContainer.add(offlineProcessingTimeLabel);
 		offlineProcessingTimeContainer.add(offlineProcessingTimeField);
 		offlineProcessingTimeContainer.add(offlineProcessingTimeButton);
 		offlineProcessingTimeContainer.add(offlineRemoveGlassButton);
-		
+
 		// Adding elements to truck container
 		truckContainer.add(truckLeaveButton);
 		truckContainer.add(truckReturnButton);
-		
+
 		// Adding containers to GUI
 		//this.setAlignmentX(Component.LEFT_ALIGNMENT);
 		this.add(conveyorLabel);
@@ -253,8 +254,8 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		this.add(truckLabel);
 		this.add(truckContainer);
 	}
-	
-	
+
+
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		int index = 0;
@@ -273,7 +274,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 				conveyorJamButton.setEnabled(true);
 				conveyorUnJamButton.setEnabled(false);
 			}
-				
+
 		}
 		else if(ae.getSource() == popupDropList){
 			index = popupDropList.getSelectedIndex();
@@ -323,7 +324,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			conveyorBreakBool[index] = true;
 			conveyorJamButton.setEnabled(false);
 			conveyorUnJamButton.setEnabled(true);
-			
+
 			// Call message
 			if(fp.getConveyorList()[index] instanceof AlexConveyorAgent){
 				((AlexConveyorAgent) fp.getConveyorList()[index]).msgConveyorJammed();
@@ -331,8 +332,9 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			else if(fp.getConveyorList()[index] instanceof JoshConveyorAgent){
 				((JoshConveyorAgent) fp.getConveyorList()[index]).msgConveyorJammed();
 			}
-			//			else if(fp.getConveyorList()[index] instanceof SkyConveyorAgent){
-			//				((SkyConveyorAgent) fp.getConveyorList()[index]).msgConveyorJammed();}
+			else if(fp.getConveyorList()[index] instanceof SkyConveyorAgent){
+				((SkyConveyorAgent) fp.getConveyorList()[index]).msgConveyorJammed();
+			}
 
 
 
@@ -342,7 +344,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			conveyorBreakBool[index] = false;
 			conveyorJamButton.setEnabled(true);
 			conveyorUnJamButton.setEnabled(false);
-			
+
 			// Call message
 			if(fp.getConveyorList()[index] instanceof AlexConveyorAgent){
 				((AlexConveyorAgent) fp.getConveyorList()[index]).msgConveyorUnjammed();
@@ -350,6 +352,10 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			if(fp.getConveyorList()[index] instanceof JoshConveyorAgent){
 				((JoshConveyorAgent) fp.getConveyorList()[index]).msgConveyorUnjammed();
 			}
+			if(fp.getConveyorList()[index] instanceof SkyConveyorAgent){
+				((SkyConveyorAgent) fp.getConveyorList()[index]).msgConveyorUnjammed();
+			}
+			
 			//fp.getConveyorList()[index].msgConveyorUnjammed();
 		}
 		else if(ae.getSource() == inlineBreakButton){
@@ -357,7 +363,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			inlineBreakBool[index] = true;
 			inlineBreakButton.setEnabled(false);
 			inlineUnBreakButton.setEnabled(true);
-			
+
 			// Call message
 			if(fp.getInlineList()[index] instanceof AlexInlineMachineAgent){
 				((AlexInlineMachineAgent) fp.getInlineList()[index]).msgInlineMachineBreak();
@@ -385,7 +391,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			popupBreakBool[index] = true;
 			popupBreakButton.setEnabled(false);
 			popupUnBreakButton.setEnabled(true);
-			
+
 			// Call message
 			((SkyPopUpAgent) fp.getPopUpList()[index]).msgPopUpBreak();
 		}
@@ -394,7 +400,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			popupBreakBool[index] = false;
 			popupBreakButton.setEnabled(true);
 			popupUnBreakButton.setEnabled(false);
-			
+
 			// Call message
 			((SkyPopUpAgent) fp.getPopUpList()[index]).msgPopUpUnbreak();
 		}
@@ -403,7 +409,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			offlineBreakBool[index] = true;
 			offlineBreakButton.setEnabled(false);
 			offlineUnBreakButton.setEnabled(true);
-			
+
 			// Call message
 			((SkyMachineAgent) fp.getOfflineList()[index]).msgOfflineMachineBreak();
 		}
@@ -412,7 +418,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			offlineBreakBool[index] = false;
 			offlineBreakButton.setEnabled(true);
 			offlineUnBreakButton.setEnabled(false);
-			
+
 			// Call message
 			((SkyMachineAgent) fp.getOfflineList()[index]).msgOfflineMachineUnbreak();
 			//fp.getOfflineList()[index].msgOfflineMachineUnbreak();
@@ -422,7 +428,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			offlineOnBool[index] = true;
 			offlineOnButton.setEnabled(false);
 			offlineOffButton.setEnabled(true);
-			
+
 			// Call message
 			//fp.getOfflineList()[index].msgOfflineMachineBreak();
 		}
@@ -431,7 +437,7 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			offlineOnBool[index] = false;
 			offlineOnButton.setEnabled(true);
 			offlineOffButton.setEnabled(false);
-			
+
 			// Call message
 			//fp.getOfflineList()[index].msgOfflineMachineBreak();
 		}
@@ -464,16 +470,16 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 		}else if(ae.getSource() == truckReturnButton){
 			truckLeaveButton.setEnabled(true);
 			truckReturnButton.setEnabled(false);
-			
+
 			// Call message
 			fp.getTruck().msgTruckReturn();
 		}
-		
+
 	}
 
 	public ControlPanel getGuiParent()
 	{
 		return parent;
 	}
-	
+
 }

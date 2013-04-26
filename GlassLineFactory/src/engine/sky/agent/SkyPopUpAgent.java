@@ -131,7 +131,12 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	//Called by machine when machine finished loading
 	public void msgLoadFinished() {
 		target = Target.None;
-		myState = State.Up;
+		if (myState != State.Broken) {
+			myState = State.Up;
+		}
+		else {
+			savedState = State.Up;
+		}
 		System.out.println("msgLoadFinished: Target = " + target + " State = " + myState);
 		stateChanged();
 	}
@@ -247,7 +252,7 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 	@Override
 	public boolean pickAndExecuteAnAction() {
 
-		System.out.println(this + " Scheduler with state = " +myState);
+		System.out.println(this + " Scheduler with state = " +myState + " target = " + target);
 
 		if (currentGlass != null && target == Target.None && myState == State.Up) {
 			if (firstMachine.state == MachineState.Idle) {
