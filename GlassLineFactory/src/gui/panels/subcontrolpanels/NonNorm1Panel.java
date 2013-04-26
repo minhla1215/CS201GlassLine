@@ -434,7 +434,9 @@ public class NonNorm1Panel extends JPanel implements ActionListener{
 			offlineOffButton.setEnabled(true);
 
 			// Call message
+
 			((SkyPopUpAgent) fp.getPopUpList()[index/2]).msgOfflineMachineOn(index);
+
 		}
 		else if(ae.getSource() == offlineOffButton){
 			index = offlineDropList.getSelectedIndex();

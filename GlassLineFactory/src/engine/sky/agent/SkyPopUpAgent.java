@@ -364,8 +364,9 @@ public class SkyPopUpAgent extends Agent implements ConveyorFamily {
 				passToConveyor();
 				return true;
 			}
-			else {
+			else if (!informed){
 				preConveyor.conveyor.msgIAmNotAvailable();
+				informed = true;
 				return true;
 			}
 

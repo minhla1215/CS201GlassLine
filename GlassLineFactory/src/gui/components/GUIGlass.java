@@ -114,6 +114,9 @@ public class GUIGlass extends GuiComponent implements Serializable
 	//boolean to show/remove image
 	private boolean showImage;
 	
+	boolean offConveyor = false;
+	
+	
 	/**
 	 * Public constructor for GUIPart
 	 */
